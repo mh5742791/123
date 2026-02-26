@@ -155,19 +155,25 @@
                 <div style="max-width: 700px;">
                     <label>عنوان المحتوى</label>
                     <input type="text" id="content-title" placeholder="اكتب عنوان الدرس...">
+                    
                     <label>نوع المحتوى</label>
                     <select id="content-type">
                         <option value="html">كود HTML (تفاعلي مرن)</option>
                         <option value="link">رابط خارجي (YouTube, Drive)</option>
                     </select>
+                    
                     <label style="color: var(--secondary); font-weight: bold;">مكان العرض في القائمة الجانبية (الفهرس)</label>
                     <select id="content-folder">
                         <option value="none">-- عرض مستقل (بدون قائمة منسدلة) --</option>
                     </select>
+
+                    <label style="color: var(--primary); font-weight: bold;">الصفوف المستهدفة (صلاحيات الرؤية)</label>
+                    <select id="content-classes" style="background-color: #e0e7ff; border-color: var(--primary);">
+                        </select>
+                    
                     <label>البيانات (الكود أو الرابط)</label>
                     <textarea id="content-data" rows="8" placeholder="قم بلصق الكود هنا..."></textarea>
-                    <label>الصفوف المستهدفة (اتركه فارغاً ليظهر للكل)</label>
-                    <input type="text" id="content-classes" placeholder="مثال: الصف الأول، الصف الثاني">
+                    
                     <div style="display:flex; gap:10px;">
                         <button id="save-content-btn" onclick="saveContent()" style="flex:1; font-size:16px; padding: 15px;">💾 حفظ ونشر المحتوى</button>
                         <button id="cancel-edit-btn" onclick="cancelEditContent()" class="btn-warning hidden" style="padding: 15px;">❌ إلغاء التعديل</button>
@@ -238,7 +244,7 @@
 
                     <div style="background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid var(--border);">
                         <h3 style="margin-top:0; color:var(--success);">النسخ الاحتياطي (Backup) 🛡️</h3>
-                        <p style="font-size: 13px; color: var(--text-muted);">حمل نسخة من المنصة (طلاب ودروس) لحفظها في جهازك، أو استعدها في حال فقدانها.</p>
+                        <p style="font-size: 13px; color: var(--text-muted);">حمل نسخة من المنصة لحفظها في جهازك، أو استعدها في حال فقدانها.</p>
                         <button onclick="exportDB()" class="btn-success" style="width:100%; margin-bottom: 15px;">📥 تحميل نسخة احتياطية</button>
                         <hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
                         <label style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 5px;">رفع ملف النسخة الاحتياطية:</label>
@@ -271,6 +277,7 @@
         if(!db.folders) db.folders = []; 
 
         let currentUser = null;
+        let isPreviewMode = false; // متغير مهم لمعرفة هل الأدمن في وضع المعاينة
         let currentEditContentId = null;
         let currentEditUserOldName = null;
 
@@ -291,6 +298,43 @@
                 if (wrapper.requestFullscreen) wrapper.requestFullscreen();
                 else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
             } else { if (document.exitFullscreen) document.exitFullscreen(); }
+        }
+
+        // --- دالة تحديث قائمة الصفوف ديناميكياً (الجديدة) ---
+        function updateClassesDropdown() {
+            const select = document.getElementById('content-classes');
+            if(!select) return;
+            const currentVal = select.value;
+            
+            // الخيارات الثابتة
+            select.innerHTML = `
+                <option value="admin">🔒 خاص بالإدارة فقط (لا يظهر للطلاب)</option>
+                <option value="all">🌍 للكل (يظهر لجميع الطلاب)</option>
+            `;
+            
+            const uniqueClasses = new Set();
+            // جلب الصفوف من الطلاب المسجلين
+            db.users.forEach(u => { 
+                if (u.role === 'student' && u.class && u.class.trim() !== '') {
+                    uniqueClasses.add(u.class.trim());
+                } 
+            });
+            // جلب الصفوف من المحتوى القديم لضمان عدم ضياعها
+            db.contents.forEach(c => { 
+                c.classes.forEach(cls => { 
+                    if(cls !== 'admin_only') uniqueClasses.add(cls); 
+                }); 
+            });
+            
+            // إضافة الخيارات الديناميكية
+            uniqueClasses.forEach(cls => {
+                select.innerHTML += `<option value="${cls}">📁 ${cls}</option>`;
+            });
+            
+            // الحفاظ على الاختيار السابق إن وُجد
+            if(currentVal && Array.from(select.options).some(opt => opt.value === currentVal)) {
+                select.value = currentVal;
+            }
         }
 
         // --- إدارة المجلدات ---
@@ -327,10 +371,15 @@
             const type = document.getElementById('content-type').value;
             const folder = document.getElementById('content-folder').value;
             const data = document.getElementById('content-data').value.trim();
-            const classesRaw = document.getElementById('content-classes').value;
+            
+            // معالجة القائمة المنسدلة للصفوف (الجديد)
+            const classesVal = document.getElementById('content-classes').value;
+            let classesArray = [];
+            if (classesVal === 'admin') classesArray = ['admin_only'];
+            else if (classesVal === 'all') classesArray = [];
+            else classesArray = [classesVal];
 
-            if (!title || !data) return alert('يرجى استكمال البيانات!');
-            const classesArray = classesRaw ? classesRaw.split('،').join(',').split(',').map(c => c.trim()).filter(c => c) : [];
+            if (!title || !data) return alert('يرجى استكمال البيانات (العنوان والكود/الرابط)!');
             
             if (currentEditContentId) {
                 const index = db.contents.findIndex(c => c.id === currentEditContentId);
@@ -340,8 +389,9 @@
                 db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, folder });
                 alert('تم النشر بنجاح!'); document.getElementById('content-title').value = ''; document.getElementById('content-data').value = '';
             }
-            saveDB(); renderAdminContentList();
+            saveDB(); renderAdminContentList(); updateClassesDropdown();
         }
+
         function renderAdminContentList(searchTerm = '') {
             const listDiv = document.getElementById('admin-content-list'); listDiv.innerHTML = '';
             const filtered = db.contents.filter(item => {
@@ -349,9 +399,16 @@
                 return item.title.toLowerCase().includes(term) || (item.folder || '').toLowerCase().includes(term) || item.classes.join(' ').toLowerCase().includes(term);
             });
             if(filtered.length === 0) return listDiv.innerHTML = '<p style="color:var(--text-muted);">لا يوجد محتوى مطابق للبحث.</p>';
+            
             [...filtered].reverse().forEach(item => {
                 const folderText = item.folder === 'none' ? 'عرض مستقل' : item.folder;
-                const classesText = item.classes.length > 0 ? item.classes.join(', ') : 'كل الصفوف';
+                
+                // قراءة الصفوف لعرضها بشكل صحيح
+                let classesText = '';
+                if (item.classes.includes('admin_only')) classesText = '<span style="color:var(--danger)">خاص بالإدارة</span>';
+                else if (item.classes.length === 0) classesText = 'كل الصفوف';
+                else classesText = item.classes.join(', ');
+
                 listDiv.innerHTML += `
                     <div class="admin-list-item">
                         <div class="admin-item-info">
@@ -373,7 +430,16 @@
             const item = db.contents.find(c => c.id === id); if(!item) return;
             document.getElementById('content-title').value = item.title; document.getElementById('content-type').value = item.type;
             document.getElementById('content-folder').value = item.folder || 'none'; document.getElementById('content-data').value = item.data;
-            document.getElementById('content-classes').value = item.classes.join('، ');
+            
+            // تعيين قيمة القائمة المنسدلة للصفوف بناءً على المصفوفة
+            if (item.classes.includes('admin_only')) {
+                document.getElementById('content-classes').value = 'admin';
+            } else if (item.classes.length === 0) {
+                document.getElementById('content-classes').value = 'all';
+            } else {
+                document.getElementById('content-classes').value = item.classes[0] || 'all';
+            }
+
             currentEditContentId = id; 
             document.getElementById('add-edit-title').innerText = `✏️ تعديل: ${item.title}`;
             document.getElementById('save-content-btn').innerHTML = '🔄 تحديث المحتوى';
@@ -381,11 +447,12 @@
             openTab(null, 'tab-content-add'); document.getElementById('tab-btn-add').classList.add('active');
         }
         function cancelEditContent() {
-            currentEditContentId = null; document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; document.getElementById('content-classes').value = '';
+            currentEditContentId = null; document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; 
+            document.getElementById('content-classes').value = 'admin'; // العودة للافتراضي
             document.getElementById('add-edit-title').innerText = 'نشر محتوى جديد'; document.getElementById('save-content-btn').innerHTML = '💾 حفظ ونشر المحتوى'; document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // --- إدارة الطلاب (الجديد) ---
+        // --- إدارة الطلاب ---
         function generatePassword() { document.getElementById('new-user-pass').value = Math.random().toString(36).slice(-6); }
         function saveUser() {
             const name = document.getElementById('new-user-name').value.trim();
@@ -396,18 +463,16 @@
             if (!name || !pass) return alert('الاسم وكلمة المرور مطلوبان!');
             
             if (currentEditUserOldName) {
-                // تعديل طالب موجود
                 if (name !== currentEditUserOldName && db.users.find(u => u.username === name)) return alert('اسم المستخدم الجديد مستخدم بالفعل لطالب آخر!');
                 const index = db.users.findIndex(u => u.username === currentEditUserOldName);
                 db.users[index] = { username: name, password: pass, role: 'student', class: userClass, isStar: isStar };
                 alert('تم تحديث بيانات الطالب بنجاح!'); cancelEditUser();
             } else {
-                // إضافة طالب جديد
                 if (db.users.find(u => u.username === name)) return alert('اسم الطالب موجود بالفعل!');
                 db.users.push({ username: name, password: pass, role: 'student', class: userClass, isStar: isStar });
                 alert('تم تسجيل الطالب بنجاح!'); document.getElementById('new-user-name').value=''; document.getElementById('new-user-pass').value=''; document.getElementById('new-user-class').value='';
             }
-            saveDB(); renderAdminUsersList();
+            saveDB(); renderAdminUsersList(); updateClassesDropdown();
         }
         
         function renderAdminUsersList(searchTerm = '') {
@@ -428,7 +493,7 @@
                             <div class="admin-item-meta"><span>📁 ${classTxt}</span><span>${starTxt}</span></div>
                         </div>
                         <div class="admin-item-actions">
-                            <button class="btn-info" onclick="copyCredentials('${u.username}', '${u.password}')" title="نسخ البيانات لإرسالها للطالب">📋 نسخ للواتساب</button>
+                            <button class="btn-info" onclick="copyCredentials('${u.username}', '${u.password}')" title="نسخ البيانات لإرسالها للطالب">📋 نسخ</button>
                             <button class="btn-warning" onclick="editUser('${u.username}')" style="color:#000;">✏️ تعديل</button>
                             <button class="btn-danger" onclick="deleteUser('${u.username}')">🗑️ حذف</button>
                         </div>
@@ -437,7 +502,7 @@
         }
         function filterAdminUsers() { renderAdminUsersList(document.getElementById('admin-search-users').value); }
         function deleteUser(username) {
-            if(confirm(`هل أنت متأكد من حذف الطالب ${username} نهائياً؟`)) { db.users = db.users.filter(u => u.username !== username); saveDB(); filterAdminUsers(); }
+            if(confirm(`هل أنت متأكد من حذف الطالب ${username} نهائياً؟`)) { db.users = db.users.filter(u => u.username !== username); saveDB(); filterAdminUsers(); updateClassesDropdown(); }
         }
         function editUser(username) {
             const user = db.users.find(u => u.username === username); if(!user) return;
@@ -454,7 +519,7 @@
         }
         function copyCredentials(username, pass) {
             const text = `مرحباً،\nبيانات الدخول للمنصة التعليمية:\nاسم المستخدم: ${username}\nكلمة المرور: ${pass}`;
-            navigator.clipboard.writeText(text).then(() => alert('تم نسخ بيانات الدخول بنجاح! يمكنك لصقها في الواتساب الآن.'));
+            navigator.clipboard.writeText(text).then(() => alert('تم النسخ بنجاح!'));
         }
 
         // --- نظام تسجيل الدخول ---
@@ -468,7 +533,7 @@
                 
                 if (user.role === 'admin') {
                     document.getElementById('admin-section').classList.remove('hidden'); document.getElementById('preview-btn').classList.remove('hidden');
-                    renderAdminFolders(); updateFolderDropdowns(); renderAdminContentList(); renderAdminUsersList();
+                    renderAdminFolders(); updateFolderDropdowns(); renderAdminContentList(); renderAdminUsersList(); updateClassesDropdown();
                 } else {
                     document.getElementById('sidebar-toggle').classList.remove('hidden'); showUserDashboard();
                 }
@@ -480,51 +545,62 @@
             if(newU && newP) { db.users[0].username = newU; db.users[0].password = newP; saveDB(); alert('تم تغيير بياناتك. يرجى تسجيل الدخول مجدداً.'); logout(); }
         }
 
-        // --- النسخ الاحتياطي (الجديد) ---
+        // --- النسخ الاحتياطي ---
         function exportDB() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "edu_platform_backup.json");
-            document.body.appendChild(downloadAnchorNode); downloadAnchorNode.click(); downloadAnchorNode.remove();
+            const downloadAnchorNode = document.createElement('a'); downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "edu_platform_backup.json"); document.body.appendChild(downloadAnchorNode); downloadAnchorNode.click(); downloadAnchorNode.remove();
         }
         function importDB() {
             const fileInput = document.getElementById('import-file');
-            if(!fileInput.files.length) return alert('يرجى اختيار ملف النسخة الاحتياطية أولاً!');
+            if(!fileInput.files.length) return alert('يرجى اختيار ملف!');
             const reader = new FileReader();
             reader.onload = function(e) {
                 try {
                     const importedDB = JSON.parse(e.target.result);
-                    if(importedDB.users && importedDB.contents) {
-                        db = importedDB; saveDB(); alert('تمت استعادة البيانات بنجاح! سيتم إعادة تحميل الصفحة.'); logout();
-                    } else { alert('الملف غير صالح أو تالف.'); }
-                } catch(err) { alert('حدث خطأ أثناء قراءة الملف.'); }
-            };
-            reader.readAsText(fileInput.files[0]);
+                    if(importedDB.users && importedDB.contents) { db = importedDB; saveDB(); alert('تمت استعادة البيانات بنجاح!'); logout(); } 
+                    else { alert('الملف غير صالح.'); }
+                } catch(err) { alert('حدث خطأ.'); }
+            }; reader.readAsText(fileInput.files[0]);
         }
 
         // --- المعاينة وعرض الفهرس ---
         function showPreview() {
+            isPreviewMode = true; // تفعيل وضع المعاينة
             document.getElementById('admin-section').classList.add('hidden'); document.getElementById('preview-btn').classList.add('hidden');
             document.getElementById('back-admin-btn').classList.remove('hidden'); document.getElementById('sidebar-toggle').classList.remove('hidden');
-            document.getElementById('student-sidebar').classList.remove('collapsed'); showUserDashboard(true);
+            document.getElementById('student-sidebar').classList.remove('collapsed'); showUserDashboard();
         }
         function backToAdmin() {
+            isPreviewMode = false; // إيقاف وضع المعاينة
             document.getElementById('user-section').classList.add('hidden'); document.getElementById('admin-section').classList.remove('hidden');
             document.getElementById('preview-btn').classList.remove('hidden'); document.getElementById('back-admin-btn').classList.add('hidden');
             document.getElementById('sidebar-toggle').classList.add('hidden');
         }
 
-        function showUserDashboard(isAdminPreview = false) {
+        // دالة مركزية للتحقق من صلاحية رؤية المحتوى
+        function canViewContent(item) {
+            // 1. خاص بالإدارة فقط
+            if (item.classes.includes('admin_only')) return currentUser.role === 'admin' && !isPreviewMode;
+            // 2. متاح للكل
+            if (item.classes.length === 0) return true;
+            // 3. الأدمن (خارج وضع المعاينة) يرى كل شيء
+            if (currentUser.role === 'admin' && !isPreviewMode) return true;
+            // 4. الطالب المميز يرى كل شيء
+            if (currentUser.isStar) return true;
+            // 5. طالب عادي يرى محتوى صفه
+            if (item.classes.includes(currentUser.class)) return true;
+            
+            return false;
+        }
+
+        function showUserDashboard() {
             document.getElementById('user-section').classList.remove('hidden');
             const sidebarDiv = document.getElementById('sidebar-content-list');
             sidebarDiv.innerHTML = `<div class="independent-item active" onclick="showAllContent(this)">🏠 الرئيسية (عرض الكل)</div>`;
             
-            let visibleContents = db.contents.filter(item => {
-                if (item.classes.length === 0) return true;
-                if (isAdminPreview || currentUser.role === 'admin' || currentUser.isStar) return true;
-                if (item.classes.includes(currentUser.class)) return true; return false;
-            });
+            // استخدام دالة الصلاحيات المركزية للفلترة
+            let visibleContents = db.contents.filter(canViewContent);
 
             let groupedContent = {}; let independentContent = [];
             visibleContents.forEach(item => {
@@ -551,11 +627,7 @@
 
         function showAllContent(element) {
             setActiveSidebarItem(element);
-            let visibleContents = db.contents.filter(item => {
-                if (item.classes.length === 0) return true;
-                if (currentUser.role === 'admin' || currentUser.isStar) return true;
-                if (item.classes.includes(currentUser.class)) return true; return false;
-            });
+            let visibleContents = db.contents.filter(canViewContent);
             renderContentItems(visibleContents.reverse());
         }
 
