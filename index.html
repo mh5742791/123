@@ -33,6 +33,8 @@
         .btn-success { background: var(--success); }
         .btn-success:hover { background: #059669; }
         .btn-warning { background: var(--warning); color: #fff; }
+        .btn-info { background: #0ea5e9; }
+        .btn-info:hover { background: #0284c7; }
         .btn-group { display: flex; gap: 10px; align-items: flex-start; }
 
         /* --- واجهة تسجيل الدخول --- */
@@ -52,19 +54,19 @@
         /* --- التبويبات --- */
         .tabs-container { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; margin-top: 30px; border: 1px solid var(--border); }
         .tabs-header { display: flex; background: #f8fafc; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-        .tab-btn { flex: 1; background: transparent; color: var(--text-muted); padding: 15px; border-radius: 0; font-size: 15px; border-bottom: 3px solid transparent; font-weight: bold; transition: 0.3s; min-width: 140px; }
+        .tab-btn { flex: 1; background: transparent; color: var(--text-muted); padding: 15px; border-radius: 0; font-size: 14px; border-bottom: 3px solid transparent; font-weight: bold; transition: 0.3s; min-width: 120px; }
         .tab-btn:hover { color: var(--primary); background: #f1f5f9; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: var(--card-bg); }
         .tab-content { padding: 30px; display: none; animation: fadeIn 0.4s ease; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- جداول إدارة المحتوى (الجديد) --- */
+        /* --- قوائم الإدارة (محتوى وطلاب) --- */
         .admin-list-item { background: var(--bg-color); border: 1px solid var(--border); padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
         .admin-list-item:hover { border-color: var(--secondary); background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .admin-item-info h4 { margin: 0 0 5px 0; color: var(--primary); font-size: 18px; }
-        .admin-item-meta { font-size: 13px; color: var(--text-muted); display: flex; gap: 15px; }
-        .admin-item-actions { display: flex; gap: 10px; }
+        .admin-item-info h4 { margin: 0 0 5px 0; color: var(--primary); font-size: 18px; display: flex; align-items: center; gap: 8px; }
+        .admin-item-meta { font-size: 13px; color: var(--text-muted); display: flex; gap: 15px; flex-wrap: wrap; }
+        .admin-item-actions { display: flex; gap: 10px; flex-wrap: wrap; }
         .search-box { position: relative; max-width: 600px; margin-bottom: 25px; }
         .search-box input { padding-right: 40px; margin-bottom: 0; }
         .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
@@ -84,22 +86,22 @@
         .sidebar-item:hover { color: var(--secondary); background: #f8fafc; padding-right: 30px; }
         .sidebar-item.active { background: var(--primary); color: white; border-color: var(--primary); }
         
-        .independent-item { background: var(--bg-color); border-radius: 8px; margin-bottom: 8px; padding: 12px 15px; border: 1px solid transparent; }
+        .independent-item { background: var(--bg-color); border-radius: 8px; margin-bottom: 8px; padding: 12px 15px; border: 1px solid transparent; cursor: pointer; font-weight: bold; color: var(--text-muted); transition: 0.2s;}
         .independent-item:hover { border-color: var(--secondary); background: #fff; padding-right: 20px; }
+        .independent-item.active { background: var(--primary); color: white; border-color: var(--primary); }
 
         .main-content { flex: 1; min-width: 0; transition: all 0.3s ease; }
         
         /* --- البطاقات وتجاوب الأبعاد التلقائي --- */
         .content-grid { display: grid; grid-template-columns: 1fr; gap: 25px; } 
         .content-item { background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        
         .content-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--bg-color); padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .content-title { margin: 0; color: var(--primary); font-size: 20px; }
         .header-actions { display: flex; align-items: center; gap: 10px; }
         .category-badge { font-size: 13px; font-weight: bold; background: #e0e7ff; color: var(--primary); padding: 6px 14px; border-radius: 20px; }
         .fullscreen-btn { padding: 6px 12px; font-size: 13px; background-color: var(--primary); }
         
-        .iframe-responsive-wrapper { width: 100%; height: 70vh; min-height: 400px; background: #ffffff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+        .iframe-responsive-wrapper { width: 100%; height: 75vh; min-height: 400px; background: #ffffff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
         .html-sandbox { width: 100%; height: 100%; border: none; background: #fff; }
         .iframe-responsive-wrapper:fullscreen { height: 100vh; border-radius: 0; border: none; }
         
@@ -107,7 +109,7 @@
             #user-layout { flex-direction: column; }
             .sidebar { width: 100%; max-height: none; }
             .sidebar.collapsed { height: 0; width: 100%; }
-            .iframe-responsive-wrapper { height: 50vh; }
+            .iframe-responsive-wrapper { height: 60vh; }
             .admin-list-item { flex-direction: column; align-items: flex-start; gap: 15px; }
         }
     </style>
@@ -140,10 +142,11 @@
     <div id="admin-section" class="container hidden">
         <div class="tabs-container">
             <div class="tabs-header">
-                <button class="tab-btn active" id="tab-btn-add" onclick="openTab(event, 'tab-content-add')">📝 نشر وتعديل</button>
+                <button class="tab-btn active" id="tab-btn-add" onclick="openTab(event, 'tab-content-add')">📝 نشر محتوى</button>
                 <button class="tab-btn" onclick="openTab(event, 'tab-content-manage'); renderAdminContentList();">📋 إدارة المحتوى</button>
                 <button class="tab-btn" onclick="openTab(event, 'tab-menus')">📂 القوائم الجانبية</button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-users')">👥 الطلاب</button>
+                <button class="tab-btn" id="tab-btn-user-add" onclick="openTab(event, 'tab-users-add')">👤 تسجيل طالب</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-users-manage'); renderAdminUsersList();">👥 إدارة الطلاب</button>
                 <button class="tab-btn" onclick="openTab(event, 'tab-settings')">⚙️ الإعدادات</button>
             </div>
 
@@ -152,41 +155,33 @@
                 <div style="max-width: 700px;">
                     <label>عنوان المحتوى</label>
                     <input type="text" id="content-title" placeholder="اكتب عنوان الدرس...">
-                    
                     <label>نوع المحتوى</label>
                     <select id="content-type">
                         <option value="html">كود HTML (تفاعلي مرن)</option>
                         <option value="link">رابط خارجي (YouTube, Drive)</option>
                     </select>
-
                     <label style="color: var(--secondary); font-weight: bold;">مكان العرض في القائمة الجانبية (الفهرس)</label>
                     <select id="content-folder">
                         <option value="none">-- عرض مستقل (بدون قائمة منسدلة) --</option>
                     </select>
-                    
                     <label>البيانات (الكود أو الرابط)</label>
                     <textarea id="content-data" rows="8" placeholder="قم بلصق الكود هنا..."></textarea>
-                    
                     <label>الصفوف المستهدفة (اتركه فارغاً ليظهر للكل)</label>
                     <input type="text" id="content-classes" placeholder="مثال: الصف الأول، الصف الثاني">
-                    
                     <div style="display:flex; gap:10px;">
                         <button id="save-content-btn" onclick="saveContent()" style="flex:1; font-size:16px; padding: 15px;">💾 حفظ ونشر المحتوى</button>
-                        <button id="cancel-edit-btn" onclick="cancelEdit()" class="btn-warning hidden" style="padding: 15px;">❌ إلغاء التعديل</button>
+                        <button id="cancel-edit-btn" onclick="cancelEditContent()" class="btn-warning hidden" style="padding: 15px;">❌ إلغاء التعديل</button>
                     </div>
                 </div>
             </div>
 
             <div id="tab-content-manage" class="tab-content">
                 <h2 style="margin-top:0; color:var(--primary);">إدارة المحتوى المضاف</h2>
-                
                 <div class="search-box">
                     <span class="search-icon">🔍</span>
-                    <input type="text" id="admin-search" placeholder="ابحث عن درس بالاسم، الصف، أو القسم..." onkeyup="filterAdminContent()">
+                    <input type="text" id="admin-search-content" placeholder="ابحث عن درس بالاسم، الصف، أو القسم..." onkeyup="filterAdminContent()">
                 </div>
-
-                <div id="admin-content-list">
-                    </div>
+                <div id="admin-content-list"></div>
             </div>
 
             <div id="tab-menus" class="tab-content">
@@ -200,29 +195,56 @@
                 </div>
             </div>
 
-            <div id="tab-users" class="tab-content">
-                <h2 style="margin-top:0; color:var(--primary);">تسجيل طالب جديد</h2>
+            <div id="tab-users-add" class="tab-content">
+                <h2 id="add-edit-user-title" style="margin-top:0; color:var(--primary);">تسجيل طالب جديد</h2>
                 <div style="max-width: 600px;">
-                    <input type="text" id="new-user-name" placeholder="اسم المستخدم">
+                    <label>اسم المستخدم</label>
+                    <input type="text" id="new-user-name" placeholder="اسم المستخدم أو رقم الجلوس">
+                    <label>كلمة المرور</label>
                     <div class="btn-group">
                         <input type="text" id="new-user-pass" placeholder="كلمة المرور" style="margin-bottom:0;">
                         <button type="button" onclick="generatePassword()" class="btn-warning">توليد</button>
                     </div><br>
-                    <input type="text" id="new-user-class" placeholder="الصف الدراسي">
+                    <label>الصف الدراسي</label>
+                    <input type="text" id="new-user-class" placeholder="مثال: الصف الأول">
                     <label style="display:flex; align-items:center; gap:10px; background:var(--bg-color); padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid var(--border);">
                         <input type="checkbox" id="new-user-star" style="width:20px; height:20px; margin:0;"> 
-                        <strong>طالب مميز ⭐ (يرى كل شيء)</strong>
+                        <strong>طالب مميز ⭐ (يتخطى القيود ويرى كل المحتوى)</strong>
                     </label>
-                    <button class="btn-success" onclick="addUser()" style="width:100%; font-size:16px; padding: 15px;">➕ إضافة</button>
+                    <div style="display:flex; gap:10px;">
+                        <button id="save-user-btn" class="btn-success" onclick="saveUser()" style="flex:1; font-size:16px; padding: 15px;">➕ إضافة الطالب</button>
+                        <button id="cancel-edit-user-btn" onclick="cancelEditUser()" class="btn-danger hidden" style="padding: 15px;">❌ إلغاء التعديل</button>
+                    </div>
                 </div>
+            </div>
+
+            <div id="tab-users-manage" class="tab-content">
+                <h2 style="margin-top:0; color:var(--primary);">إدارة الطلاب المسجلين</h2>
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="admin-search-users" placeholder="ابحث عن طالب بالاسم أو الصف..." onkeyup="filterAdminUsers()">
+                </div>
+                <div id="admin-users-list"></div>
             </div>
             
             <div id="tab-settings" class="tab-content">
-                <h2 style="margin-top:0; color:var(--primary);">تغيير بيانات الأدمن</h2>
-                <div style="max-width: 600px;">
-                    <input type="text" id="admin-new-user" placeholder="اسم المستخدم الجديد">
-                    <input type="password" id="admin-new-pass" placeholder="كلمة المرور الجديدة">
-                    <button onclick="updateAdminCredentials()" class="btn-danger" style="width:100%; padding: 15px;">🔄 تحديث</button>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                    <div style="background: white; padding: 25px; border-radius: 12px; border: 1px solid var(--border);">
+                        <h3 style="margin-top:0; color:var(--primary);">تغيير بيانات الأدمن</h3>
+                        <input type="text" id="admin-new-user" placeholder="اسم المستخدم الجديد">
+                        <input type="password" id="admin-new-pass" placeholder="كلمة المرور الجديدة">
+                        <button onclick="updateAdminCredentials()" class="btn-danger" style="width:100%;">🔄 تحديث وتسجيل خروج</button>
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid var(--border);">
+                        <h3 style="margin-top:0; color:var(--success);">النسخ الاحتياطي (Backup) 🛡️</h3>
+                        <p style="font-size: 13px; color: var(--text-muted);">حمل نسخة من المنصة (طلاب ودروس) لحفظها في جهازك، أو استعدها في حال فقدانها.</p>
+                        <button onclick="exportDB()" class="btn-success" style="width:100%; margin-bottom: 15px;">📥 تحميل نسخة احتياطية</button>
+                        <hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
+                        <label style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 5px;">رفع ملف النسخة الاحتياطية:</label>
+                        <input type="file" id="import-file" accept=".json" style="padding: 5px; background: white;">
+                        <button onclick="importDB()" class="btn-warning" style="width:100%; color: black;">📤 استعادة البيانات</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -235,28 +257,26 @@
                 <div id="sidebar-content-list"></div>
             </aside>
             <main class="main-content">
-                <div id="content-display" class="content-grid">
-                    <div style="text-align:center; padding:50px; color:var(--text-muted); background: white; border-radius: 12px;">
-                        👈 يرجى اختيار درس من القائمة الجانبية لعرضه.
-                    </div>
-                </div>
+                <div id="content-display" class="content-grid"></div>
             </main>
         </div>
     </div>
 
     <script>
+        // --- تهيئة قاعدة البيانات ---
         let db = JSON.parse(localStorage.getItem('eduPlatformDB')) || {
             users: [{ username: '228820', password: '228820', role: 'admin' }],
-            contents: [],
-            folders: []
+            contents: [], folders: []
         };
         if(!db.folders) db.folders = []; 
 
         let currentUser = null;
-        let currentEditId = null; // متغير لحفظ الـ ID عند التعديل
+        let currentEditContentId = null;
+        let currentEditUserOldName = null;
 
         function saveDB() { localStorage.setItem('eduPlatformDB', JSON.stringify(db)); }
 
+        // --- نظام التبويبات والواجهة ---
         function openTab(evt, tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -264,20 +284,16 @@
             if(evt) evt.currentTarget.classList.add('active');
             else document.querySelector(`[onclick*="${tabId}"]`).classList.add('active');
         }
-
         function toggleSidebar() { document.getElementById('student-sidebar').classList.toggle('collapsed'); }
-
         function toggleFullScreen(wrapperId) {
             let wrapper = document.getElementById(wrapperId);
             if (!document.fullscreenElement) {
                 if (wrapper.requestFullscreen) wrapper.requestFullscreen();
                 else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
-            } else {
-                if (document.exitFullscreen) document.exitFullscreen();
-            }
+            } else { if (document.exitFullscreen) document.exitFullscreen(); }
         }
 
-        // --- وظائف إدارة المجلدات ---
+        // --- إدارة المجلدات ---
         function addFolder() {
             const folderName = document.getElementById('new-folder-name').value.trim();
             if(!folderName) return alert('يرجى كتابة اسم القائمة!');
@@ -285,7 +301,6 @@
             db.folders.push(folderName); saveDB(); document.getElementById('new-folder-name').value = '';
             renderAdminFolders(); updateFolderDropdowns(); alert('تمت إضافة القائمة!');
         }
-
         function deleteFolder(folderName) {
             if(confirm(`هل أنت متأكد من حذف قائمة "${folderName}"؟ (لن يتم حذف الدروس بداخلها)`)) {
                 db.folders = db.folders.filter(f => f !== folderName);
@@ -293,116 +308,20 @@
                 saveDB(); renderAdminFolders(); updateFolderDropdowns(); renderAdminContentList();
             }
         }
-
         function renderAdminFolders() {
-            const list = document.getElementById('admin-folders-list');
-            list.innerHTML = '';
+            const list = document.getElementById('admin-folders-list'); list.innerHTML = '';
             if(db.folders.length === 0) list.innerHTML = '<li style="color:var(--text-muted)">لا توجد قوائم منسدلة حتى الآن.</li>';
             db.folders.forEach(folder => {
-                list.innerHTML += `
-                    <li style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-color); padding:10px 15px; margin-bottom:10px; border-radius:5px; border:1px solid var(--border);">
-                        <strong>📁 ${folder}</strong>
-                        <button onclick="deleteFolder('${folder}')" style="background:var(--danger); padding:5px 10px; font-size:12px;">حذف</button>
-                    </li>`;
+                list.innerHTML += `<li style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-color); padding:10px 15px; margin-bottom:10px; border-radius:5px; border:1px solid var(--border);"><strong>📁 ${folder}</strong><button onclick="deleteFolder('${folder}')" style="background:var(--danger); padding:5px 10px; font-size:12px;">حذف</button></li>`;
             });
         }
-
         function updateFolderDropdowns() {
             const select = document.getElementById('content-folder');
             select.innerHTML = '<option value="none">-- عرض مستقل (بدون قائمة منسدلة) --</option>';
             db.folders.forEach(folder => { select.innerHTML += `<option value="${folder}">${folder}</option>`; });
         }
 
-        // --- وظائف إدارة المحتوى (بحث، تعديل، حذف) ---
-        function renderAdminContentList(searchTerm = '') {
-            const listDiv = document.getElementById('admin-content-list');
-            listDiv.innerHTML = '';
-            
-            const filtered = db.contents.filter(item => {
-                const term = searchTerm.toLowerCase();
-                const titleMatch = item.title.toLowerCase().includes(term);
-                const folderMatch = (item.folder || '').toLowerCase().includes(term);
-                const classMatch = item.classes.join(' ').toLowerCase().includes(term);
-                return titleMatch || folderMatch || classMatch;
-            });
-
-            if(filtered.length === 0) {
-                listDiv.innerHTML = '<p style="color:var(--text-muted);">لا يوجد محتوى مطابق للبحث.</p>';
-                return;
-            }
-
-            // عرض الأحدث أولاً
-            [...filtered].reverse().forEach(item => {
-                const folderText = item.folder === 'none' ? 'عرض مستقل' : item.folder;
-                const classesText = item.classes.length > 0 ? item.classes.join(', ') : 'كل الصفوف';
-                const typeText = item.type === 'html' ? 'كود تفاعلي' : 'رابط خارجي';
-
-                listDiv.innerHTML += `
-                    <div class="admin-list-item">
-                        <div class="admin-item-info">
-                            <h4>${item.title}</h4>
-                            <div class="admin-item-meta">
-                                <span>📁 القائمة: <strong>${folderText}</strong></span>
-                                <span>👥 الصفوف: <strong>${classesText}</strong></span>
-                                <span>📌 النوع: <strong>${typeText}</strong></span>
-                            </div>
-                        </div>
-                        <div class="admin-item-actions">
-                            <button class="btn-warning" onclick="editContent(${item.id})" style="color:#000;">✏️ تعديل</button>
-                            <button class="btn-danger" onclick="deleteContent(${item.id})">🗑️ حذف</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function filterAdminContent() {
-            const term = document.getElementById('admin-search').value;
-            renderAdminContentList(term);
-        }
-
-        function deleteContent(id) {
-            if(confirm('هل أنت متأكد من حذف هذا المحتوى نهائياً؟')) {
-                db.contents = db.contents.filter(c => c.id !== id);
-                saveDB();
-                renderAdminContentList(document.getElementById('admin-search').value);
-            }
-        }
-
-        function editContent(id) {
-            const item = db.contents.find(c => c.id === id);
-            if(!item) return;
-
-            // تعبئة البيانات في نموذج الإضافة
-            document.getElementById('content-title').value = item.title;
-            document.getElementById('content-type').value = item.type;
-            document.getElementById('content-folder').value = item.folder || 'none';
-            document.getElementById('content-data').value = item.data;
-            document.getElementById('content-classes').value = item.classes.join('، ');
-
-            currentEditId = id; // تعيين الـ ID لنعرف أننا في وضع التعديل
-            
-            // تغيير شكل الواجهة لتناسب التعديل
-            document.getElementById('add-edit-title').innerText = `✏️ تعديل: ${item.title}`;
-            document.getElementById('save-content-btn').innerHTML = '🔄 تحديث المحتوى';
-            document.getElementById('cancel-edit-btn').classList.remove('hidden');
-
-            // الانتقال لتبويب الإضافة
-            openTab(null, 'tab-content-add');
-            document.getElementById('tab-btn-add').classList.add('active');
-        }
-
-        function cancelEdit() {
-            currentEditId = null;
-            document.getElementById('content-title').value = '';
-            document.getElementById('content-data').value = '';
-            document.getElementById('content-classes').value = '';
-            
-            document.getElementById('add-edit-title').innerText = 'نشر محتوى جديد';
-            document.getElementById('save-content-btn').innerHTML = '💾 حفظ ونشر المحتوى';
-            document.getElementById('cancel-edit-btn').classList.add('hidden');
-        }
-
+        // --- إدارة المحتوى ---
         function saveContent() {
             const title = document.getElementById('content-title').value.trim();
             const type = document.getElementById('content-type').value;
@@ -413,70 +332,189 @@
             if (!title || !data) return alert('يرجى استكمال البيانات!');
             const classesArray = classesRaw ? classesRaw.split('،').join(',').split(',').map(c => c.trim()).filter(c => c) : [];
             
-            if (currentEditId) {
-                // وضع التحديث
-                const index = db.contents.findIndex(c => c.id === currentEditId);
-                db.contents[index] = { id: currentEditId, title, type, data, classes: classesArray, folder };
-                alert('تم التحديث بنجاح!');
-                cancelEdit(); // لتفريغ الخانات والعودة لوضع الإضافة
+            if (currentEditContentId) {
+                const index = db.contents.findIndex(c => c.id === currentEditContentId);
+                db.contents[index] = { id: currentEditContentId, title, type, data, classes: classesArray, folder };
+                alert('تم تحديث المحتوى بنجاح!'); cancelEditContent();
             } else {
-                // وضع الإضافة الجديدة
                 db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, folder });
-                alert('تم النشر بنجاح!');
-                document.getElementById('content-title').value = ''; document.getElementById('content-data').value = '';
+                alert('تم النشر بنجاح!'); document.getElementById('content-title').value = ''; document.getElementById('content-data').value = '';
             }
-            saveDB();
+            saveDB(); renderAdminContentList();
+        }
+        function renderAdminContentList(searchTerm = '') {
+            const listDiv = document.getElementById('admin-content-list'); listDiv.innerHTML = '';
+            const filtered = db.contents.filter(item => {
+                const term = searchTerm.toLowerCase();
+                return item.title.toLowerCase().includes(term) || (item.folder || '').toLowerCase().includes(term) || item.classes.join(' ').toLowerCase().includes(term);
+            });
+            if(filtered.length === 0) return listDiv.innerHTML = '<p style="color:var(--text-muted);">لا يوجد محتوى مطابق للبحث.</p>';
+            [...filtered].reverse().forEach(item => {
+                const folderText = item.folder === 'none' ? 'عرض مستقل' : item.folder;
+                const classesText = item.classes.length > 0 ? item.classes.join(', ') : 'كل الصفوف';
+                listDiv.innerHTML += `
+                    <div class="admin-list-item">
+                        <div class="admin-item-info">
+                            <h4>${item.title}</h4>
+                            <div class="admin-item-meta"><span>📁 ${folderText}</span><span>👥 ${classesText}</span></div>
+                        </div>
+                        <div class="admin-item-actions">
+                            <button class="btn-warning" onclick="editContent(${item.id})" style="color:#000;">✏️ تعديل</button>
+                            <button class="btn-danger" onclick="deleteContent(${item.id})">🗑️ حذف</button>
+                        </div>
+                    </div>`;
+            });
+        }
+        function filterAdminContent() { renderAdminContentList(document.getElementById('admin-search-content').value); }
+        function deleteContent(id) {
+            if(confirm('هل أنت متأكد من حذف هذا المحتوى؟')) { db.contents = db.contents.filter(c => c.id !== id); saveDB(); filterAdminContent(); }
+        }
+        function editContent(id) {
+            const item = db.contents.find(c => c.id === id); if(!item) return;
+            document.getElementById('content-title').value = item.title; document.getElementById('content-type').value = item.type;
+            document.getElementById('content-folder').value = item.folder || 'none'; document.getElementById('content-data').value = item.data;
+            document.getElementById('content-classes').value = item.classes.join('، ');
+            currentEditContentId = id; 
+            document.getElementById('add-edit-title').innerText = `✏️ تعديل: ${item.title}`;
+            document.getElementById('save-content-btn').innerHTML = '🔄 تحديث المحتوى';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+            openTab(null, 'tab-content-add'); document.getElementById('tab-btn-add').classList.add('active');
+        }
+        function cancelEditContent() {
+            currentEditContentId = null; document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; document.getElementById('content-classes').value = '';
+            document.getElementById('add-edit-title').innerText = 'نشر محتوى جديد'; document.getElementById('save-content-btn').innerHTML = '💾 حفظ ونشر المحتوى'; document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // --- باقي وظائف النظام ---
+        // --- إدارة الطلاب (الجديد) ---
+        function generatePassword() { document.getElementById('new-user-pass').value = Math.random().toString(36).slice(-6); }
+        function saveUser() {
+            const name = document.getElementById('new-user-name').value.trim();
+            const pass = document.getElementById('new-user-pass').value.trim();
+            const userClass = document.getElementById('new-user-class').value.trim();
+            const isStar = document.getElementById('new-user-star').checked;
+
+            if (!name || !pass) return alert('الاسم وكلمة المرور مطلوبان!');
+            
+            if (currentEditUserOldName) {
+                // تعديل طالب موجود
+                if (name !== currentEditUserOldName && db.users.find(u => u.username === name)) return alert('اسم المستخدم الجديد مستخدم بالفعل لطالب آخر!');
+                const index = db.users.findIndex(u => u.username === currentEditUserOldName);
+                db.users[index] = { username: name, password: pass, role: 'student', class: userClass, isStar: isStar };
+                alert('تم تحديث بيانات الطالب بنجاح!'); cancelEditUser();
+            } else {
+                // إضافة طالب جديد
+                if (db.users.find(u => u.username === name)) return alert('اسم الطالب موجود بالفعل!');
+                db.users.push({ username: name, password: pass, role: 'student', class: userClass, isStar: isStar });
+                alert('تم تسجيل الطالب بنجاح!'); document.getElementById('new-user-name').value=''; document.getElementById('new-user-pass').value=''; document.getElementById('new-user-class').value='';
+            }
+            saveDB(); renderAdminUsersList();
+        }
+        
+        function renderAdminUsersList(searchTerm = '') {
+            const listDiv = document.getElementById('admin-users-list'); listDiv.innerHTML = '';
+            const students = db.users.filter(u => u.role === 'student');
+            const filtered = students.filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()) || (u.class || '').toLowerCase().includes(searchTerm.toLowerCase()));
+            
+            if(filtered.length === 0) return listDiv.innerHTML = '<p style="color:var(--text-muted);">لا يوجد طلاب مسجلين.</p>';
+            
+            [...filtered].reverse().forEach(u => {
+                const classTxt = u.class ? `الصف: ${u.class}` : 'بدون صف';
+                const starTxt = u.isStar ? '⭐ مميز' : 'طالب عادي';
+                
+                listDiv.innerHTML += `
+                    <div class="admin-list-item">
+                        <div class="admin-item-info">
+                            <h4>👤 ${u.username}</h4>
+                            <div class="admin-item-meta"><span>📁 ${classTxt}</span><span>${starTxt}</span></div>
+                        </div>
+                        <div class="admin-item-actions">
+                            <button class="btn-info" onclick="copyCredentials('${u.username}', '${u.password}')" title="نسخ البيانات لإرسالها للطالب">📋 نسخ للواتساب</button>
+                            <button class="btn-warning" onclick="editUser('${u.username}')" style="color:#000;">✏️ تعديل</button>
+                            <button class="btn-danger" onclick="deleteUser('${u.username}')">🗑️ حذف</button>
+                        </div>
+                    </div>`;
+            });
+        }
+        function filterAdminUsers() { renderAdminUsersList(document.getElementById('admin-search-users').value); }
+        function deleteUser(username) {
+            if(confirm(`هل أنت متأكد من حذف الطالب ${username} نهائياً؟`)) { db.users = db.users.filter(u => u.username !== username); saveDB(); filterAdminUsers(); }
+        }
+        function editUser(username) {
+            const user = db.users.find(u => u.username === username); if(!user) return;
+            document.getElementById('new-user-name').value = user.username; document.getElementById('new-user-pass').value = user.password;
+            document.getElementById('new-user-class').value = user.class || ''; document.getElementById('new-user-star').checked = user.isStar;
+            currentEditUserOldName = username;
+            document.getElementById('add-edit-user-title').innerText = `✏️ تعديل طالب: ${user.username}`;
+            document.getElementById('save-user-btn').innerHTML = '🔄 تحديث بيانات الطالب'; document.getElementById('cancel-edit-user-btn').classList.remove('hidden');
+            openTab(null, 'tab-users-add'); document.getElementById('tab-btn-user-add').classList.add('active');
+        }
+        function cancelEditUser() {
+            currentEditUserOldName = null; document.getElementById('new-user-name').value = ''; document.getElementById('new-user-pass').value = ''; document.getElementById('new-user-class').value = ''; document.getElementById('new-user-star').checked = false;
+            document.getElementById('add-edit-user-title').innerText = 'تسجيل طالب جديد'; document.getElementById('save-user-btn').innerHTML = '➕ إضافة الطالب'; document.getElementById('cancel-edit-user-btn').classList.add('hidden');
+        }
+        function copyCredentials(username, pass) {
+            const text = `مرحباً،\nبيانات الدخول للمنصة التعليمية:\nاسم المستخدم: ${username}\nكلمة المرور: ${pass}`;
+            navigator.clipboard.writeText(text).then(() => alert('تم نسخ بيانات الدخول بنجاح! يمكنك لصقها في الواتساب الآن.'));
+        }
+
+        // --- نظام تسجيل الدخول ---
         function login() {
-            const userIn = document.getElementById('login-username').value.trim();
-            const passIn = document.getElementById('login-password').value;
+            const userIn = document.getElementById('login-username').value.trim(); const passIn = document.getElementById('login-password').value;
             const user = db.users.find(u => u.username === userIn && u.password === passIn);
             if (user) {
-                currentUser = user;
-                document.getElementById('login-error').style.display = 'none';
-                document.getElementById('login-section').classList.add('hidden');
-                document.getElementById('main-header').classList.remove('hidden');
+                currentUser = user; document.getElementById('login-error').style.display = 'none';
+                document.getElementById('login-section').classList.add('hidden'); document.getElementById('main-header').classList.remove('hidden');
                 document.getElementById('welcome-msg').innerText = `مرحباً بك، ${user.username}`;
                 
                 if (user.role === 'admin') {
-                    document.getElementById('admin-section').classList.remove('hidden');
-                    document.getElementById('preview-btn').classList.remove('hidden');
-                    renderAdminFolders(); updateFolderDropdowns(); renderAdminContentList();
+                    document.getElementById('admin-section').classList.remove('hidden'); document.getElementById('preview-btn').classList.remove('hidden');
+                    renderAdminFolders(); updateFolderDropdowns(); renderAdminContentList(); renderAdminUsersList();
                 } else {
-                    document.getElementById('sidebar-toggle').classList.remove('hidden');
-                    showUserDashboard();
+                    document.getElementById('sidebar-toggle').classList.remove('hidden'); showUserDashboard();
                 }
             } else { document.getElementById('login-error').style.display = 'block'; }
         }
-
         function logout() { location.reload(); }
-        function generatePassword() { document.getElementById('new-user-pass').value = Math.random().toString(36).slice(-6); }
-        function addUser() {
-            const name = document.getElementById('new-user-name').value.trim(); const pass = document.getElementById('new-user-pass').value;
-            const userClass = document.getElementById('new-user-class').value.trim(); const isStar = document.getElementById('new-user-star').checked;
-            if (!name || !pass) return alert('يرجى الإدخال'); if (db.users.find(u => u.username === name)) return alert('موجود بالفعل!');
-            db.users.push({ username: name, password: pass, role: 'student', class: userClass, isStar: isStar }); saveDB(); alert('تم!');
-        }
         function updateAdminCredentials() {
             const newU = document.getElementById('admin-new-user').value.trim(); const newP = document.getElementById('admin-new-pass').value;
-            if(newU && newP) { db.users[0].username = newU; db.users[0].password = newP; saveDB(); alert('تم'); logout(); }
+            if(newU && newP) { db.users[0].username = newU; db.users[0].password = newP; saveDB(); alert('تم تغيير بياناتك. يرجى تسجيل الدخول مجدداً.'); logout(); }
         }
 
+        // --- النسخ الاحتياطي (الجديد) ---
+        function exportDB() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "edu_platform_backup.json");
+            document.body.appendChild(downloadAnchorNode); downloadAnchorNode.click(); downloadAnchorNode.remove();
+        }
+        function importDB() {
+            const fileInput = document.getElementById('import-file');
+            if(!fileInput.files.length) return alert('يرجى اختيار ملف النسخة الاحتياطية أولاً!');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedDB = JSON.parse(e.target.result);
+                    if(importedDB.users && importedDB.contents) {
+                        db = importedDB; saveDB(); alert('تمت استعادة البيانات بنجاح! سيتم إعادة تحميل الصفحة.'); logout();
+                    } else { alert('الملف غير صالح أو تالف.'); }
+                } catch(err) { alert('حدث خطأ أثناء قراءة الملف.'); }
+            };
+            reader.readAsText(fileInput.files[0]);
+        }
+
+        // --- المعاينة وعرض الفهرس ---
         function showPreview() {
             document.getElementById('admin-section').classList.add('hidden'); document.getElementById('preview-btn').classList.add('hidden');
             document.getElementById('back-admin-btn').classList.remove('hidden'); document.getElementById('sidebar-toggle').classList.remove('hidden');
             document.getElementById('student-sidebar').classList.remove('collapsed'); showUserDashboard(true);
         }
-
         function backToAdmin() {
             document.getElementById('user-section').classList.add('hidden'); document.getElementById('admin-section').classList.remove('hidden');
             document.getElementById('preview-btn').classList.remove('hidden'); document.getElementById('back-admin-btn').classList.add('hidden');
             document.getElementById('sidebar-toggle').classList.add('hidden');
         }
 
-        // --- بناء الفهرس الديناميكي (القائمة الجانبية) ---
         function showUserDashboard(isAdminPreview = false) {
             document.getElementById('user-section').classList.remove('hidden');
             const sidebarDiv = document.getElementById('sidebar-content-list');
@@ -485,8 +523,7 @@
             let visibleContents = db.contents.filter(item => {
                 if (item.classes.length === 0) return true;
                 if (isAdminPreview || currentUser.role === 'admin' || currentUser.isStar) return true;
-                if (item.classes.includes(currentUser.class)) return true;
-                return false;
+                if (item.classes.includes(currentUser.class)) return true; return false;
             });
 
             let groupedContent = {}; let independentContent = [];
@@ -499,23 +536,16 @@
 
             for(let folderName in groupedContent) {
                 let detailsHTML = `<details><summary>📁 ${folderName}</summary><ul>`;
-                groupedContent[folderName].forEach(item => {
-                    detailsHTML += `<li class="sidebar-item" onclick="showSingleContent(${item.id}, this)">📄 ${item.title}</li>`;
-                });
-                detailsHTML += `</ul></details>`;
-                sidebarDiv.innerHTML += detailsHTML;
+                groupedContent[folderName].forEach(item => { detailsHTML += `<li class="sidebar-item" onclick="showSingleContent(${item.id}, this)">📄 ${item.title}</li>`; });
+                detailsHTML += `</ul></details>`; sidebarDiv.innerHTML += detailsHTML;
             }
-
-            independentContent.forEach(item => {
-                sidebarDiv.innerHTML += `<div class="sidebar-item independent-item" onclick="showSingleContent(${item.id}, this)">📌 ${item.title}</div>`;
-            });
+            independentContent.forEach(item => { sidebarDiv.innerHTML += `<div class="independent-item" onclick="showSingleContent(${item.id}, this)">📌 ${item.title}</div>`; });
             
             document.getElementById('content-display').innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-muted); background: white; border-radius: 12px;">👈 يرجى اختيار درس من الفهرس الجانبي لعرضه.</div>';
         }
 
         function setActiveSidebarItem(element) {
-            document.querySelectorAll('.sidebar-item, .independent-item').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
+            document.querySelectorAll('.sidebar-item, .independent-item').forEach(el => el.classList.remove('active')); element.classList.add('active');
             if(window.innerWidth <= 768) toggleSidebar(); 
         }
 
@@ -524,38 +554,31 @@
             let visibleContents = db.contents.filter(item => {
                 if (item.classes.length === 0) return true;
                 if (currentUser.role === 'admin' || currentUser.isStar) return true;
-                if (item.classes.includes(currentUser.class)) return true;
-                return false;
+                if (item.classes.includes(currentUser.class)) return true; return false;
             });
             renderContentItems(visibleContents.reverse());
         }
 
         function showSingleContent(id, element) {
-            setActiveSidebarItem(element);
-            const item = db.contents.find(c => c.id === id);
-            if(item) renderContentItems([item]);
+            setActiveSidebarItem(element); const item = db.contents.find(c => c.id === id); if(item) renderContentItems([item]);
         }
 
         function renderContentItems(itemsArray) {
-            const displayArea = document.getElementById('content-display');
-            displayArea.innerHTML = '';
+            const displayArea = document.getElementById('content-display'); displayArea.innerHTML = '';
             if(itemsArray.length === 0) return displayArea.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px; color:var(--text-muted);">لا يوجد محتوى.</div>';
 
             itemsArray.forEach(item => {
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'content-item';
+                const contentDiv = document.createElement('div'); contentDiv.className = 'content-item';
                 let innerMedia = ''; let fullScreenBtnHTML = '';
                 let folderBadge = (item.folder && item.folder !== 'none') ? `<span class="category-badge">${item.folder}</span>` : '';
                 
                 if (item.type === 'html') {
-                    const wrapperId = `wrapper-${item.id}`;
-                    let safeHTML = item.data.replace(/"/g, '&quot;');
+                    const wrapperId = `wrapper-${item.id}`; let safeHTML = item.data.replace(/"/g, '&quot;');
                     innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper"><iframe class="html-sandbox" srcdoc="${safeHTML}"></iframe></div>`;
                     fullScreenBtnHTML = `<button onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
                 } else {
                     innerMedia = `<a href="${item.data}" target="_blank" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط في نافذة جديدة</a>`;
                 }
-
                 contentDiv.innerHTML = `<div class="content-header"><h3 class="content-title">${item.title}</h3><div class="header-actions">${fullScreenBtnHTML}${folderBadge}</div></div>${innerMedia}`;
                 displayArea.appendChild(contentDiv);
             });
