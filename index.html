@@ -7,13 +7,13 @@
     <style>
         /* --- التصميم الأساسي الاحترافي --- */
         :root {
-            --primary: #1e3a8a; /* أزرق داكن احترافي */
-            --secondary: #3b82f6; /* أزرق فاتح للأزرار */
-            --bg-color: #f3f4f6;
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --bg-color: #f0f4f8;
             --card-bg: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --border: #e5e7eb;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
@@ -24,10 +24,10 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         
         /* --- الأزرار والحقول --- */
-        input, select, textarea { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; transition: border-color 0.3s; font-family: inherit; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-        button { background: var(--secondary); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; transition: all 0.3s; }
-        button:hover { background: #2563eb; transform: translateY(-1px); }
+        input, select, textarea { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; transition: all 0.3s; font-family: inherit; background-color: #f8fafc; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--secondary); background-color: #fff; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+        button { background: var(--secondary); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        button:hover { background: #2563eb; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); }
         .btn-danger { background: var(--danger); }
         .btn-danger:hover { background: #dc2626; }
         .btn-success { background: var(--success); }
@@ -36,45 +36,67 @@
         .btn-group { display: flex; gap: 10px; align-items: flex-start; }
 
         /* --- واجهة تسجيل الدخول --- */
-        #login-section { display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, var(--primary), var(--secondary)); }
-        .login-box { background: var(--card-bg); padding: 50px 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 420px; text-align: center; }
+        #login-section { display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        .login-box { background: var(--card-bg); padding: 50px 40px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); width: 100%; max-width: 420px; text-align: center; }
         .login-box h2 { margin-top: 0; color: var(--primary); font-size: 28px; margin-bottom: 30px; }
-        .login-box button { width: 100%; margin-top: 10px; font-size: 18px; }
+        .login-box button { width: 100%; margin-top: 10px; font-size: 18px; padding: 14px; }
 
         /* --- الهيدر (الشريط العلوي) --- */
-        header { background: var(--card-bg); color: var(--text-main); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        header h3 { margin: 0; color: var(--primary); font-size: 22px; }
-        .header-controls { display: flex; align-items: center; gap: 20px; }
+        header { background: var(--card-bg); color: var(--text-main); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        header h3 { margin: 0; color: var(--primary); font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        
+        /* زر القائمة الجانبية */
+        .menu-toggle-btn { background: transparent; color: var(--primary); border: 1px solid var(--border); padding: 8px 12px; font-size: 20px; border-radius: 6px; box-shadow: none; cursor: pointer; transition: 0.2s; }
+        .menu-toggle-btn:hover { background: var(--bg-color); transform: none; box-shadow: none; border-color: var(--primary); }
 
-        /* --- نظام التبويبات (Tabs) في لوحة الإدارة --- */
-        .tabs-container { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; margin-top: 30px; }
+        /* --- نظام التبويبات (Tabs) --- */
+        .tabs-container { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; margin-top: 30px; border: 1px solid var(--border); }
         .tabs-header { display: flex; background: #f8fafc; border-bottom: 1px solid var(--border); }
-        .tab-btn { flex: 1; background: transparent; color: var(--text-muted); padding: 18px; border-radius: 0; font-size: 16px; border-bottom: 3px solid transparent; font-weight: bold; transition: 0.3s; }
-        .tab-btn:hover { color: var(--primary); background: #f1f5f9; transform: none; }
+        .tab-btn { flex: 1; background: transparent; color: var(--text-muted); padding: 18px; border-radius: 0; font-size: 16px; border-bottom: 3px solid transparent; font-weight: bold; transition: 0.3s; box-shadow: none; }
+        .tab-btn:hover { color: var(--primary); background: #f1f5f9; transform: none; box-shadow: none; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: var(--card-bg); }
         .tab-content { padding: 40px; display: none; animation: fadeIn 0.4s ease; }
         .tab-content.active { display: block; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- واجهة الطالب (والقائمة الجانبية) --- */
-        #user-layout { display: flex; min-height: calc(100vh - 75px); max-width: 1400px; margin: 0 auto; padding: 20px; gap: 20px; }
-        .sidebar { width: 280px; background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); height: fit-content; }
-        .sidebar h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
+        /* --- واجهة الطالب والقائمة الجانبية --- */
+        #user-layout { display: flex; min-height: calc(100vh - 76px); max-width: 1400px; margin: 0 auto; padding: 20px; gap: 25px; transition: all 0.3s ease; }
+        
+        .sidebar { width: 280px; background: var(--card-bg); padding: 25px 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); height: fit-content; border: 1px solid var(--border); transition: all 0.3s ease; overflow: hidden; flex-shrink: 0; }
+        /* إخفاء القائمة الجانبية */
+        .sidebar.collapsed { width: 0; padding: 0; border: none; margin: 0; opacity: 0; }
+        
+        .sidebar h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
         .sidebar ul { list-style: none; padding: 0; margin: 0; }
-        .sidebar li { padding: 12px 15px; margin-bottom: 8px; background: var(--bg-color); border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: 500; border: 1px solid transparent; }
-        .sidebar li:hover { border-color: var(--secondary); }
-        .sidebar li.active { background: var(--primary); color: white; box-shadow: 0 4px 6px rgba(30, 58, 138, 0.2); }
+        .sidebar li { padding: 14px 15px; margin-bottom: 8px; background: var(--bg-color); border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: 600; color: var(--text-muted); border: 1px solid transparent; display: flex; align-items: center; gap: 10px; }
+        .sidebar li:hover { border-color: var(--secondary); color: var(--primary); background: #fff; }
+        .sidebar li.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(30, 58, 138, 0.2); border-color: var(--primary); }
         
-        .main-content { flex: 1; background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .filters { display: flex; gap: 15px; margin-bottom: 30px; background: var(--bg-color); padding: 15px; border-radius: 10px; align-items: center; }
-        .filters select { margin-bottom: 0; width: auto; min-width: 250px; }
+        .main-content { flex: 1; background: transparent; transition: all 0.3s ease; min-width: 0; /* يمنع تجاوز العرض */ }
+        .filters { display: flex; gap: 15px; margin-bottom: 25px; background: var(--card-bg); padding: 20px; border-radius: 12px; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border: 1px solid var(--border); }
+        .filters strong { color: var(--text-muted); }
+        .filters select { margin-bottom: 0; width: auto; min-width: 280px; background-color: white; }
         
-        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
-        .content-item { background: var(--bg-color); padding: 20px; border-radius: 10px; border: 1px solid var(--border); transition: transform 0.2s; display: flex; flex-direction: column; }
-        .content-item:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .content-item iframe { width: 100%; height: 220px; border: none; border-radius: 8px; background: white; margin-bottom: 15px; }
-        .category-badge { display: inline-block; font-size: 12px; background: var(--primary); color: white; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; align-self: flex-start; }
+        /* تصميم البطاقات ليحتوي دروس HTML بشكل نظيف */
+        .content-grid { display: grid; grid-template-columns: 1fr; gap: 25px; } /* جعلناها عمود واحد لتعطي مساحة للدروس */
+        .content-item { background: var(--card-bg); padding: 25px; border-radius: 16px; border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .content-item:hover { box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); }
+        .content-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--bg-color); padding-bottom: 15px; margin-bottom: 20px; }
+        .content-title { margin: 0; color: var(--primary); font-size: 20px; }
+        .category-badge { display: inline-block; font-size: 13px; font-weight: bold; background: #e0e7ff; color: var(--primary); padding: 6px 14px; border-radius: 20px; }
+        
+        /* الإطار المعزول لكود HTML */
+        .html-sandbox { width: 100%; height: 500px; border: 2px solid var(--bg-color); border-radius: 12px; background: #fff; resize: vertical; /* يسمح للطالب بتطويل النافذة إذا لزم الأمر */ overflow: hidden; }
+        
+        /* شاشات أصغر */
+        @media (max-width: 768px) {
+            #user-layout { flex-direction: column; }
+            .sidebar { width: 100%; }
+            .sidebar.collapsed { height: 0; width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -90,12 +112,15 @@
     </div>
 
     <header id="main-header" class="hidden">
-        <h3>📚 منصتي التعليمية</h3>
-        <div class="header-controls">
-            <span id="welcome-msg" style="font-weight: 600; color: var(--text-muted);"></span>
+        <div class="header-right">
+            <button id="sidebar-toggle" class="menu-toggle-btn hidden" onclick="toggleSidebar()" title="إظهار/إخفاء القائمة">☰</button>
+            <h3>📚 منصتي التعليمية</h3>
+        </div>
+        <div class="header-left">
+            <span id="welcome-msg" style="font-weight: 600; color: var(--text-muted); font-size: 14px;"></span>
             <button id="preview-btn" class="btn-warning hidden" onclick="showPreview()">👁️ معاينة كطالب</button>
             <button id="back-admin-btn" class="btn-success hidden" onclick="backToAdmin()">⚙️ العودة للإدارة</button>
-            <button class="btn-danger" onclick="logout()">تسجيل الخروج</button>
+            <button class="btn-danger" onclick="logout()">خروج</button>
         </div>
     </header>
 
@@ -104,31 +129,31 @@
             <div class="tabs-header">
                 <button class="tab-btn active" onclick="openTab(event, 'tab-content-add')">📝 إضافة وتعديل المحتوى</button>
                 <button class="tab-btn" onclick="openTab(event, 'tab-users')">👥 إدارة الطلاب</button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-settings')">⚙️ إعدادات الحساب</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-settings')">⚙️ الإعدادات</button>
             </div>
 
             <div id="tab-content-add" class="tab-content active">
                 <h2 style="margin-top:0; color:var(--primary);">نشر محتوى جديد</h2>
-                <div style="max-width: 600px;">
+                <div style="max-width: 700px;">
                     <label>عنوان المحتوى</label>
-                    <input type="text" id="content-title" placeholder="اكتب عنوان الدرس أو الاختبار...">
+                    <input type="text" id="content-title" placeholder="اكتب عنوان الدرس (مثال: قواعد النحو - الدرس الأول)...">
                     
                     <label>نوع المحتوى</label>
                     <select id="content-type">
+                        <option value="html">كود HTML (للعروض التقديمية والدروس التفاعلية)</option>
                         <option value="link">رابط خارجي (YouTube, Google Drive, إلخ)</option>
-                        <option value="html">كود HTML مخصص</option>
                     </select>
                     
-                    <label>البيانات (الرابط أو الكود)</label>
-                    <textarea id="content-data" rows="5" placeholder="ضع الرابط هنا، أو انسخ كود الـ HTML..."></textarea>
+                    <label>البيانات (انسخ كود الـ HTML بالكامل أو ضع الرابط هنا)</label>
+                    <textarea id="content-data" rows="8" placeholder="قم بلصق الكود أو الرابط هنا..."></textarea>
                     
                     <label>الصفوف المستهدفة (اتركه فارغاً ليظهر للجميع)</label>
                     <input type="text" id="content-classes" placeholder="مثال: الصف الأول، الصف الثاني (افصل بينها بفاصلة)">
                     
-                    <label>التصنيف (Category)</label>
-                    <input type="text" id="content-category" placeholder="مثال: نحو، نصوص، اختبارات...">
+                    <label>القسم / التصنيف</label>
+                    <input type="text" id="content-category" placeholder="مثال: النحو، النصوص، اختبارات...">
                     
-                    <button onclick="saveContent()" style="width:100%; font-size:16px;">💾 حفظ ونشر المحتوى</button>
+                    <button onclick="saveContent()" style="width:100%; font-size:16px; padding: 15px;">💾 حفظ ونشر المحتوى</button>
                 </div>
             </div>
 
@@ -145,23 +170,20 @@
                     </div>
                     <br>
                     
-                    <label>الصف الدراسي للطالب</label>
+                    <label>الصف الدراسي</label>
                     <input type="text" id="new-user-class" placeholder="مثال: الصف الأول">
                     
                     <label style="display:flex; align-items:center; gap:10px; background:var(--bg-color); padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid var(--border); cursor:pointer;">
                         <input type="checkbox" id="new-user-star" style="width:20px; height:20px; margin:0;"> 
-                        <strong>طالب مميز ⭐ (تخطي القيود ويرى محتوى جميع الصفوف)</strong>
+                        <strong>طالب مميز ⭐ (يرى محتوى جميع الصفوف)</strong>
                     </label>
                     
-                    <button class="btn-success" onclick="addUser()" style="width:100%; font-size:16px;">➕ إضافة الطالب</button>
+                    <button class="btn-success" onclick="addUser()" style="width:100%; font-size:16px; padding: 15px;">➕ إضافة الطالب</button>
                 </div>
             </div>
             
             <div id="tab-settings" class="tab-content">
-                <h2 style="margin-top:0; color:var(--primary);">تغيير بيانات الدخول للإدارة</h2>
-                <div style="max-width: 600px; background:#fff3cd; padding:20px; border-radius:8px; border:1px solid #ffe69c; margin-bottom:20px;">
-                    <p style="margin:0; color:#664d03;">⚠️ <strong>تنبيه:</strong> سيتم تسجيل خروجك تلقائياً بعد تغيير هذه البيانات.</p>
-                </div>
+                <h2 style="margin-top:0; color:var(--primary);">بيانات الدخول للإدارة</h2>
                 <div style="max-width: 600px;">
                     <label>اسم المستخدم الجديد</label>
                     <input type="text" id="admin-new-user" placeholder="الاسم الجديد (الافتراضي: 228820)">
@@ -169,7 +191,7 @@
                     <label>كلمة المرور الجديدة</label>
                     <input type="password" id="admin-new-pass" placeholder="كلمة المرور الجديدة">
                     
-                    <button onclick="updateAdminCredentials()" class="btn-danger" style="width:100%; font-size:16px;">🔄 تحديث بيانات الدخول</button>
+                    <button onclick="updateAdminCredentials()" class="btn-danger" style="width:100%; font-size:16px; padding: 15px;">🔄 تحديث البيانات والتسجيل الخروج</button>
                 </div>
             </div>
         </div>
@@ -177,7 +199,7 @@
 
     <div id="user-section" class="hidden">
         <div id="user-layout">
-            <aside class="sidebar">
+            <aside id="student-sidebar" class="sidebar">
                 <h3>📖 الصفوف الدراسية</h3>
                 <ul id="classes-list">
                     </ul>
@@ -188,7 +210,7 @@
                     <strong>تصفية حسب القسم:</strong>
                     <select id="category-filter" onchange="renderContent()">
                         <option value="all">عرض كل الأقسام</option>
-                        </select>
+                    </select>
                 </div>
                 
                 <div id="content-display" class="content-grid">
@@ -198,7 +220,6 @@
     </div>
 
     <script>
-        // --- تهيئة قاعدة البيانات المحلية ---
         let db = JSON.parse(localStorage.getItem('eduPlatformDB')) || {
             users: [{ username: '228820', password: '228820', role: 'admin' }],
             contents: []
@@ -208,7 +229,6 @@
 
         function saveDB() { localStorage.setItem('eduPlatformDB', JSON.stringify(db)); }
 
-        // --- نظام التبويبات (Tabs Logic) ---
         function openTab(evt, tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -216,7 +236,12 @@
             evt.currentTarget.classList.add('active');
         }
 
-        // --- نظام تسجيل الدخول ---
+        // إخفاء وإظهار القائمة الجانبية
+        function toggleSidebar() {
+            const sidebar = document.getElementById('student-sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
         function login() {
             const userIn = document.getElementById('login-username').value.trim();
             const passIn = document.getElementById('login-password').value;
@@ -227,15 +252,17 @@
                 document.getElementById('login-error').style.display = 'none';
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('main-header').classList.remove('hidden');
-                document.getElementById('welcome-msg').innerText = `مرحباً، ${user.username} ${user.isStar ? '⭐' : ''}`;
+                document.getElementById('welcome-msg').innerText = `مرحباً بك، ${user.username} ${user.isStar ? '⭐' : ''}`;
                 
                 if (user.role === 'admin') {
                     document.getElementById('admin-section').classList.remove('hidden');
                     document.getElementById('preview-btn').classList.remove('hidden');
                     document.getElementById('back-admin-btn').classList.add('hidden');
+                    document.getElementById('sidebar-toggle').classList.add('hidden');
                 } else {
                     document.getElementById('preview-btn').classList.add('hidden');
                     document.getElementById('back-admin-btn').classList.add('hidden');
+                    document.getElementById('sidebar-toggle').classList.remove('hidden'); // إظهار زر القائمة للطالب
                     showUserDashboard();
                 }
             } else {
@@ -249,13 +276,13 @@
             document.getElementById('main-header').classList.add('hidden');
             document.getElementById('admin-section').classList.add('hidden');
             document.getElementById('user-section').classList.add('hidden');
+            document.getElementById('sidebar-toggle').classList.add('hidden');
             document.getElementById('login-username').value = '';
             document.getElementById('login-password').value = '';
         }
 
-        // --- وظائف الإدارة ---
         function generatePassword() {
-            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
             let pass = "";
             for (let i = 0; i < 6; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
             document.getElementById('new-user-pass').value = pass;
@@ -268,14 +295,12 @@
             const isStar = document.getElementById('new-user-star').checked;
 
             if (!name || !pass) return alert('يرجى إدخال اسم المستخدم وكلمة المرور');
-            if (db.users.find(u => u.username === name)) return alert('اسم المستخدم هذا موجود بالفعل!');
+            if (db.users.find(u => u.username === name)) return alert('هذا المستخدم موجود بالفعل!');
             
             db.users.push({ username: name, password: pass, role: 'student', class: userClass, isStar: isStar });
             saveDB();
             alert('تم تسجيل الطالب بنجاح!');
-            document.getElementById('new-user-name').value = '';
-            document.getElementById('new-user-pass').value = '';
-            document.getElementById('new-user-class').value = '';
+            document.getElementById('new-user-name').value = ''; document.getElementById('new-user-pass').value = ''; document.getElementById('new-user-class').value = '';
         }
 
         function saveContent() {
@@ -286,35 +311,31 @@
             const category = document.getElementById('content-category').value.trim() || 'عام';
 
             if (!title || !data) return alert('العنوان والمحتوى مطلوبان!');
-
             const classesArray = classesRaw ? classesRaw.split('،').join(',').split(',').map(c => c.trim()).filter(c => c) : [];
             
             db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, category });
             saveDB();
-            alert('تم نشر المحتوى بنجاح!');
-            document.getElementById('content-title').value = '';
-            document.getElementById('content-data').value = '';
+            alert('تم النشر بنجاح!');
+            document.getElementById('content-title').value = ''; document.getElementById('content-data').value = '';
         }
 
         function updateAdminCredentials() {
             const newU = document.getElementById('admin-new-user').value.trim();
             const newP = document.getElementById('admin-new-pass').value;
             if(newU && newP) {
-                db.users[0].username = newU;
-                db.users[0].password = newP;
-                saveDB();
-                alert('تم تحديث بيانات الدخول. يرجى تسجيل الدخول بالبيانات الجديدة.');
-                logout();
-            } else {
-                alert('يرجى إدخال الاسم وكلمة المرور.');
+                db.users[0].username = newU; db.users[0].password = newP;
+                saveDB(); alert('تم التحديث. يرجى تسجيل الدخول مجدداً.'); logout();
             }
         }
 
-        // --- المعاينة وواجهة المستخدم ---
         function showPreview() {
             document.getElementById('admin-section').classList.add('hidden');
             document.getElementById('preview-btn').classList.add('hidden');
             document.getElementById('back-admin-btn').classList.remove('hidden');
+            document.getElementById('sidebar-toggle').classList.remove('hidden'); // إظهار زر القائمة في المعاينة
+            
+            // التأكد من أن القائمة الجانبية مفتوحة عند بدء المعاينة
+            document.getElementById('student-sidebar').classList.remove('collapsed');
             showUserDashboard(true);
         }
 
@@ -323,6 +344,7 @@
             document.getElementById('admin-section').classList.remove('hidden');
             document.getElementById('preview-btn').classList.remove('hidden');
             document.getElementById('back-admin-btn').classList.add('hidden');
+            document.getElementById('sidebar-toggle').classList.add('hidden'); // إخفاء زر القائمة في الإدارة
         }
 
         function showUserDashboard(isAdminPreview = false) {
@@ -356,6 +378,11 @@
             element.classList.add('active');
             currentClassFilter = cls;
             renderContent();
+            
+            // في الشاشات الصغيرة، نغلق القائمة تلقائياً بعد اختيار الصف
+            if(window.innerWidth <= 768) {
+                toggleSidebar();
+            }
         }
 
         function renderContent() {
@@ -365,10 +392,8 @@
 
             let contentFound = false;
 
-            // عكس ترتيب المصفوفة لعرض الأحدث أولاً
             [...db.contents].reverse().forEach(item => {
                 let canView = false;
-                
                 if (item.classes.length === 0) canView = true;
                 else if (currentUser.role === 'admin') canView = true;
                 else if (currentUser.isStar) canView = true;
@@ -385,15 +410,19 @@
                         let innerMedia = '';
                         
                         if (item.type === 'html') {
-                            // وضع كود HTML في حاوية يمكن التمرير فيها إذا كانت كبيرة
-                            innerMedia = `<div style="max-height: 250px; overflow-y: auto; background: white; padding: 10px; border-radius: 5px; border: 1px solid #eee;">${item.data}</div>`;
+                            // التعديل الأهم: استخدام iframe لعزل كود الـ HTML عن تصميم المنصة الأساسي
+                            // نقوم بتبديل علامات الاقتباس المزدوجة لتجنب كسر الخاصية srcdoc
+                            let safeHTML = item.data.replace(/"/g, '&quot;');
+                            innerMedia = `<iframe class="html-sandbox" srcdoc="${safeHTML}"></iframe>`;
                         } else {
-                            innerMedia = `<a href="${item.data}" target="_blank" style="display:block; background:var(--secondary); color:white; text-align:center; padding:12px; text-decoration:none; border-radius:8px; margin-top:auto; font-weight:bold;">🔗 فتح الرابط / المرفق</a>`;
+                            innerMedia = `<a href="${item.data}" target="_blank" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold; font-size:16px;">🔗 اضغط هنا لفتح الرابط / المرفق</a>`;
                         }
 
                         contentDiv.innerHTML = `
-                            <span class="category-badge">${item.category}</span>
-                            <h3 style="margin: 0 0 15px 0; color:var(--primary);">${item.title}</h3>
+                            <div class="content-header">
+                                <h3 class="content-title">${item.title}</h3>
+                                <span class="category-badge">${item.category}</span>
+                            </div>
                             ${innerMedia}
                         `;
                         displayArea.appendChild(contentDiv);
@@ -402,7 +431,7 @@
             });
             
             if(!contentFound) {
-                displayArea.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px; background:white; border-radius:10px; color:var(--text-muted);">لا يوجد محتوى متاح في هذا القسم حالياً.</div>';
+                displayArea.innerHTML = '<div style="text-align:center; padding:50px; background:white; border-radius:12px; color:var(--text-muted); border:1px dashed var(--border);">لا يوجد محتوى متاح في هذا القسم حالياً.</div>';
             }
         }
     </script>
