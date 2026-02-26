@@ -51,79 +51,64 @@
 
         /* --- التبويبات --- */
         .tabs-container { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; margin-top: 30px; border: 1px solid var(--border); }
-        .tabs-header { display: flex; background: #f8fafc; border-bottom: 1px solid var(--border); }
-        .tab-btn { flex: 1; background: transparent; color: var(--text-muted); padding: 18px; border-radius: 0; font-size: 16px; border-bottom: 3px solid transparent; font-weight: bold; transition: 0.3s; }
+        .tabs-header { display: flex; background: #f8fafc; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        .tab-btn { flex: 1; background: transparent; color: var(--text-muted); padding: 15px; border-radius: 0; font-size: 15px; border-bottom: 3px solid transparent; font-weight: bold; transition: 0.3s; min-width: 140px; }
         .tab-btn:hover { color: var(--primary); background: #f1f5f9; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: var(--card-bg); }
-        .tab-content { padding: 40px; display: none; animation: fadeIn 0.4s ease; }
+        .tab-content { padding: 30px; display: none; animation: fadeIn 0.4s ease; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- واجهة الطالب --- */
+        /* --- جداول إدارة المحتوى (الجديد) --- */
+        .admin-list-item { background: var(--bg-color); border: 1px solid var(--border); padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .admin-list-item:hover { border-color: var(--secondary); background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .admin-item-info h4 { margin: 0 0 5px 0; color: var(--primary); font-size: 18px; }
+        .admin-item-meta { font-size: 13px; color: var(--text-muted); display: flex; gap: 15px; }
+        .admin-item-actions { display: flex; gap: 10px; }
+        .search-box { position: relative; max-width: 600px; margin-bottom: 25px; }
+        .search-box input { padding-right: 40px; margin-bottom: 0; }
+        .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+        /* --- واجهة الطالب والقائمة الجانبية (الفهرس) --- */
         #user-layout { display: flex; min-height: calc(100vh - 76px); max-width: 1500px; margin: 0 auto; padding: 20px; gap: 25px; transition: all 0.3s ease; }
-        .sidebar { width: 280px; background: var(--card-bg); padding: 25px 20px; border-radius: 12px; border: 1px solid var(--border); transition: all 0.3s ease; flex-shrink: 0; height: fit-content; }
+        .sidebar { width: 300px; background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); transition: all 0.3s ease; flex-shrink: 0; height: fit-content; max-height: 85vh; overflow-y: auto; }
         .sidebar.collapsed { width: 0; padding: 0; border: none; margin: 0; opacity: 0; overflow: hidden; }
-        .sidebar h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; }
-        .sidebar ul { list-style: none; padding: 0; margin: 0; }
-        .sidebar li { padding: 14px 15px; margin-bottom: 8px; background: var(--bg-color); border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text-muted); border: 1px solid transparent; transition: 0.2s; }
-        .sidebar li:hover { border-color: var(--secondary); color: var(--primary); background: #fff; }
-        .sidebar li.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .sidebar h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 15px; }
         
+        .sidebar details { margin-bottom: 8px; background: var(--bg-color); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+        .sidebar summary { padding: 12px 15px; font-weight: bold; cursor: pointer; color: var(--primary); background: #e0e7ff; outline: none; display: flex; align-items: center; gap: 8px; }
+        .sidebar summary:hover { background: #c7d2fe; }
+        .sidebar details ul { list-style: none; padding: 0; margin: 0; background: var(--card-bg); }
+        
+        .sidebar-item { padding: 12px 25px; border-bottom: 1px solid var(--bg-color); cursor: pointer; color: var(--text-muted); font-weight: 600; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .sidebar-item:hover { color: var(--secondary); background: #f8fafc; padding-right: 30px; }
+        .sidebar-item.active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        .independent-item { background: var(--bg-color); border-radius: 8px; margin-bottom: 8px; padding: 12px 15px; border: 1px solid transparent; }
+        .independent-item:hover { border-color: var(--secondary); background: #fff; padding-right: 20px; }
+
         .main-content { flex: 1; min-width: 0; transition: all 0.3s ease; }
-        .filters { display: flex; gap: 15px; margin-bottom: 25px; background: var(--card-bg); padding: 20px; border-radius: 12px; align-items: center; border: 1px solid var(--border); }
-        .filters select { margin-bottom: 0; width: auto; min-width: 280px; }
         
-        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 25px; } 
+        /* --- البطاقات وتجاوب الأبعاد التلقائي --- */
+        .content-grid { display: grid; grid-template-columns: 1fr; gap: 25px; } 
         .content-item { background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         
-        /* جعل بطاقات HTML تملأ العرض */
-        .content-item.html-card { grid-column: 1 / -1; }
-
         .content-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--bg-color); padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .content-title { margin: 0; color: var(--primary); font-size: 20px; }
         .header-actions { display: flex; align-items: center; gap: 10px; }
         .category-badge { font-size: 13px; font-weight: bold; background: #e0e7ff; color: var(--primary); padding: 6px 14px; border-radius: 20px; }
         .fullscreen-btn { padding: 6px 12px; font-size: 13px; background-color: var(--primary); }
         
-        /* --------------------------------------------------- */
-        /* التحديث السحري: حاوية العرض المتجاوبة (Responsive Scale) */
-        /* --------------------------------------------------- */
-        .iframe-responsive-wrapper {
-            position: relative;
-            width: 100%;
-            background: #ffffff;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            /* يتم تحديد الـ aspect-ratio برمجياً حسب اختيارك */
-        }
-
-        /* تنسيقات الإطار الداخلي ليتم تكبيره وتصغيره كصورة */
-        .html-sandbox {
-            border: none;
-            background: #fff;
-            transform-origin: center center; /* التمركز من المنتصف */
-            /* الـ Width و Height و transform سيتم ضخها برمجياً لضمان الدقة */
-        }
-
-        /* تنسيقات الشاشة الكاملة (Full Screen) */
-        .iframe-responsive-wrapper:fullscreen {
-            aspect-ratio: auto !important; /* إلغاء النسبة لتعبئة الشاشة */
-            width: 100vw;
-            height: 100vh;
-            background: #000000; /* خلفية سوداء مثل اليوتيوب */
-            border-radius: 0;
-            border: none;
-        }
+        .iframe-responsive-wrapper { width: 100%; height: 70vh; min-height: 400px; background: #ffffff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+        .html-sandbox { width: 100%; height: 100%; border: none; background: #fff; }
+        .iframe-responsive-wrapper:fullscreen { height: 100vh; border-radius: 0; border: none; }
         
         @media (max-width: 768px) {
             #user-layout { flex-direction: column; }
-            .sidebar { width: 100%; }
+            .sidebar { width: 100%; max-height: none; }
             .sidebar.collapsed { height: 0; width: 100%; }
-            .content-grid { grid-template-columns: 1fr; }
+            .iframe-responsive-wrapper { height: 50vh; }
+            .admin-list-item { flex-direction: column; align-items: flex-start; gap: 15px; }
         }
     </style>
 </head>
@@ -155,39 +140,63 @@
     <div id="admin-section" class="container hidden">
         <div class="tabs-container">
             <div class="tabs-header">
-                <button class="tab-btn active" onclick="openTab(event, 'tab-content-add')">📝 إضافة المحتوى</button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-users')">👥 إدارة الطلاب</button>
+                <button class="tab-btn active" id="tab-btn-add" onclick="openTab(event, 'tab-content-add')">📝 نشر وتعديل</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-content-manage'); renderAdminContentList();">📋 إدارة المحتوى</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-menus')">📂 القوائم الجانبية</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-users')">👥 الطلاب</button>
                 <button class="tab-btn" onclick="openTab(event, 'tab-settings')">⚙️ الإعدادات</button>
             </div>
 
             <div id="tab-content-add" class="tab-content active">
-                <h2 style="margin-top:0; color:var(--primary);">نشر محتوى جديد</h2>
+                <h2 id="add-edit-title" style="margin-top:0; color:var(--primary);">نشر محتوى جديد</h2>
                 <div style="max-width: 700px;">
                     <label>عنوان المحتوى</label>
                     <input type="text" id="content-title" placeholder="اكتب عنوان الدرس...">
                     
                     <label>نوع المحتوى</label>
                     <select id="content-type">
-                        <option value="html">كود HTML (تفاعلي - يتجاوب مع الشاشة)</option>
+                        <option value="html">كود HTML (تفاعلي مرن)</option>
                         <option value="link">رابط خارجي (YouTube, Drive)</option>
                     </select>
 
-                    <label style="color: var(--primary); font-weight: bold;">أبعاد عرض الدرس التفاعلي (Aspect Ratio)</label>
-                    <select id="content-ratio">
-                        <option value="16:9">عريض (16:9) - دقة 1280x720 (ممتاز للشاشات الحديثة)</option>
-                        <option value="4:3">مربع (4:3) - دقة 1024x768 (ممتاز لملفات Captivate القديمة)</option>
+                    <label style="color: var(--secondary); font-weight: bold;">مكان العرض في القائمة الجانبية (الفهرس)</label>
+                    <select id="content-folder">
+                        <option value="none">-- عرض مستقل (بدون قائمة منسدلة) --</option>
                     </select>
                     
                     <label>البيانات (الكود أو الرابط)</label>
                     <textarea id="content-data" rows="8" placeholder="قم بلصق الكود هنا..."></textarea>
                     
-                    <label>الصفوف المستهدفة (اتركه فارغاً للكل)</label>
+                    <label>الصفوف المستهدفة (اتركه فارغاً ليظهر للكل)</label>
                     <input type="text" id="content-classes" placeholder="مثال: الصف الأول، الصف الثاني">
                     
-                    <label>القسم / التصنيف</label>
-                    <input type="text" id="content-category" placeholder="مثال: النحو">
-                    
-                    <button onclick="saveContent()" style="width:100%; font-size:16px; padding: 15px;">💾 حفظ ونشر المحتوى</button>
+                    <div style="display:flex; gap:10px;">
+                        <button id="save-content-btn" onclick="saveContent()" style="flex:1; font-size:16px; padding: 15px;">💾 حفظ ونشر المحتوى</button>
+                        <button id="cancel-edit-btn" onclick="cancelEdit()" class="btn-warning hidden" style="padding: 15px;">❌ إلغاء التعديل</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-content-manage" class="tab-content">
+                <h2 style="margin-top:0; color:var(--primary);">إدارة المحتوى المضاف</h2>
+                
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="admin-search" placeholder="ابحث عن درس بالاسم، الصف، أو القسم..." onkeyup="filterAdminContent()">
+                </div>
+
+                <div id="admin-content-list">
+                    </div>
+            </div>
+
+            <div id="tab-menus" class="tab-content">
+                <h2 style="margin-top:0; color:var(--primary);">إنشاء القوائم المنسدلة (المجلدات)</h2>
+                <div style="max-width: 600px; display: flex; gap: 10px; margin-bottom: 30px;">
+                    <input type="text" id="new-folder-name" placeholder="اسم القائمة (مثال: الوحدة الأولى...)" style="margin-bottom:0;">
+                    <button onclick="addFolder()" class="btn-success" style="white-space:nowrap;">➕ إضافة قائمة</button>
+                </div>
+                <div style="max-width: 600px;">
+                    <ul id="admin-folders-list" style="list-style: none; padding: 0;"></ul>
                 </div>
             </div>
 
@@ -199,7 +208,7 @@
                         <input type="text" id="new-user-pass" placeholder="كلمة المرور" style="margin-bottom:0;">
                         <button type="button" onclick="generatePassword()" class="btn-warning">توليد</button>
                     </div><br>
-                    <input type="text" id="new-user-class" placeholder="الصف الدراسي (مثال: الصف الأول)">
+                    <input type="text" id="new-user-class" placeholder="الصف الدراسي">
                     <label style="display:flex; align-items:center; gap:10px; background:var(--bg-color); padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid var(--border);">
                         <input type="checkbox" id="new-user-star" style="width:20px; height:20px; margin:0;"> 
                         <strong>طالب مميز ⭐ (يرى كل شيء)</strong>
@@ -211,7 +220,7 @@
             <div id="tab-settings" class="tab-content">
                 <h2 style="margin-top:0; color:var(--primary);">تغيير بيانات الأدمن</h2>
                 <div style="max-width: 600px;">
-                    <input type="text" id="admin-new-user" placeholder="اسم المستخدم الجديد (الافتراضي: 228820)">
+                    <input type="text" id="admin-new-user" placeholder="اسم المستخدم الجديد">
                     <input type="password" id="admin-new-pass" placeholder="كلمة المرور الجديدة">
                     <button onclick="updateAdminCredentials()" class="btn-danger" style="width:100%; padding: 15px;">🔄 تحديث</button>
                 </div>
@@ -222,17 +231,15 @@
     <div id="user-section" class="hidden">
         <div id="user-layout">
             <aside id="student-sidebar" class="sidebar">
-                <h3>📖 الصفوف</h3>
-                <ul id="classes-list"></ul>
+                <h3>📑 فهرس المحتوى</h3>
+                <div id="sidebar-content-list"></div>
             </aside>
             <main class="main-content">
-                <div class="filters">
-                    <strong>تصفية حسب القسم:</strong>
-                    <select id="category-filter" onchange="renderContent()">
-                        <option value="all">عرض كل الأقسام</option>
-                    </select>
+                <div id="content-display" class="content-grid">
+                    <div style="text-align:center; padding:50px; color:var(--text-muted); background: white; border-radius: 12px;">
+                        👈 يرجى اختيار درس من القائمة الجانبية لعرضه.
+                    </div>
                 </div>
-                <div id="content-display" class="content-grid"></div>
             </main>
         </div>
     </div>
@@ -240,10 +247,13 @@
     <script>
         let db = JSON.parse(localStorage.getItem('eduPlatformDB')) || {
             users: [{ username: '228820', password: '228820', role: 'admin' }],
-            contents: []
+            contents: [],
+            folders: []
         };
+        if(!db.folders) db.folders = []; 
+
         let currentUser = null;
-        let currentClassFilter = 'all';
+        let currentEditId = null; // متغير لحفظ الـ ID عند التعديل
 
         function saveDB() { localStorage.setItem('eduPlatformDB', JSON.stringify(db)); }
 
@@ -251,12 +261,12 @@
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            evt.currentTarget.classList.add('active');
+            if(evt) evt.currentTarget.classList.add('active');
+            else document.querySelector(`[onclick*="${tabId}"]`).classList.add('active');
         }
 
         function toggleSidebar() { document.getElementById('student-sidebar').classList.toggle('collapsed'); }
 
-        // --- دالة ملء الشاشة المخصصة للحاوية ---
         function toggleFullScreen(wrapperId) {
             let wrapper = document.getElementById(wrapperId);
             if (!document.fullscreenElement) {
@@ -267,39 +277,158 @@
             }
         }
 
-        // --- دالة الحساب الرياضي السحري (Responsive Scaling) ---
-        function applyScaling() {
-            document.querySelectorAll('.iframe-responsive-wrapper').forEach(wrapper => {
-                const iframe = wrapper.querySelector('iframe');
-                if (iframe) {
-                    // استخراج الأبعاد الأصلية التي صُمم عليها الدرس
-                    const vWidth = parseFloat(iframe.getAttribute('data-vwidth')) || 1280;
-                    const vHeight = parseFloat(iframe.getAttribute('data-vheight')) || 720;
-                    
-                    let scale;
-                    
-                    // إذا كنا في وضع "ملء الشاشة"، نحسب التناسب بناءً على عرض وطول الشاشة لمنع القص
-                    if (document.fullscreenElement === wrapper) {
-                        const scaleX = window.innerWidth / vWidth;
-                        const scaleY = window.innerHeight / vHeight;
-                        scale = Math.min(scaleX, scaleY); // Math.min تضمن احتواء التصميم بالكامل داخل الشاشة
-                    } else {
-                        // في الوضع العادي، نكبر/نصغر بناءً على عرض الحاوية (البطاقة) فقط
-                        scale = wrapper.clientWidth / vWidth;
-                    }
-                    
-                    // تطبيق الأبعاد الثابتة والمقياس المتغير
-                    iframe.style.width = vWidth + 'px';
-                    iframe.style.height = vHeight + 'px';
-                    iframe.style.transform = `scale(${scale})`;
-                }
+        // --- وظائف إدارة المجلدات ---
+        function addFolder() {
+            const folderName = document.getElementById('new-folder-name').value.trim();
+            if(!folderName) return alert('يرجى كتابة اسم القائمة!');
+            if(db.folders.includes(folderName)) return alert('هذا الاسم موجود بالفعل!');
+            db.folders.push(folderName); saveDB(); document.getElementById('new-folder-name').value = '';
+            renderAdminFolders(); updateFolderDropdowns(); alert('تمت إضافة القائمة!');
+        }
+
+        function deleteFolder(folderName) {
+            if(confirm(`هل أنت متأكد من حذف قائمة "${folderName}"؟ (لن يتم حذف الدروس بداخلها)`)) {
+                db.folders = db.folders.filter(f => f !== folderName);
+                db.contents.forEach(c => { if(c.folder === folderName) c.folder = 'none'; });
+                saveDB(); renderAdminFolders(); updateFolderDropdowns(); renderAdminContentList();
+            }
+        }
+
+        function renderAdminFolders() {
+            const list = document.getElementById('admin-folders-list');
+            list.innerHTML = '';
+            if(db.folders.length === 0) list.innerHTML = '<li style="color:var(--text-muted)">لا توجد قوائم منسدلة حتى الآن.</li>';
+            db.folders.forEach(folder => {
+                list.innerHTML += `
+                    <li style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-color); padding:10px 15px; margin-bottom:10px; border-radius:5px; border:1px solid var(--border);">
+                        <strong>📁 ${folder}</strong>
+                        <button onclick="deleteFolder('${folder}')" style="background:var(--danger); padding:5px 10px; font-size:12px;">حذف</button>
+                    </li>`;
             });
         }
 
-        // تشغيل عملية التناسب عند تغيير حجم نافذة المتصفح أو عند الدخول في وضع ملء الشاشة
-        window.addEventListener('resize', applyScaling);
-        document.addEventListener('fullscreenchange', applyScaling);
+        function updateFolderDropdowns() {
+            const select = document.getElementById('content-folder');
+            select.innerHTML = '<option value="none">-- عرض مستقل (بدون قائمة منسدلة) --</option>';
+            db.folders.forEach(folder => { select.innerHTML += `<option value="${folder}">${folder}</option>`; });
+        }
 
+        // --- وظائف إدارة المحتوى (بحث، تعديل، حذف) ---
+        function renderAdminContentList(searchTerm = '') {
+            const listDiv = document.getElementById('admin-content-list');
+            listDiv.innerHTML = '';
+            
+            const filtered = db.contents.filter(item => {
+                const term = searchTerm.toLowerCase();
+                const titleMatch = item.title.toLowerCase().includes(term);
+                const folderMatch = (item.folder || '').toLowerCase().includes(term);
+                const classMatch = item.classes.join(' ').toLowerCase().includes(term);
+                return titleMatch || folderMatch || classMatch;
+            });
+
+            if(filtered.length === 0) {
+                listDiv.innerHTML = '<p style="color:var(--text-muted);">لا يوجد محتوى مطابق للبحث.</p>';
+                return;
+            }
+
+            // عرض الأحدث أولاً
+            [...filtered].reverse().forEach(item => {
+                const folderText = item.folder === 'none' ? 'عرض مستقل' : item.folder;
+                const classesText = item.classes.length > 0 ? item.classes.join(', ') : 'كل الصفوف';
+                const typeText = item.type === 'html' ? 'كود تفاعلي' : 'رابط خارجي';
+
+                listDiv.innerHTML += `
+                    <div class="admin-list-item">
+                        <div class="admin-item-info">
+                            <h4>${item.title}</h4>
+                            <div class="admin-item-meta">
+                                <span>📁 القائمة: <strong>${folderText}</strong></span>
+                                <span>👥 الصفوف: <strong>${classesText}</strong></span>
+                                <span>📌 النوع: <strong>${typeText}</strong></span>
+                            </div>
+                        </div>
+                        <div class="admin-item-actions">
+                            <button class="btn-warning" onclick="editContent(${item.id})" style="color:#000;">✏️ تعديل</button>
+                            <button class="btn-danger" onclick="deleteContent(${item.id})">🗑️ حذف</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterAdminContent() {
+            const term = document.getElementById('admin-search').value;
+            renderAdminContentList(term);
+        }
+
+        function deleteContent(id) {
+            if(confirm('هل أنت متأكد من حذف هذا المحتوى نهائياً؟')) {
+                db.contents = db.contents.filter(c => c.id !== id);
+                saveDB();
+                renderAdminContentList(document.getElementById('admin-search').value);
+            }
+        }
+
+        function editContent(id) {
+            const item = db.contents.find(c => c.id === id);
+            if(!item) return;
+
+            // تعبئة البيانات في نموذج الإضافة
+            document.getElementById('content-title').value = item.title;
+            document.getElementById('content-type').value = item.type;
+            document.getElementById('content-folder').value = item.folder || 'none';
+            document.getElementById('content-data').value = item.data;
+            document.getElementById('content-classes').value = item.classes.join('، ');
+
+            currentEditId = id; // تعيين الـ ID لنعرف أننا في وضع التعديل
+            
+            // تغيير شكل الواجهة لتناسب التعديل
+            document.getElementById('add-edit-title').innerText = `✏️ تعديل: ${item.title}`;
+            document.getElementById('save-content-btn').innerHTML = '🔄 تحديث المحتوى';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+
+            // الانتقال لتبويب الإضافة
+            openTab(null, 'tab-content-add');
+            document.getElementById('tab-btn-add').classList.add('active');
+        }
+
+        function cancelEdit() {
+            currentEditId = null;
+            document.getElementById('content-title').value = '';
+            document.getElementById('content-data').value = '';
+            document.getElementById('content-classes').value = '';
+            
+            document.getElementById('add-edit-title').innerText = 'نشر محتوى جديد';
+            document.getElementById('save-content-btn').innerHTML = '💾 حفظ ونشر المحتوى';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+        }
+
+        function saveContent() {
+            const title = document.getElementById('content-title').value.trim();
+            const type = document.getElementById('content-type').value;
+            const folder = document.getElementById('content-folder').value;
+            const data = document.getElementById('content-data').value.trim();
+            const classesRaw = document.getElementById('content-classes').value;
+
+            if (!title || !data) return alert('يرجى استكمال البيانات!');
+            const classesArray = classesRaw ? classesRaw.split('،').join(',').split(',').map(c => c.trim()).filter(c => c) : [];
+            
+            if (currentEditId) {
+                // وضع التحديث
+                const index = db.contents.findIndex(c => c.id === currentEditId);
+                db.contents[index] = { id: currentEditId, title, type, data, classes: classesArray, folder };
+                alert('تم التحديث بنجاح!');
+                cancelEdit(); // لتفريغ الخانات والعودة لوضع الإضافة
+            } else {
+                // وضع الإضافة الجديدة
+                db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, folder });
+                alert('تم النشر بنجاح!');
+                document.getElementById('content-title').value = ''; document.getElementById('content-data').value = '';
+            }
+            saveDB();
+        }
+
+        // --- باقي وظائف النظام ---
         function login() {
             const userIn = document.getElementById('login-username').value.trim();
             const passIn = document.getElementById('login-password').value;
@@ -314,11 +443,8 @@
                 if (user.role === 'admin') {
                     document.getElementById('admin-section').classList.remove('hidden');
                     document.getElementById('preview-btn').classList.remove('hidden');
-                    document.getElementById('back-admin-btn').classList.add('hidden');
-                    document.getElementById('sidebar-toggle').classList.add('hidden');
+                    renderAdminFolders(); updateFolderDropdowns(); renderAdminContentList();
                 } else {
-                    document.getElementById('preview-btn').classList.add('hidden');
-                    document.getElementById('back-admin-btn').classList.add('hidden');
                     document.getElementById('sidebar-toggle').classList.remove('hidden');
                     showUserDashboard();
                 }
@@ -327,32 +453,12 @@
 
         function logout() { location.reload(); }
         function generatePassword() { document.getElementById('new-user-pass').value = Math.random().toString(36).slice(-6); }
-
         function addUser() {
-            const name = document.getElementById('new-user-name').value.trim();
-            const pass = document.getElementById('new-user-pass').value;
-            const userClass = document.getElementById('new-user-class').value.trim();
-            const isStar = document.getElementById('new-user-star').checked;
-            if (!name || !pass) return alert('يرجى الإدخال');
-            if (db.users.find(u => u.username === name)) return alert('موجود بالفعل!');
+            const name = document.getElementById('new-user-name').value.trim(); const pass = document.getElementById('new-user-pass').value;
+            const userClass = document.getElementById('new-user-class').value.trim(); const isStar = document.getElementById('new-user-star').checked;
+            if (!name || !pass) return alert('يرجى الإدخال'); if (db.users.find(u => u.username === name)) return alert('موجود بالفعل!');
             db.users.push({ username: name, password: pass, role: 'student', class: userClass, isStar: isStar }); saveDB(); alert('تم!');
         }
-
-        function saveContent() {
-            const title = document.getElementById('content-title').value.trim();
-            const type = document.getElementById('content-type').value;
-            const data = document.getElementById('content-data').value.trim();
-            const ratio = document.getElementById('content-ratio').value; // جلب الأبعاد المحددة
-            const classesRaw = document.getElementById('content-classes').value;
-            const category = document.getElementById('content-category').value.trim() || 'عام';
-
-            if (!title || !data) return alert('مطلوب!');
-            const classesArray = classesRaw ? classesRaw.split('،').join(',').split(',').map(c => c.trim()).filter(c => c) : [];
-            
-            db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, category, ratio }); saveDB();
-            alert('تم النشر بنجاح!'); document.getElementById('content-title').value = ''; document.getElementById('content-data').value = '';
-        }
-
         function updateAdminCredentials() {
             const newU = document.getElementById('admin-new-user').value.trim(); const newP = document.getElementById('admin-new-pass').value;
             if(newU && newP) { db.users[0].username = newU; db.users[0].password = newP; saveDB(); alert('تم'); logout(); }
@@ -370,94 +476,89 @@
             document.getElementById('sidebar-toggle').classList.add('hidden');
         }
 
+        // --- بناء الفهرس الديناميكي (القائمة الجانبية) ---
         function showUserDashboard(isAdminPreview = false) {
             document.getElementById('user-section').classList.remove('hidden');
-            const classesSet = new Set(); db.contents.forEach(c => c.classes.forEach(cls => classesSet.add(cls)));
-            if(currentUser.class && !isAdminPreview) classesSet.add(currentUser.class);
-            const sidebarUl = document.getElementById('classes-list');
-            sidebarUl.innerHTML = `<li class="active" onclick="filterByClass('all', this)">🏠 عرض الكل</li>`;
-            classesSet.forEach(cls => { if (isAdminPreview || currentUser.isStar || currentUser.class === cls) { sidebarUl.innerHTML += `<li onclick="filterByClass('${cls}', this)">📁 ${cls}</li>`; } });
-            const catSet = new Set(); db.contents.forEach(c => catSet.add(c.category));
-            const catSelect = document.getElementById('category-filter');
-            catSelect.innerHTML = `<option value="all">عرض كل الأقسام</option>`;
-            catSet.forEach(cat => catSelect.innerHTML += `<option value="${cat}">${cat}</option>`);
-            currentClassFilter = 'all'; renderContent();
-        }
+            const sidebarDiv = document.getElementById('sidebar-content-list');
+            sidebarDiv.innerHTML = `<div class="independent-item active" onclick="showAllContent(this)">🏠 الرئيسية (عرض الكل)</div>`;
+            
+            let visibleContents = db.contents.filter(item => {
+                if (item.classes.length === 0) return true;
+                if (isAdminPreview || currentUser.role === 'admin' || currentUser.isStar) return true;
+                if (item.classes.includes(currentUser.class)) return true;
+                return false;
+            });
 
-        function filterByClass(cls, element) {
-            document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
-            element.classList.add('active'); currentClassFilter = cls; renderContent();
-            if(window.innerWidth <= 768) toggleSidebar();
-        }
+            let groupedContent = {}; let independentContent = [];
+            visibleContents.forEach(item => {
+                if(item.folder && item.folder !== 'none') {
+                    if(!groupedContent[item.folder]) groupedContent[item.folder] = [];
+                    groupedContent[item.folder].push(item);
+                } else independentContent.push(item);
+            });
 
-        function renderContent() {
-            const displayArea = document.getElementById('content-display');
-            const selectedCat = document.getElementById('category-filter').value;
-            displayArea.innerHTML = '';
+            for(let folderName in groupedContent) {
+                let detailsHTML = `<details><summary>📁 ${folderName}</summary><ul>`;
+                groupedContent[folderName].forEach(item => {
+                    detailsHTML += `<li class="sidebar-item" onclick="showSingleContent(${item.id}, this)">📄 ${item.title}</li>`;
+                });
+                detailsHTML += `</ul></details>`;
+                sidebarDiv.innerHTML += detailsHTML;
+            }
 
-            let contentFound = false;
-
-            [...db.contents].reverse().forEach(item => {
-                let canView = false;
-                if (item.classes.length === 0) canView = true;
-                else if (currentUser.role === 'admin') canView = true;
-                else if (currentUser.isStar) canView = true;
-                else if (item.classes.includes(currentUser.class)) canView = true;
-
-                if (canView) {
-                    let matchClass = (currentClassFilter === 'all') || (item.classes.includes(currentClassFilter) || item.classes.length === 0);
-                    let matchCat = (selectedCat === 'all') || (item.category === selectedCat);
-
-                    if (matchClass && matchCat) {
-                        contentFound = true;
-                        const contentDiv = document.createElement('div');
-                        contentDiv.className = 'content-item';
-                        let innerMedia = '';
-                        let fullScreenBtnHTML = '';
-                        
-                        if (item.type === 'html') {
-                            contentDiv.classList.add('html-card'); 
-                            const wrapperId = `wrapper-${item.id}`;
-                            const iframeId = `iframe-${item.id}`;
-                            
-                            // استخراج النسبة وتحديد الدقة الوهمية (Virtual Resolution)
-                            const isSquare = item.ratio === '4:3';
-                            const cssRatio = isSquare ? '4/3' : '16/9';
-                            const vWidth = isSquare ? 1024 : 1280;
-                            const vHeight = isSquare ? 768 : 720;
-
-                            let safeHTML = item.data.replace(/"/g, '&quot;');
-                            
-                            // الحاوية الخارجية تأخذ النسبة المحددة، والإطار الداخلي يأخذ الدقة الثابتة
-                            innerMedia = `
-                            <div id="${wrapperId}" class="iframe-responsive-wrapper" style="aspect-ratio: ${cssRatio};">
-                                <iframe id="${iframeId}" class="html-sandbox" srcdoc="${safeHTML}" data-vwidth="${vWidth}" data-vheight="${vHeight}"></iframe>
-                            </div>`;
-                            
-                            fullScreenBtnHTML = `<button onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
-                        } else {
-                            innerMedia = `<a href="${item.data}" target="_blank" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`;
-                        }
-
-                        contentDiv.innerHTML = `
-                            <div class="content-header">
-                                <h3 class="content-title">${item.title}</h3>
-                                <div class="header-actions">
-                                    ${fullScreenBtnHTML}
-                                    <span class="category-badge">${item.category}</span>
-                                </div>
-                            </div>
-                            ${innerMedia}
-                        `;
-                        displayArea.appendChild(contentDiv);
-                    }
-                }
+            independentContent.forEach(item => {
+                sidebarDiv.innerHTML += `<div class="sidebar-item independent-item" onclick="showSingleContent(${item.id}, this)">📌 ${item.title}</div>`;
             });
             
-            if(!contentFound) displayArea.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px; color:var(--text-muted);">لا يوجد محتوى متاح.</div>';
-            
-            // تنفيذ الحسابات الرياضية لتتواءم الأبعاد فور الانتهاء من رسم العناصر
-            applyScaling();
+            document.getElementById('content-display').innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-muted); background: white; border-radius: 12px;">👈 يرجى اختيار درس من الفهرس الجانبي لعرضه.</div>';
+        }
+
+        function setActiveSidebarItem(element) {
+            document.querySelectorAll('.sidebar-item, .independent-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            if(window.innerWidth <= 768) toggleSidebar(); 
+        }
+
+        function showAllContent(element) {
+            setActiveSidebarItem(element);
+            let visibleContents = db.contents.filter(item => {
+                if (item.classes.length === 0) return true;
+                if (currentUser.role === 'admin' || currentUser.isStar) return true;
+                if (item.classes.includes(currentUser.class)) return true;
+                return false;
+            });
+            renderContentItems(visibleContents.reverse());
+        }
+
+        function showSingleContent(id, element) {
+            setActiveSidebarItem(element);
+            const item = db.contents.find(c => c.id === id);
+            if(item) renderContentItems([item]);
+        }
+
+        function renderContentItems(itemsArray) {
+            const displayArea = document.getElementById('content-display');
+            displayArea.innerHTML = '';
+            if(itemsArray.length === 0) return displayArea.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px; color:var(--text-muted);">لا يوجد محتوى.</div>';
+
+            itemsArray.forEach(item => {
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'content-item';
+                let innerMedia = ''; let fullScreenBtnHTML = '';
+                let folderBadge = (item.folder && item.folder !== 'none') ? `<span class="category-badge">${item.folder}</span>` : '';
+                
+                if (item.type === 'html') {
+                    const wrapperId = `wrapper-${item.id}`;
+                    let safeHTML = item.data.replace(/"/g, '&quot;');
+                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper"><iframe class="html-sandbox" srcdoc="${safeHTML}"></iframe></div>`;
+                    fullScreenBtnHTML = `<button onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
+                } else {
+                    innerMedia = `<a href="${item.data}" target="_blank" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط في نافذة جديدة</a>`;
+                }
+
+                contentDiv.innerHTML = `<div class="content-header"><h3 class="content-title">${item.title}</h3><div class="header-actions">${fullScreenBtnHTML}${folderBadge}</div></div>${innerMedia}`;
+                displayArea.appendChild(contentDiv);
+            });
         }
     </script>
 </body>
