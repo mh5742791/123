@@ -37,7 +37,7 @@
 
         /* --- واجهة تسجيل الدخول --- */
         #login-section { display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
-        .login-box { background: var(--card-bg); padding: 50px 40px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); width: 100%; max-width: 420px; text-align: center; }
+        .login-box { background: var(--card-bg); padding: 50px 40px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); width: 100%; max-width: 420px; text-align: center; }
         .login-box h2 { margin-top: 0; color: var(--primary); font-size: 28px; margin-bottom: 30px; }
         .login-box button { width: 100%; margin-top: 10px; font-size: 18px; padding: 14px; }
 
@@ -57,17 +57,15 @@
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: var(--card-bg); }
         .tab-content { padding: 40px; display: none; animation: fadeIn 0.4s ease; }
         .tab-content.active { display: block; }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- واجهة الطالب --- */
         #user-layout { display: flex; min-height: calc(100vh - 76px); max-width: 1500px; margin: 0 auto; padding: 20px; gap: 25px; transition: all 0.3s ease; }
-        
-        .sidebar { width: 280px; background: var(--card-bg); padding: 25px 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); height: fit-content; border: 1px solid var(--border); transition: all 0.3s ease; flex-shrink: 0; }
+        .sidebar { width: 280px; background: var(--card-bg); padding: 25px 20px; border-radius: 12px; border: 1px solid var(--border); transition: all 0.3s ease; flex-shrink: 0; height: fit-content; }
         .sidebar.collapsed { width: 0; padding: 0; border: none; margin: 0; opacity: 0; overflow: hidden; }
-        .sidebar h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+        .sidebar h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 20px; }
         .sidebar ul { list-style: none; padding: 0; margin: 0; }
-        .sidebar li { padding: 14px 15px; margin-bottom: 8px; background: var(--bg-color); border-radius: 8px; cursor: pointer; transition: 0.2s; font-weight: 600; color: var(--text-muted); border: 1px solid transparent; display: flex; align-items: center; gap: 10px; }
+        .sidebar li { padding: 14px 15px; margin-bottom: 8px; background: var(--bg-color); border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text-muted); border: 1px solid transparent; transition: 0.2s; }
         .sidebar li:hover { border-color: var(--secondary); color: var(--primary); background: #fff; }
         .sidebar li.active { background: var(--primary); color: white; border-color: var(--primary); }
         
@@ -75,20 +73,11 @@
         .filters { display: flex; gap: 15px; margin-bottom: 25px; background: var(--card-bg); padding: 20px; border-radius: 12px; align-items: center; border: 1px solid var(--border); }
         .filters select { margin-bottom: 0; width: auto; min-width: 280px; }
         
-        /* التعديل الجذري على طريقة عرض البطاقات */
-        .content-grid { 
-            display: grid; 
-            /* شبكة ذكية: إذا كان هناك مكان تعرض بطاقتين للروابط، ولكن سنستثني دروس HTML لاحقاً */
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); 
-            gap: 25px; 
-        } 
-        
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 25px; } 
         .content-item { background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         
-        /* بطاقات HTML تأخذ عرض الشاشة بالكامل لتجنب تشوه المحتوى */
-        .content-item.html-card {
-            grid-column: 1 / -1; 
-        }
+        /* جعل بطاقات HTML تملأ العرض */
+        .content-item.html-card { grid-column: 1 / -1; }
 
         .content-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--bg-color); padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .content-title { margin: 0; color: var(--primary); font-size: 20px; }
@@ -96,8 +85,39 @@
         .category-badge { font-size: 13px; font-weight: bold; background: #e0e7ff; color: var(--primary); padding: 6px 14px; border-radius: 20px; }
         .fullscreen-btn { padding: 6px 12px; font-size: 13px; background-color: var(--primary); }
         
-        /* الإطار المعزول لكود HTML - تم تكبيره */
-        .html-sandbox { width: 100%; height: 600px; border: 1px solid var(--border); border-radius: 8px; background: #fff; resize: vertical; overflow: auto; }
+        /* --------------------------------------------------- */
+        /* التحديث السحري: حاوية العرض المتجاوبة (Responsive Scale) */
+        /* --------------------------------------------------- */
+        .iframe-responsive-wrapper {
+            position: relative;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* يتم تحديد الـ aspect-ratio برمجياً حسب اختيارك */
+        }
+
+        /* تنسيقات الإطار الداخلي ليتم تكبيره وتصغيره كصورة */
+        .html-sandbox {
+            border: none;
+            background: #fff;
+            transform-origin: center center; /* التمركز من المنتصف */
+            /* الـ Width و Height و transform سيتم ضخها برمجياً لضمان الدقة */
+        }
+
+        /* تنسيقات الشاشة الكاملة (Full Screen) */
+        .iframe-responsive-wrapper:fullscreen {
+            aspect-ratio: auto !important; /* إلغاء النسبة لتعبئة الشاشة */
+            width: 100vw;
+            height: 100vh;
+            background: #000000; /* خلفية سوداء مثل اليوتيوب */
+            border-radius: 0;
+            border: none;
+        }
         
         @media (max-width: 768px) {
             #user-layout { flex-direction: column; }
@@ -115,13 +135,13 @@
             <input type="text" id="login-username" placeholder="اسم المستخدم">
             <input type="password" id="login-password" placeholder="كلمة المرور">
             <button onclick="login()">دخول للمنصة</button>
-            <p id="login-error" style="color: var(--danger); display: none; margin-top:15px; font-weight:bold;">بيانات غير صحيحة!</p>
+            <p id="login-error" style="color: var(--danger); display: none; margin-top:15px;">بيانات غير صحيحة!</p>
         </div>
     </div>
 
     <header id="main-header" class="hidden">
         <div class="header-right">
-            <button id="sidebar-toggle" class="menu-toggle-btn hidden" onclick="toggleSidebar()" title="إظهار/إخفاء القائمة">☰</button>
+            <button id="sidebar-toggle" class="menu-toggle-btn hidden" onclick="toggleSidebar()">☰</button>
             <h3>📚 منصتي التعليمية</h3>
         </div>
         <div class="header-left">
@@ -135,7 +155,7 @@
     <div id="admin-section" class="container hidden">
         <div class="tabs-container">
             <div class="tabs-header">
-                <button class="tab-btn active" onclick="openTab(event, 'tab-content-add')">📝 إضافة وتعديل المحتوى</button>
+                <button class="tab-btn active" onclick="openTab(event, 'tab-content-add')">📝 إضافة المحتوى</button>
                 <button class="tab-btn" onclick="openTab(event, 'tab-users')">👥 إدارة الطلاب</button>
                 <button class="tab-btn" onclick="openTab(event, 'tab-settings')">⚙️ الإعدادات</button>
             </div>
@@ -144,22 +164,28 @@
                 <h2 style="margin-top:0; color:var(--primary);">نشر محتوى جديد</h2>
                 <div style="max-width: 700px;">
                     <label>عنوان المحتوى</label>
-                    <input type="text" id="content-title" placeholder="اكتب عنوان الدرس (مثال: قواعد النحو - الدرس الأول)...">
+                    <input type="text" id="content-title" placeholder="اكتب عنوان الدرس...">
                     
                     <label>نوع المحتوى</label>
                     <select id="content-type">
-                        <option value="html">كود HTML (للعروض التقديمية والدروس التفاعلية)</option>
-                        <option value="link">رابط خارجي (YouTube, Google Drive, إلخ)</option>
+                        <option value="html">كود HTML (تفاعلي - يتجاوب مع الشاشة)</option>
+                        <option value="link">رابط خارجي (YouTube, Drive)</option>
+                    </select>
+
+                    <label style="color: var(--primary); font-weight: bold;">أبعاد عرض الدرس التفاعلي (Aspect Ratio)</label>
+                    <select id="content-ratio">
+                        <option value="16:9">عريض (16:9) - دقة 1280x720 (ممتاز للشاشات الحديثة)</option>
+                        <option value="4:3">مربع (4:3) - دقة 1024x768 (ممتاز لملفات Captivate القديمة)</option>
                     </select>
                     
-                    <label>البيانات (انسخ كود الـ HTML بالكامل أو ضع الرابط هنا)</label>
-                    <textarea id="content-data" rows="8" placeholder="قم بلصق الكود أو الرابط هنا..."></textarea>
+                    <label>البيانات (الكود أو الرابط)</label>
+                    <textarea id="content-data" rows="8" placeholder="قم بلصق الكود هنا..."></textarea>
                     
-                    <label>الصفوف المستهدفة (اتركه فارغاً ليظهر للجميع)</label>
-                    <input type="text" id="content-classes" placeholder="مثال: الصف الأول، الصف الثاني (افصل بينها بفاصلة)">
+                    <label>الصفوف المستهدفة (اتركه فارغاً للكل)</label>
+                    <input type="text" id="content-classes" placeholder="مثال: الصف الأول، الصف الثاني">
                     
                     <label>القسم / التصنيف</label>
-                    <input type="text" id="content-category" placeholder="مثال: النحو، النصوص، اختبارات...">
+                    <input type="text" id="content-category" placeholder="مثال: النحو">
                     
                     <button onclick="saveContent()" style="width:100%; font-size:16px; padding: 15px;">💾 حفظ ونشر المحتوى</button>
                 </div>
@@ -168,32 +194,26 @@
             <div id="tab-users" class="tab-content">
                 <h2 style="margin-top:0; color:var(--primary);">تسجيل طالب جديد</h2>
                 <div style="max-width: 600px;">
-                    <label>اسم المستخدم</label>
                     <input type="text" id="new-user-name" placeholder="اسم المستخدم">
-                    <label>كلمة المرور</label>
                     <div class="btn-group">
                         <input type="text" id="new-user-pass" placeholder="كلمة المرور" style="margin-bottom:0;">
                         <button type="button" onclick="generatePassword()" class="btn-warning">توليد</button>
-                    </div>
-                    <br>
-                    <label>الصف الدراسي</label>
-                    <input type="text" id="new-user-class" placeholder="مثال: الصف الأول">
-                    <label style="display:flex; align-items:center; gap:10px; background:var(--bg-color); padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid var(--border); cursor:pointer;">
+                    </div><br>
+                    <input type="text" id="new-user-class" placeholder="الصف الدراسي (مثال: الصف الأول)">
+                    <label style="display:flex; align-items:center; gap:10px; background:var(--bg-color); padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid var(--border);">
                         <input type="checkbox" id="new-user-star" style="width:20px; height:20px; margin:0;"> 
-                        <strong>طالب مميز ⭐ (يرى محتوى جميع الصفوف)</strong>
+                        <strong>طالب مميز ⭐ (يرى كل شيء)</strong>
                     </label>
-                    <button class="btn-success" onclick="addUser()" style="width:100%; font-size:16px; padding: 15px;">➕ إضافة الطالب</button>
+                    <button class="btn-success" onclick="addUser()" style="width:100%; font-size:16px; padding: 15px;">➕ إضافة</button>
                 </div>
             </div>
             
             <div id="tab-settings" class="tab-content">
-                <h2 style="margin-top:0; color:var(--primary);">بيانات الدخول للإدارة</h2>
+                <h2 style="margin-top:0; color:var(--primary);">تغيير بيانات الأدمن</h2>
                 <div style="max-width: 600px;">
-                    <label>اسم المستخدم الجديد</label>
-                    <input type="text" id="admin-new-user" placeholder="الاسم الجديد (الافتراضي: 228820)">
-                    <label>كلمة المرور الجديدة</label>
+                    <input type="text" id="admin-new-user" placeholder="اسم المستخدم الجديد (الافتراضي: 228820)">
                     <input type="password" id="admin-new-pass" placeholder="كلمة المرور الجديدة">
-                    <button onclick="updateAdminCredentials()" class="btn-danger" style="width:100%; font-size:16px; padding: 15px;">🔄 تحديث البيانات</button>
+                    <button onclick="updateAdminCredentials()" class="btn-danger" style="width:100%; padding: 15px;">🔄 تحديث</button>
                 </div>
             </div>
         </div>
@@ -202,10 +222,9 @@
     <div id="user-section" class="hidden">
         <div id="user-layout">
             <aside id="student-sidebar" class="sidebar">
-                <h3>📖 الصفوف الدراسية</h3>
+                <h3>📖 الصفوف</h3>
                 <ul id="classes-list"></ul>
             </aside>
-
             <main class="main-content">
                 <div class="filters">
                     <strong>تصفية حسب القسم:</strong>
@@ -235,39 +254,62 @@
             evt.currentTarget.classList.add('active');
         }
 
-        function toggleSidebar() {
-            document.getElementById('student-sidebar').classList.toggle('collapsed');
-        }
+        function toggleSidebar() { document.getElementById('student-sidebar').classList.toggle('collapsed'); }
 
-        // دالة ملء الشاشة للإطار
-        function toggleFullScreen(iframeId) {
-            let iframe = document.getElementById(iframeId);
+        // --- دالة ملء الشاشة المخصصة للحاوية ---
+        function toggleFullScreen(wrapperId) {
+            let wrapper = document.getElementById(wrapperId);
             if (!document.fullscreenElement) {
-                if (iframe.requestFullscreen) {
-                    iframe.requestFullscreen();
-                } else if (iframe.webkitRequestFullscreen) { /* Safari */
-                    iframe.webkitRequestFullscreen();
-                } else if (iframe.msRequestFullscreen) { /* IE11 */
-                    iframe.msRequestFullscreen();
-                }
+                if (wrapper.requestFullscreen) wrapper.requestFullscreen();
+                else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+                if (document.exitFullscreen) document.exitFullscreen();
             }
         }
+
+        // --- دالة الحساب الرياضي السحري (Responsive Scaling) ---
+        function applyScaling() {
+            document.querySelectorAll('.iframe-responsive-wrapper').forEach(wrapper => {
+                const iframe = wrapper.querySelector('iframe');
+                if (iframe) {
+                    // استخراج الأبعاد الأصلية التي صُمم عليها الدرس
+                    const vWidth = parseFloat(iframe.getAttribute('data-vwidth')) || 1280;
+                    const vHeight = parseFloat(iframe.getAttribute('data-vheight')) || 720;
+                    
+                    let scale;
+                    
+                    // إذا كنا في وضع "ملء الشاشة"، نحسب التناسب بناءً على عرض وطول الشاشة لمنع القص
+                    if (document.fullscreenElement === wrapper) {
+                        const scaleX = window.innerWidth / vWidth;
+                        const scaleY = window.innerHeight / vHeight;
+                        scale = Math.min(scaleX, scaleY); // Math.min تضمن احتواء التصميم بالكامل داخل الشاشة
+                    } else {
+                        // في الوضع العادي، نكبر/نصغر بناءً على عرض الحاوية (البطاقة) فقط
+                        scale = wrapper.clientWidth / vWidth;
+                    }
+                    
+                    // تطبيق الأبعاد الثابتة والمقياس المتغير
+                    iframe.style.width = vWidth + 'px';
+                    iframe.style.height = vHeight + 'px';
+                    iframe.style.transform = `scale(${scale})`;
+                }
+            });
+        }
+
+        // تشغيل عملية التناسب عند تغيير حجم نافذة المتصفح أو عند الدخول في وضع ملء الشاشة
+        window.addEventListener('resize', applyScaling);
+        document.addEventListener('fullscreenchange', applyScaling);
 
         function login() {
             const userIn = document.getElementById('login-username').value.trim();
             const passIn = document.getElementById('login-password').value;
-            
             const user = db.users.find(u => u.username === userIn && u.password === passIn);
             if (user) {
                 currentUser = user;
                 document.getElementById('login-error').style.display = 'none';
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('main-header').classList.remove('hidden');
-                document.getElementById('welcome-msg').innerText = `مرحباً بك، ${user.username} ${user.isStar ? '⭐' : ''}`;
+                document.getElementById('welcome-msg').innerText = `مرحباً بك، ${user.username}`;
                 
                 if (user.role === 'admin') {
                     document.getElementById('admin-section').classList.remove('hidden');
@@ -280,107 +322,71 @@
                     document.getElementById('sidebar-toggle').classList.remove('hidden');
                     showUserDashboard();
                 }
-            } else {
-                document.getElementById('login-error').style.display = 'block';
-            }
+            } else { document.getElementById('login-error').style.display = 'block'; }
         }
 
-        function logout() {
-            currentUser = null;
-            document.getElementById('login-section').classList.remove('hidden');
-            document.getElementById('main-header').classList.add('hidden');
-            document.getElementById('admin-section').classList.add('hidden');
-            document.getElementById('user-section').classList.add('hidden');
-            document.getElementById('sidebar-toggle').classList.add('hidden');
-            document.getElementById('login-username').value = ''; document.getElementById('login-password').value = '';
-        }
-
-        function generatePassword() {
-            const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-            let pass = "";
-            for (let i = 0; i < 6; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
-            document.getElementById('new-user-pass').value = pass;
-        }
+        function logout() { location.reload(); }
+        function generatePassword() { document.getElementById('new-user-pass').value = Math.random().toString(36).slice(-6); }
 
         function addUser() {
             const name = document.getElementById('new-user-name').value.trim();
             const pass = document.getElementById('new-user-pass').value;
             const userClass = document.getElementById('new-user-class').value.trim();
             const isStar = document.getElementById('new-user-star').checked;
-
             if (!name || !pass) return alert('يرجى الإدخال');
             if (db.users.find(u => u.username === name)) return alert('موجود بالفعل!');
-            
-            db.users.push({ username: name, password: pass, role: 'student', class: userClass, isStar: isStar }); saveDB();
-            alert('تم!'); document.getElementById('new-user-name').value = ''; document.getElementById('new-user-pass').value = ''; document.getElementById('new-user-class').value = '';
+            db.users.push({ username: name, password: pass, role: 'student', class: userClass, isStar: isStar }); saveDB(); alert('تم!');
         }
 
         function saveContent() {
             const title = document.getElementById('content-title').value.trim();
             const type = document.getElementById('content-type').value;
             const data = document.getElementById('content-data').value.trim();
+            const ratio = document.getElementById('content-ratio').value; // جلب الأبعاد المحددة
             const classesRaw = document.getElementById('content-classes').value;
             const category = document.getElementById('content-category').value.trim() || 'عام';
 
             if (!title || !data) return alert('مطلوب!');
             const classesArray = classesRaw ? classesRaw.split('،').join(',').split(',').map(c => c.trim()).filter(c => c) : [];
             
-            db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, category }); saveDB();
-            alert('تم النشر!'); document.getElementById('content-title').value = ''; document.getElementById('content-data').value = '';
+            db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, category, ratio }); saveDB();
+            alert('تم النشر بنجاح!'); document.getElementById('content-title').value = ''; document.getElementById('content-data').value = '';
         }
 
         function updateAdminCredentials() {
-            const newU = document.getElementById('admin-new-user').value.trim();
-            const newP = document.getElementById('admin-new-pass').value;
+            const newU = document.getElementById('admin-new-user').value.trim(); const newP = document.getElementById('admin-new-pass').value;
             if(newU && newP) { db.users[0].username = newU; db.users[0].password = newP; saveDB(); alert('تم'); logout(); }
         }
 
         function showPreview() {
-            document.getElementById('admin-section').classList.add('hidden');
-            document.getElementById('preview-btn').classList.add('hidden');
-            document.getElementById('back-admin-btn').classList.remove('hidden');
-            document.getElementById('sidebar-toggle').classList.remove('hidden');
-            document.getElementById('student-sidebar').classList.remove('collapsed');
-            showUserDashboard(true);
+            document.getElementById('admin-section').classList.add('hidden'); document.getElementById('preview-btn').classList.add('hidden');
+            document.getElementById('back-admin-btn').classList.remove('hidden'); document.getElementById('sidebar-toggle').classList.remove('hidden');
+            document.getElementById('student-sidebar').classList.remove('collapsed'); showUserDashboard(true);
         }
 
         function backToAdmin() {
-            document.getElementById('user-section').classList.add('hidden');
-            document.getElementById('admin-section').classList.remove('hidden');
-            document.getElementById('preview-btn').classList.remove('hidden');
-            document.getElementById('back-admin-btn').classList.add('hidden');
+            document.getElementById('user-section').classList.add('hidden'); document.getElementById('admin-section').classList.remove('hidden');
+            document.getElementById('preview-btn').classList.remove('hidden'); document.getElementById('back-admin-btn').classList.add('hidden');
             document.getElementById('sidebar-toggle').classList.add('hidden');
         }
 
         function showUserDashboard(isAdminPreview = false) {
             document.getElementById('user-section').classList.remove('hidden');
-            
-            const classesSet = new Set();
-            db.contents.forEach(c => c.classes.forEach(cls => classesSet.add(cls)));
+            const classesSet = new Set(); db.contents.forEach(c => c.classes.forEach(cls => classesSet.add(cls)));
             if(currentUser.class && !isAdminPreview) classesSet.add(currentUser.class);
-
             const sidebarUl = document.getElementById('classes-list');
-            sidebarUl.innerHTML = `<li class="active" onclick="filterByClass('all', this)">🏠 عرض كل المحتوى المتاح</li>`;
-            
-            classesSet.forEach(cls => {
-                if (isAdminPreview || currentUser.isStar || currentUser.class === cls) {
-                    sidebarUl.innerHTML += `<li onclick="filterByClass('${cls}', this)">📁 ${cls}</li>`;
-                }
-            });
-
-            const catSet = new Set();
-            db.contents.forEach(c => catSet.add(c.category));
+            sidebarUl.innerHTML = `<li class="active" onclick="filterByClass('all', this)">🏠 عرض الكل</li>`;
+            classesSet.forEach(cls => { if (isAdminPreview || currentUser.isStar || currentUser.class === cls) { sidebarUl.innerHTML += `<li onclick="filterByClass('${cls}', this)">📁 ${cls}</li>`; } });
+            const catSet = new Set(); db.contents.forEach(c => catSet.add(c.category));
             const catSelect = document.getElementById('category-filter');
             catSelect.innerHTML = `<option value="all">عرض كل الأقسام</option>`;
             catSet.forEach(cat => catSelect.innerHTML += `<option value="${cat}">${cat}</option>`);
-
             currentClassFilter = 'all'; renderContent();
         }
 
         function filterByClass(cls, element) {
             document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
-            element.classList.add('active');
-            currentClassFilter = cls; renderContent();
+            element.classList.add('active'); currentClassFilter = cls; renderContent();
             if(window.innerWidth <= 768) toggleSidebar();
         }
 
@@ -409,16 +415,28 @@
                         let innerMedia = '';
                         let fullScreenBtnHTML = '';
                         
-                        // التعديل: إعطاء فئة خاصة لـ HTML لجعله يملأ الشاشة
                         if (item.type === 'html') {
-                            contentDiv.classList.add('html-card'); // هذه الفئة تجعله يمتد بعرض الشاشة
+                            contentDiv.classList.add('html-card'); 
+                            const wrapperId = `wrapper-${item.id}`;
                             const iframeId = `iframe-${item.id}`;
+                            
+                            // استخراج النسبة وتحديد الدقة الوهمية (Virtual Resolution)
+                            const isSquare = item.ratio === '4:3';
+                            const cssRatio = isSquare ? '4/3' : '16/9';
+                            const vWidth = isSquare ? 1024 : 1280;
+                            const vHeight = isSquare ? 768 : 720;
+
                             let safeHTML = item.data.replace(/"/g, '&quot;');
-                            innerMedia = `<iframe id="${iframeId}" class="html-sandbox" srcdoc="${safeHTML}"></iframe>`;
-                            // زر تكبير الشاشة
-                            fullScreenBtnHTML = `<button onclick="toggleFullScreen('${iframeId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
+                            
+                            // الحاوية الخارجية تأخذ النسبة المحددة، والإطار الداخلي يأخذ الدقة الثابتة
+                            innerMedia = `
+                            <div id="${wrapperId}" class="iframe-responsive-wrapper" style="aspect-ratio: ${cssRatio};">
+                                <iframe id="${iframeId}" class="html-sandbox" srcdoc="${safeHTML}" data-vwidth="${vWidth}" data-vheight="${vHeight}"></iframe>
+                            </div>`;
+                            
+                            fullScreenBtnHTML = `<button onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
                         } else {
-                            innerMedia = `<a href="${item.data}" target="_blank" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold; font-size:16px;">🔗 اضغط هنا لفتح الرابط</a>`;
+                            innerMedia = `<a href="${item.data}" target="_blank" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`;
                         }
 
                         contentDiv.innerHTML = `
@@ -436,9 +454,10 @@
                 }
             });
             
-            if(!contentFound) {
-                displayArea.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px; background:white; border-radius:12px; color:var(--text-muted); border:1px dashed var(--border);">لا يوجد محتوى متاح.</div>';
-            }
+            if(!contentFound) displayArea.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px; color:var(--text-muted);">لا يوجد محتوى متاح.</div>';
+            
+            // تنفيذ الحسابات الرياضية لتتواءم الأبعاد فور الانتهاء من رسم العناصر
+            applyScaling();
         }
     </script>
 </body>
