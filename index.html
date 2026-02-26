@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المنصة التعليمية</title>
+    <style>
+        /* --- التصميم الأساسي الاحترافي --- */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f4f7f6; color: var(--dark); }
+        .hidden { display: none !important; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        /* --- واجهة تسجيل الدخول --- */
+        #login-section { display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-box { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        .login-box input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+        button { background: var(--secondary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        button:hover { background: #2980b9; }
+
+        /* --- واجهة لوحة التحكم والأدمن --- */
+        header { background: var(--primary); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .card input, .card select, .card textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn-group { display: flex; gap: 10px; }
+        .btn-danger { background: var(--danger); }
+        .btn-success { background: var(--success); }
+
+        /* --- واجهة المستخدم (الطالب) --- */
+        #user-layout { display: flex; min-height: calc(100vh - 70px); }
+        .sidebar { width: 250px; background: white; padding: 20px; border-left: 1px solid #ddd; }
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar li { padding: 12px; margin-bottom: 5px; background: var(--light); border-radius: 5px; cursor: pointer; transition: 0.2s; }
+        .sidebar li:hover, .sidebar li.active { background: var(--secondary); color: white; }
+        .main-content { flex: 1; padding: 20px; }
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+        .content-item { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-top: 4px solid var(--secondary); }
+        .content-item iframe { width: 100%; height: 200px; border: none; }
+        .filters { display: flex; gap: 10px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div id="login-section">
+        <div class="login-box">
+            <h2>تسجيل الدخول</h2>
+            <input type="text" id="login-username" placeholder="اسم المستخدم">
+            <input type="password" id="login-password" placeholder="كلمة المرور">
+            <button onclick="login()">دخول</button>
+            <p id="login-error" style="color: red; display: none; margin-top:10px;">بيانات غير صحيحة!</p>
+        </div>
+    </div>
+
+    <header id="main-header" class="hidden">
+        <div>
+            <h3 style="margin:0;">منصتي التعليمية</h3>
+        </div>
+        <div>
+            <span id="welcome-msg" style="margin-left: 15px;"></span>
+            <button class="btn-danger" onclick="logout()">تسجيل الخروج</button>
+        </div>
+    </header>
+
+    <div id="admin-section" class="container hidden">
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>إضافة/تعديل محتوى 📚</h3>
+                <input type="text" id="content-title" placeholder="عنوان المحتوى">
+                <select id="content-type">
+                    <option value="link">رابط (YouTube, Drive, إلخ)</option>
+                    <option value="html">كود HTML</option>
+                </select>
+                <textarea id="content-data" rows="4" placeholder="ضع الرابط أو الكود هنا..."></textarea>
+                <input type="text" id="content-classes" placeholder="الصفوف المستهدفة (مثال: الأول، الثاني) - اتركه فارغاً للكل">
+                <input type="text" id="content-category" placeholder="التصنيف (Category) - اختياري">
+                <button onclick="saveContent()">حفظ المحتوى</button>
+            </div>
+
+            <div class="card">
+                <h3>إضافة مستخدم جديد 👤</h3>
+                <input type="text" id="new-user-name" placeholder="اسم المستخدم">
+                <div class="btn-group">
+                    <input type="text" id="new-user-pass" placeholder="كلمة المرور">
+                    <button type="button" onclick="generatePassword()">توليد كلمة مرور</button>
+                </div>
+                <input type="text" id="new-user-class" placeholder="الصف (مثال: الأول)">
+                <label style="display:block; margin: 10px 0;">
+                    <input type="checkbox" id="new-user-star"> مستخدم مميز ⭐ (يرى كل المحتوى)
+                </label>
+                <button class="btn-success" onclick="addUser()">إضافة المستخدم</button>
+            </div>
+            
+            <div class="card">
+                <h3>تغيير بيانات الأدمن ⚙️</h3>
+                <input type="text" id="admin-new-user" placeholder="اسم المستخدم الجديد للأدمن">
+                <input type="password" id="admin-new-pass" placeholder="كلمة المرور الجديدة">
+                <button onclick="updateAdminCredentials()">تحديث البيانات</button>
+            </div>
+            
+            <div class="card" style="display: flex; align-items: center; justify-content: center;">
+                <button onclick="showPreview()" style="font-size: 18px; padding: 15px 30px;">👁️ معاينة الموقع كطالب</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="user-section" class="hidden">
+        <div id="user-layout">
+            <aside class="sidebar">
+                <h3>الصفوف والمواد</h3>
+                <ul id="classes-list">
+                    </ul>
+            </aside>
+
+            <main class="main-content">
+                <div class="filters">
+                    <select id="category-filter" onchange="renderContent()">
+                        <option value="all">كل التصنيفات (Categories)</option>
+                        </select>
+                </div>
+                <div id="content-display" class="content-grid">
+                    </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // --- تهيئة قاعدة البيانات المحلية (Mock Database) ---
+        let db = JSON.parse(localStorage.getItem('eduPlatformDB')) || {
+            users: [{ username: '228820', password: '228820', role: 'admin' }],
+            contents: []
+        };
+        let currentUser = null;
+        let currentClassFilter = 'all';
+
+        function saveDB() { localStorage.setItem('eduPlatformDB', JSON.stringify(db)); }
+
+        // --- نظام تسجيل الدخول ---
+        function login() {
+            const userIn = document.getElementById('login-username').value;
+            const passIn = document.getElementById('login-password').value;
+            
+            const user = db.users.find(u => u.username === userIn && u.password === passIn);
+            if (user) {
+                currentUser = user;
+                document.getElementById('login-error').style.display = 'none';
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('main-header').classList.remove('hidden');
+                document.getElementById('welcome-msg').innerText = `أهلاً بك، ${user.username} ${user.isStar ? '⭐' : ''}`;
+                
+                if (user.role === 'admin') {
+                    document.getElementById('admin-section').classList.remove('hidden');
+                } else {
+                    showUserDashboard();
+                }
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            document.querySelectorAll('body > div, header').forEach(el => el.classList.add('hidden'));
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
+        }
+
+        // --- وظائف الأدمن ---
+        function generatePassword() {
+            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let pass = "";
+            for (let i = 0; i < 6; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
+            document.getElementById('new-user-pass').value = pass;
+        }
+
+        function addUser() {
+            const name = document.getElementById('new-user-name').value;
+            const pass = document.getElementById('new-user-pass').value;
+            const userClass = document.getElementById('new-user-class').value;
+            const isStar = document.getElementById('new-user-star').checked;
+
+            if (!name || !pass) return alert('يرجى إدخال اسم المستخدم وكلمة المرور');
+            
+            db.users.push({ username: name, password: pass, role: 'student', class: userClass, isStar: isStar });
+            saveDB();
+            alert('تم إضافة المستخدم بنجاح!');
+        }
+
+        function saveContent() {
+            const title = document.getElementById('content-title').value;
+            const type = document.getElementById('content-type').value;
+            const data = document.getElementById('content-data').value;
+            const classesRaw = document.getElementById('content-classes').value;
+            const category = document.getElementById('content-category').value || 'عام';
+
+            if (!title || !data) return alert('العنوان والمحتوى مطلوبان!');
+
+            const classesArray = classesRaw ? classesRaw.split(',').map(c => c.trim()) : [];
+            
+            db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, category });
+            saveDB();
+            alert('تم حفظ المحتوى!');
+        }
+
+        function updateAdminCredentials() {
+            const newU = document.getElementById('admin-new-user').value;
+            const newP = document.getElementById('admin-new-pass').value;
+            if(newU && newP) {
+                db.users[0].username = newU;
+                db.users[0].password = newP;
+                saveDB();
+                alert('تم تحديث بيانات الأدمن! يرجى تسجيل الدخول مجدداً.');
+                logout();
+            }
+        }
+
+        // --- واجهة المستخدم وعرض المحتوى ---
+        function showPreview() {
+            document.getElementById('admin-section').classList.add('hidden');
+            showUserDashboard(true); // true means it's admin preview
+        }
+
+        function showUserDashboard(isAdminPreview = false) {
+            document.getElementById('user-section').classList.remove('hidden');
+            
+            // تجهيز القائمة الجانبية (الصفوف)
+            const classesSet = new Set();
+            db.contents.forEach(c => c.classes.forEach(cls => classesSet.add(cls)));
+            if(currentUser.class && !isAdminPreview) classesSet.add(currentUser.class); // ضمان وجود صف الطالب
+
+            const sidebarUl = document.getElementById('classes-list');
+            sidebarUl.innerHTML = `<li class="active" onclick="filterByClass('all', this)">الرئيسية (كل المحتوى)</li>`;
+            
+            classesSet.forEach(cls => {
+                // إذا كان طالب عادي، نظهر له صفه فقط في القائمة (ما لم يكن مميزاً)
+                if (isAdminPreview || currentUser.isStar || currentUser.class === cls) {
+                    sidebarUl.innerHTML += `<li onclick="filterByClass('${cls}', this)">${cls}</li>`;
+                }
+            });
+
+            // تجهيز قائمة التصنيفات (Categories)
+            const catSet = new Set();
+            db.contents.forEach(c => catSet.add(c.category));
+            const catSelect = document.getElementById('category-filter');
+            catSelect.innerHTML = `<option value="all">كل التصنيفات</option>`;
+            catSet.forEach(cat => catSelect.innerHTML += `<option value="${cat}">${cat}</option>`);
+
+            currentClassFilter = 'all';
+            renderContent();
+        }
+
+        function filterByClass(cls, element) {
+            document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
+            element.classList.add('active');
+            currentClassFilter = cls;
+            renderContent();
+        }
+
+        function renderContent() {
+            const displayArea = document.getElementById('content-display');
+            const selectedCat = document.getElementById('category-filter').value;
+            displayArea.innerHTML = '';
+
+            db.contents.forEach(item => {
+                // فحص صلاحيات الرؤية
+                let canView = false;
+                
+                // 1. إذا كان المحتوى متاح للكل (مصفوفة الصفوف فارغة)
+                if (item.classes.length === 0) canView = true;
+                // 2. إذا كان الأدمن في وضع المعاينة
+                else if (currentUser.role === 'admin') canView = true;
+                // 3. إذا كان الطالب مميز ⭐
+                else if (currentUser.isStar) canView = true;
+                // 4. إذا كان صف الطالب ضمن صفوف المحتوى
+                else if (item.classes.includes(currentUser.class)) canView = true;
+
+                // تطبيق الفلاتر (القائمة الجانبية والقائمة المنسدلة)
+                if (canView) {
+                    let matchClass = (currentClassFilter === 'all') || (item.classes.includes(currentClassFilter) || item.classes.length === 0);
+                    let matchCat = (selectedCat === 'all') || (item.category === selectedCat);
+
+                    if (matchClass && matchCat) {
+                        const contentDiv = document.createElement('div');
+                        contentDiv.className = 'content-item';
+                        let innerMedia = '';
+                        
+                        if (item.type === 'html') {
+                            innerMedia = `<div>${item.data}</div>`;
+                        } else {
+                            // تحويل رابط يوتيوب ليعمل كـ Embed إذا لزم الأمر، أو وضعه كزر
+                            innerMedia = `<a href="${item.data}" target="_blank" style="display:block; background:var(--secondary); color:white; text-align:center; padding:10px; text-decoration:none; border-radius:5px; margin-top:10px;">فتح الرابط 🔗</a>`;
+                        }
+
+                        contentDiv.innerHTML = `
+                            <span style="font-size:12px; background:var(--light); padding:3px 8px; border-radius:10px;">${item.category}</span>
+                            <h3 style="margin: 10px 0;">${item.title}</h3>
+                            ${innerMedia}
+                        `;
+                        displayArea.appendChild(contentDiv);
+                    }
+                }
+            });
+            
+            if(displayArea.innerHTML === '') displayArea.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#7f8c8d;">لا يوجد محتوى متاح حالياً.</p>';
+        }
+    </script>
+</body>
+</html>
