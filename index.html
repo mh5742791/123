@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>المنصة التعليمية</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
         /* --- التصميم الأساسي الاحترافي --- */
         :root {
@@ -23,6 +27,11 @@
         .hidden { display: none !important; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         
+        /* --- شاشة التحميل (الجديدة) --- */
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
+        .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
         /* --- الأزرار والحقول --- */
         input, select, textarea { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; transition: all 0.3s; font-family: inherit; background-color: #f8fafc; }
         input:focus, select:focus, textarea:focus { outline: none; border-color: var(--secondary); background-color: #fff; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
@@ -59,7 +68,6 @@
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: var(--card-bg); }
         .tab-content { padding: 30px; display: none; animation: fadeIn 0.4s ease; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- قوائم الإدارة --- */
         .admin-list-item { background: var(--bg-color); border: 1px solid var(--border); padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
@@ -116,13 +124,19 @@
 </head>
 <body>
 
-    <div id="login-section">
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <h2 style="margin: 0;">جاري الاتصال بالمنصة السحابية...</h2>
+        <p style="opacity: 0.8;">يرجى الانتظار قليلاً</p>
+    </div>
+
+    <div id="login-section" class="hidden">
         <div class="login-box">
             <h2>تسجيل الدخول</h2>
             <input type="text" id="login-username" placeholder="اسم المستخدم">
             <input type="password" id="login-password" placeholder="كلمة المرور">
             <button onclick="login()">دخول للمنصة</button>
-            <p id="login-error" style="color: var(--danger); display: none; margin-top:15px;">بيانات غير صحيحة!</p>
+            <p id="login-error" style="color: var(--danger); display: none; margin-top:15px; font-weight:bold;">بيانات غير صحيحة!</p>
         </div>
     </div>
 
@@ -143,10 +157,10 @@
         <div class="tabs-container">
             <div class="tabs-header">
                 <button class="tab-btn active" id="tab-btn-add" onclick="openTab(event, 'tab-content-add')">📝 نشر محتوى</button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-content-manage'); renderAdminContentList();">📋 إدارة المحتوى</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-content-manage')">📋 إدارة المحتوى</button>
                 <button class="tab-btn" onclick="openTab(event, 'tab-menus')">📂 القوائم الجانبية</button>
                 <button class="tab-btn" id="tab-btn-user-add" onclick="openTab(event, 'tab-users-add')">👤 تسجيل طالب</button>
-                <button class="tab-btn" onclick="openTab(event, 'tab-users-manage'); renderAdminUsersList();">👥 إدارة الطلاب</button>
+                <button class="tab-btn" onclick="openTab(event, 'tab-users-manage')">👥 إدارة الطلاب</button>
                 <button class="tab-btn" onclick="openTab(event, 'tab-settings')">⚙️ الإعدادات</button>
             </div>
 
@@ -155,25 +169,22 @@
                 <div style="max-width: 700px;">
                     <label>عنوان المحتوى</label>
                     <input type="text" id="content-title" placeholder="اكتب عنوان الدرس...">
-                    
                     <label>نوع المحتوى</label>
                     <select id="content-type">
                         <option value="html">كود HTML (تفاعلي مرن)</option>
                         <option value="link">رابط خارجي (YouTube, Drive)</option>
                     </select>
-                    
                     <label style="color: var(--secondary); font-weight: bold;">مكان العرض في القائمة الجانبية (الفهرس)</label>
                     <select id="content-folder">
                         <option value="none">-- عرض مستقل (بدون قائمة منسدلة) --</option>
                     </select>
-
                     <label style="color: var(--primary); font-weight: bold;">الصفوف المستهدفة (صلاحيات الرؤية)</label>
                     <select id="content-classes" style="background-color: #e0e7ff; border-color: var(--primary);">
+                        <option value="admin">🔒 خاص بالإدارة فقط (لا يظهر للطلاب)</option>
+                        <option value="all">🌍 للكل (يظهر لجميع الطلاب)</option>
                     </select>
-                    
                     <label>البيانات (الكود أو الرابط)</label>
                     <textarea id="content-data" rows="8" placeholder="قم بلصق الكود هنا..."></textarea>
-                    
                     <div style="display:flex; gap:10px;">
                         <button id="save-content-btn" onclick="saveContent()" style="flex:1; font-size:16px; padding: 15px;">💾 حفظ ونشر المحتوى</button>
                         <button id="cancel-edit-btn" onclick="cancelEditContent()" class="btn-warning hidden" style="padding: 15px;">❌ إلغاء التعديل</button>
@@ -243,12 +254,13 @@
                     </div>
 
                     <div style="background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid var(--border);">
-                        <h3 style="margin-top:0; color:var(--success);">النسخ الاحتياطي (Backup) 🛡️</h3>
-                        <button onclick="exportDB()" class="btn-success" style="width:100%; margin-bottom: 15px;">📥 تحميل نسخة احتياطية</button>
+                        <h3 style="margin-top:0; color:var(--success);">النسخ الاحتياطي السحابي 🛡️</h3>
+                        <p style="font-size: 13px; color: var(--text-muted);">البيانات الآن محفوظة تلقائياً في السحابة (Firebase)، ولكن يمكنك تنزيل نسخة إضافية كملف للوصول إليها دون إنترنت.</p>
+                        <button onclick="exportDB()" class="btn-success" style="width:100%; margin-bottom: 15px;">📥 تحميل نسخة احتياطية إضافية</button>
                         <hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
-                        <label style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 5px;">رفع ملف النسخة الاحتياطية:</label>
+                        <label style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 5px;">استعادة قاعدة البيانات السحابية من ملف:</label>
                         <input type="file" id="import-file" accept=".json" style="padding: 5px; background: white;">
-                        <button onclick="importDB()" class="btn-warning" style="width:100%; color: black;">📤 استعادة البيانات</button>
+                        <button onclick="importDB()" class="btn-warning" style="width:100%; color: black;">📤 استعادة ورفع للسحابة</button>
                     </div>
                 </div>
             </div>
@@ -268,21 +280,123 @@
     </div>
 
     <script>
-        // --- تهيئة قاعدة البيانات ---
-        let db = JSON.parse(localStorage.getItem('eduPlatformDB')) || {
-            users: [{ username: '228820', password: '228820', role: 'admin' }],
-            contents: [], folders: []
+        // ==========================================
+        // 1. تهيئة قاعدة البيانات السحابية (Firebase)
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDBf1WRxgtd7oFuQKbdLC9EO78KQzrh1bM",
+            authDomain: "tech-53a3b.firebaseapp.com",
+            databaseURL: "https://tech-53a3b-default-rtdb.firebaseio.com",
+            projectId: "tech-53a3b",
+            storageBucket: "tech-53a3b.firebasestorage.app",
+            messagingSenderId: "800965684824",
+            appId: "1:800965684824:web:c2bea26af815f15aac642d",
+            measurementId: "G-ZTL8RV85PD"
         };
-        if(!db.folders) db.folders = []; 
+        
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
+        // المتغيرات المحلية (Mirror of Firebase)
+        let db = { users: [], contents: [], folders: [] };
         let currentUser = null;
         let isPreviewMode = false;
         let currentEditContentId = null;
         let currentEditUserOldName = null;
+        let isFirstLoad = true;
 
-        function saveDB() { localStorage.setItem('eduPlatformDB', JSON.stringify(db)); }
+        // ==========================================
+        // 2. المزامنة الفورية (Real-time Sync)
+        // ==========================================
+        database.ref('/').on('value', (snapshot) => {
+            const data = snapshot.val();
+            
+            if (data) {
+                db.users = data.users || [];
+                db.contents = data.contents || [];
+                db.folders = data.folders || [];
+            } else {
+                // إذا كانت قاعدة البيانات فارغة تماماً (أول مرة تشغيل)
+                db = {
+                    users: [{ username: '228820', password: '228820', role: 'admin' }],
+                    contents: [], folders: []
+                };
+                saveDB(); // حفظ حساب الأدمن الافتراضي في السحابة
+            }
 
-        // --- نظام التبويبات ---
+            // إذا كان هذا أول تحميل للموقع
+            if (isFirstLoad) {
+                document.getElementById('loading-overlay').classList.add('hidden'); // إخفاء شاشة التحميل
+                checkSession(); // التحقق من الدخول المحفوظ
+                isFirstLoad = false;
+            } else {
+                // هذا تحديث في الوقت الفعلي (Real-time Update) حدث أثناء استخدام الموقع
+                if (currentUser) {
+                    const verifyUser = db.users.find(u => u.username === currentUser.username && u.password === currentUser.password);
+                    if (verifyUser) {
+                        currentUser = verifyUser; // تحديث بيانات المستخدم
+                        refreshDashboard(); // إعادة رسم الشاشة بالبيانات الجديدة
+                    } else {
+                        // إذا قام المعلم بحذف هذا الطالب وهو يتصفح الموقع، سيتم إخراجه فوراً!
+                        logout(); 
+                    }
+                }
+            }
+        });
+
+        // دالة رفع البيانات للسحابة (بديلة لـ localStorage)
+        function saveDB() {
+            database.ref('/').set(db);
+        }
+
+        // ==========================================
+        // 3. التحقق من الجلسة (Session) وتحديث الواجهة
+        // ==========================================
+        function checkSession() {
+            const savedSession = localStorage.getItem('eduPlatformSession');
+            if (savedSession) {
+                const sessionUser = JSON.parse(savedSession);
+                const verifyUser = db.users.find(u => u.username === sessionUser.username && u.password === sessionUser.password);
+                if (verifyUser) {
+                    currentUser = verifyUser;
+                    initDashboard();
+                } else {
+                    localStorage.removeItem('eduPlatformSession');
+                    document.getElementById('login-section').classList.remove('hidden');
+                }
+            } else {
+                document.getElementById('login-section').classList.remove('hidden');
+            }
+        }
+
+        function initDashboard() {
+            document.getElementById('login-section').classList.add('hidden'); 
+            document.getElementById('main-header').classList.remove('hidden');
+            document.getElementById('welcome-msg').innerText = `مرحباً بك، ${currentUser.username}`;
+            
+            if (currentUser.role === 'admin') {
+                document.getElementById('admin-section').classList.remove('hidden'); 
+                document.getElementById('preview-btn').classList.remove('hidden');
+                refreshDashboard();
+            } else {
+                document.getElementById('sidebar-toggle').classList.remove('hidden'); 
+                showUserDashboard();
+            }
+        }
+
+        function refreshDashboard() {
+            if (currentUser.role === 'admin' && !isPreviewMode) {
+                renderAdminFolders(); 
+                updateFolderDropdowns(); 
+                renderAdminContentList(); 
+                renderAdminUsersList(); 
+                updateClassesDropdown();
+            } else {
+                showUserDashboard();
+            }
+        }
+
+        // --- نظام التبويبات والواجهة ---
         function openTab(evt, tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -316,17 +430,18 @@
             const folderName = document.getElementById('new-folder-name').value.trim();
             if(!folderName || db.folders.includes(folderName)) return alert('الاسم غير صحيح أو موجود مسبقاً!');
             db.folders.push(folderName); saveDB(); document.getElementById('new-folder-name').value = '';
-            renderAdminFolders(); updateFolderDropdowns(); alert('تم الإضافة!');
+            alert('تم الإضافة!'); // تحديث الشاشة سيتم تلقائياً بفضل Firebase Realtime
         }
         function deleteFolder(folderName) {
             if(confirm(`حذف قائمة "${folderName}"؟ (لن يتم حذف الدروس)`)) {
                 db.folders = db.folders.filter(f => f !== folderName);
                 db.contents.forEach(c => { if(c.folder === folderName) c.folder = 'none'; });
-                saveDB(); renderAdminFolders(); updateFolderDropdowns(); renderAdminContentList();
+                saveDB();
             }
         }
         function renderAdminFolders() {
             const list = document.getElementById('admin-folders-list'); list.innerHTML = '';
+            if(db.folders.length === 0) list.innerHTML = '<li style="color:var(--text-muted)">لا توجد قوائم منسدلة حتى الآن.</li>';
             db.folders.forEach(folder => {
                 list.innerHTML += `<li style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-color); padding:10px 15px; margin-bottom:10px; border-radius:5px; border:1px solid var(--border);"><strong>📁 ${folder}</strong><button onclick="deleteFolder('${folder}')" style="background:var(--danger); padding:5px 10px; font-size:12px;">حذف</button></li>`;
             });
@@ -355,12 +470,12 @@
             if (currentEditContentId) {
                 const index = db.contents.findIndex(c => c.id === currentEditContentId);
                 db.contents[index] = { id: currentEditContentId, title, type, data, classes: classesArray, folder };
-                alert('تم التحديث!'); cancelEditContent();
+                alert('تم التحديث والمزامنة السحابية!'); cancelEditContent();
             } else {
                 db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, folder });
-                alert('تم النشر!'); document.getElementById('content-title').value = ''; document.getElementById('content-data').value = '';
+                alert('تم النشر بنجاح للطلاب!'); document.getElementById('content-title').value = ''; document.getElementById('content-data').value = '';
             }
-            saveDB(); renderAdminContentList(); updateClassesDropdown();
+            saveDB();
         }
 
         function renderAdminContentList(searchTerm = '') {
@@ -369,6 +484,8 @@
                 const term = searchTerm.toLowerCase();
                 return item.title.toLowerCase().includes(term) || (item.folder || '').toLowerCase().includes(term) || item.classes.join(' ').toLowerCase().includes(term);
             });
+            if(filtered.length === 0) { listDiv.innerHTML = '<p style="color:var(--text-muted);">لا يوجد محتوى.</p>'; return; }
+            
             [...filtered].reverse().forEach(item => {
                 const folderText = item.folder === 'none' ? 'عرض مستقل' : item.folder;
                 let classesText = item.classes.includes('admin_only') ? '<span style="color:var(--danger)">خاص بالإدارة</span>' : (item.classes.length === 0 ? 'كل الصفوف' : item.classes.join(', '));
@@ -380,7 +497,7 @@
             });
         }
         function filterAdminContent() { renderAdminContentList(document.getElementById('admin-search-content').value); }
-        function deleteContent(id) { if(confirm('متأكد من الحذف؟')) { db.contents = db.contents.filter(c => c.id !== id); saveDB(); filterAdminContent(); } }
+        function deleteContent(id) { if(confirm('متأكد من الحذف؟')) { db.contents = db.contents.filter(c => c.id !== id); saveDB(); } }
         function editContent(id) {
             const item = db.contents.find(c => c.id === id); if(!item) return;
             document.getElementById('content-title').value = item.title; document.getElementById('content-type').value = item.type;
@@ -406,17 +523,18 @@
                 if (name !== currentEditUserOldName && db.users.find(u => u.username === name)) return alert('مستخدم بالفعل!');
                 const index = db.users.findIndex(u => u.username === currentEditUserOldName);
                 db.users[index] = { username: name, password: pass, role: 'student', class: userClass, isStar: isStar };
-                alert('تم تحديث الطالب!'); cancelEditUser();
+                alert('تم التحديث والمزامنة!'); cancelEditUser();
             } else {
                 if (db.users.find(u => u.username === name)) return alert('مستخدم بالفعل!');
                 db.users.push({ username: name, password: pass, role: 'student', class: userClass, isStar: isStar });
-                alert('تم التسجيل!'); document.getElementById('new-user-name').value=''; document.getElementById('new-user-pass').value=''; document.getElementById('new-user-class').value='';
+                alert('تم التسجيل! يمكن للطالب الدخول الآن.'); document.getElementById('new-user-name').value=''; document.getElementById('new-user-pass').value=''; document.getElementById('new-user-class').value='';
             }
-            saveDB(); renderAdminUsersList(); updateClassesDropdown();
+            saveDB();
         }
         function renderAdminUsersList(searchTerm = '') {
             const listDiv = document.getElementById('admin-users-list'); listDiv.innerHTML = '';
             const filtered = db.users.filter(u => u.role === 'student').filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()) || (u.class || '').toLowerCase().includes(searchTerm.toLowerCase()));
+            if(filtered.length === 0) { listDiv.innerHTML = '<p style="color:var(--text-muted);">لا يوجد طلاب.</p>'; return; }
             [...filtered].reverse().forEach(u => {
                 listDiv.innerHTML += `
                     <div class="admin-list-item">
@@ -426,7 +544,7 @@
             });
         }
         function filterAdminUsers() { renderAdminUsersList(document.getElementById('admin-search-users').value); }
-        function deleteUser(username) { if(confirm('تأكيد الحذف؟')) { db.users = db.users.filter(u => u.username !== username); saveDB(); filterAdminUsers(); updateClassesDropdown(); } }
+        function deleteUser(username) { if(confirm('تأكيد الحذف؟')) { db.users = db.users.filter(u => u.username !== username); saveDB(); } }
         function editUser(username) {
             const user = db.users.find(u => u.username === username); if(!user) return;
             document.getElementById('new-user-name').value = user.username; document.getElementById('new-user-pass').value = user.password;
@@ -441,59 +559,17 @@
         }
         function copyCredentials(username, pass) { navigator.clipboard.writeText(`اسم المستخدم: ${username}\nكلمة المرور: ${pass}`).then(() => alert('تم النسخ!')); }
 
-        // --- تسجيل الدخول والجلسة (الميزة الجديدة المضافة لحل مشكلة الريفريش) ---
-        
-        // دالة التحقق من الجلسة المحفوظة عند فتح أو تحديث الصفحة
-        function checkSession() {
-            const savedSession = localStorage.getItem('eduPlatformSession');
-            if (savedSession) {
-                const user = JSON.parse(savedSession);
-                // التأكد من أن المستخدم ما زال موجوداً في قاعدة البيانات (لم يتم حذفه)
-                const verifyUser = db.users.find(u => u.username === user.username && u.password === user.password);
-                if (verifyUser) {
-                    currentUser = verifyUser;
-                    initDashboard();
-                } else {
-                    // إذا تم حذف الطالب من الإدارة، نمسح جلسته
-                    localStorage.removeItem('eduPlatformSession');
-                }
-            }
-        }
-
-        // دالة مجمعة لتهيئة واجهة لوحة التحكم أو صفحة الطالب بعد التحقق من الدخول
-        function initDashboard() {
-            document.getElementById('login-section').classList.add('hidden'); 
-            document.getElementById('main-header').classList.remove('hidden');
-            document.getElementById('welcome-msg').innerText = `مرحباً بك، ${currentUser.username}`;
-            
-            if (currentUser.role === 'admin') {
-                document.getElementById('admin-section').classList.remove('hidden'); 
-                document.getElementById('preview-btn').classList.remove('hidden');
-                renderAdminFolders(); updateFolderDropdowns(); renderAdminContentList(); renderAdminUsersList(); updateClassesDropdown();
-            } else {
-                document.getElementById('sidebar-toggle').classList.remove('hidden'); 
-                showUserDashboard();
-            }
-        }
-
+        // --- نظام تسجيل الدخول ---
         function login() {
             const userIn = document.getElementById('login-username').value.trim(); const passIn = document.getElementById('login-password').value;
             const user = db.users.find(u => u.username === userIn && u.password === passIn);
             if (user) {
-                // حفظ الجلسة في المتصفح لعدم الخروج عند الريفريش
                 localStorage.setItem('eduPlatformSession', JSON.stringify(user));
                 document.getElementById('login-error').style.display = 'none';
-                currentUser = user;
-                initDashboard();
+                currentUser = user; initDashboard();
             } else { document.getElementById('login-error').style.display = 'block'; }
         }
-
-        function logout() { 
-            // إزالة الجلسة عند تسجيل الخروج
-            localStorage.removeItem('eduPlatformSession');
-            location.reload(); 
-        }
-
+        function logout() { localStorage.removeItem('eduPlatformSession'); location.reload(); }
         function updateAdminCredentials() {
             const newU = document.getElementById('admin-new-user').value.trim(); const newP = document.getElementById('admin-new-pass').value;
             if(newU && newP) { db.users[0].username = newU; db.users[0].password = newP; saveDB(); alert('تم تغيير بياناتك. يرجى تسجيل الدخول مجدداً.'); logout(); }
@@ -512,7 +588,7 @@
             reader.onload = function(e) {
                 try {
                     const importedDB = JSON.parse(e.target.result);
-                    if(importedDB.users && importedDB.contents) { db = importedDB; saveDB(); alert('تم الاستعادة بنجاح!'); logout(); } 
+                    if(importedDB.users && importedDB.contents) { db = importedDB; saveDB(); alert('تم رفع البيانات بنجاح للسحابة!'); logout(); } 
                     else { alert('الملف غير صالح.'); }
                 } catch(err) { alert('حدث خطأ.'); }
             }; reader.readAsText(fileInput.files[0]);
@@ -590,10 +666,6 @@
                 displayArea.appendChild(contentDiv);
             });
         }
-
-        // تشغيل التحقق من الجلسة عند تحميل الصفحة لأول مرة
-        window.onload = checkSession;
-
     </script>
 </body>
 </html>
