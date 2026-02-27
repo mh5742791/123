@@ -23,7 +23,7 @@
             --warning: #f59e0b;
         }
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
         .hidden { display: none !important; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         
@@ -79,27 +79,69 @@
         .sidebar.collapsed { width: 0; padding: 0; border: none; margin: 0; opacity: 0; overflow: hidden; }
         .sidebar h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 15px; }
         
-        .sidebar details { margin-bottom: 8px; background: var(--bg-color); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
-        .sidebar summary { padding: 12px 15px; font-weight: bold; cursor: pointer; color: var(--primary); background: #e0e7ff; outline: none; display: flex; align-items: center; gap: 8px; }
+        /* التحديث الجديد للقائمة الجانبية (Accordion) */
+        .sidebar details { margin-bottom: 8px; background: var(--bg-color); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; transition: all 0.3s ease; }
+        .sidebar summary { padding: 14px 15px; font-weight: bold; cursor: pointer; color: var(--primary); background: #f8fafc; outline: none; display: flex; align-items: center; gap: 8px; list-style: none; user-select: none; }
+        .sidebar summary::-webkit-details-marker { display: none; } /* إخفاء السهم الافتراضي */
+        .sidebar summary::after { content: '▼'; margin-right: auto; font-size: 12px; transition: transform 0.3s ease; color: var(--text-muted); }
+        .sidebar details[open] summary::after { transform: rotate(180deg); color: var(--primary); }
+        .sidebar details[open] summary { border-bottom: 1px solid var(--border); background: #e0e7ff; color: var(--primary); }
         .sidebar details ul { list-style: none; padding: 0; margin: 0; background: var(--card-bg); }
-        .sidebar-item { padding: 12px 25px; border-bottom: 1px solid var(--bg-color); cursor: pointer; color: var(--text-muted); font-weight: 600; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
-        .sidebar-item:hover, .independent-item:hover { color: var(--secondary); background: #f8fafc; padding-right: 30px; }
-        .sidebar-item.active, .independent-item.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .independent-item { background: var(--bg-color); border-radius: 8px; margin-bottom: 8px; padding: 12px 15px; border: 1px solid transparent; cursor: pointer; font-weight: bold; color: var(--text-muted); transition: 0.2s;}
+        
+        .sidebar-item { padding: 12px 25px 12px 15px; border-bottom: 1px solid var(--bg-color); cursor: pointer; color: var(--text-muted); font-weight: 600; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .sidebar-item:hover, .independent-item:hover { color: var(--secondary); background: #f8fafc; padding-right: 30px; border-right: 4px solid var(--secondary); }
+        .sidebar-item.active, .independent-item.active { background: var(--primary); color: white; border-color: var(--primary); border-right: 4px solid var(--warning); }
+        .independent-item { background: var(--bg-color); border-radius: 8px; margin-bottom: 8px; padding: 12px 15px; border: 1px solid var(--border); cursor: pointer; font-weight: bold; color: var(--text-muted); transition: 0.2s; border-right: 4px solid transparent;}
 
         .main-content { flex: 1; min-width: 0; transition: all 0.3s ease; }
+        
         .content-grid { display: grid; grid-template-columns: 1fr; gap: 25px; } 
         .content-item { background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .content-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--bg-color); padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .content-title { margin: 0; color: var(--primary); font-size: 20px; }
+        .header-actions { display: flex; align-items: center; gap: 10px; }
         .category-badge { font-size: 13px; font-weight: bold; background: #e0e7ff; color: var(--primary); padding: 6px 14px; border-radius: 20px; }
-        .iframe-responsive-wrapper { width: 100%; height: 75vh; min-height: 400px; background: #ffffff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
-        .html-sandbox { width: 100%; height: 100%; border: none; background: #fff; }
-        .iframe-responsive-wrapper:fullscreen { height: 100vh; border-radius: 0; border: none; }
+        .fullscreen-btn { padding: 6px 12px; font-size: 13px; background-color: var(--primary); }
+        
+        /* --------------------------------------------------- */
+        /* التحديث السحري: حاوية العرض المتجاوبة (Responsive Scale) */
+        /* --------------------------------------------------- */
+        .iframe-responsive-wrapper {
+            position: relative;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* يتم تحديد الـ aspect-ratio برمجياً */
+        }
+
+        .html-sandbox {
+            border: none;
+            background: #fff;
+            transform-origin: top center; /* التمركز من الأعلى والوسط */
+            position: absolute;
+            top: 0;
+            left: 50%;
+            /* transform سيتم ضخها برمجياً لضمان الدقة */
+        }
+
+        /* تنسيقات الشاشة الكاملة */
+        .iframe-responsive-wrapper:fullscreen {
+            aspect-ratio: auto !important;
+            width: 100vw;
+            height: 100vh;
+            background: #000000;
+            border-radius: 0;
+            border: none;
+        }
         
         @media (max-width: 768px) {
-            #user-layout { flex-direction: column; } .sidebar { width: 100%; max-height: none; } .sidebar.collapsed { height: 0; width: 100%; }
-            .iframe-responsive-wrapper { height: 60vh; } .admin-list-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+            #user-layout { flex-direction: column; } .sidebar { width: 100%; max-height: none; } .sidebar.collapsed { height: 0; width: 100%; display: none; }
+            .admin-list-item { flex-direction: column; align-items: flex-start; gap: 15px; }
         }
     </style>
 </head>
@@ -151,6 +193,13 @@
                     <input type="text" id="content-title" placeholder="اكتب عنوان الدرس...">
                     <label>نوع المحتوى</label>
                     <select id="content-type"><option value="html">كود HTML (تفاعلي مرن)</option><option value="link">رابط خارجي</option></select>
+                    
+                    <label style="color: var(--primary); font-weight: bold;">أبعاد عرض الدرس التفاعلي (Aspect Ratio)</label>
+                    <select id="content-ratio">
+                        <option value="16:9">عريض (16:9) - دقة 1280x720 (ممتاز للشاشات الحديثة)</option>
+                        <option value="4:3">مربع (4:3) - دقة 1024x768 (ممتاز للدروس القديمة)</option>
+                    </select>
+
                     <label style="color: var(--secondary); font-weight: bold;">مكان العرض في القائمة الجانبية</label>
                     <select id="content-folder"><option value="none">-- عرض مستقل (بدون قائمة) --</option></select>
                     <label style="color: var(--primary); font-weight: bold;">الصفوف المستهدفة</label>
@@ -166,61 +215,11 @@
                 </div>
             </div>
 
-            <div id="tab-content-manage" class="tab-content">
-                <h2 style="margin-top:0; color:var(--primary);">إدارة المحتوى المضاف</h2>
-                <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="admin-search-content" placeholder="بحث..." onkeyup="filterAdminContent()"></div>
-                <div id="admin-content-list"></div>
-            </div>
-
-            <div id="tab-menus" class="tab-content">
-                <h2 style="margin-top:0; color:var(--primary);">إدارة القوائم المنسدلة</h2>
-                <div style="max-width: 600px; display: flex; gap: 10px; margin-bottom: 30px;">
-                    <input type="text" id="new-folder-name" placeholder="اسم القائمة..." style="margin-bottom:0;">
-                    <button onclick="addFolder()" class="btn-success" style="white-space:nowrap;">➕ إضافة قائمة</button>
-                </div>
-                <div style="max-width: 600px;"><ul id="admin-folders-list" style="list-style: none; padding: 0;"></ul></div>
-            </div>
-
-            <div id="tab-users-add" class="tab-content">
-                <h2 id="add-edit-user-title" style="margin-top:0; color:var(--primary);">تسجيل طالب جديد</h2>
-                <div style="max-width: 600px;">
-                    <input type="text" id="new-user-name" placeholder="اسم المستخدم">
-                    <div class="btn-group"><input type="text" id="new-user-pass" placeholder="كلمة المرور" style="margin-bottom:0;"><button type="button" onclick="generatePassword()" class="btn-warning">توليد</button></div><br>
-                    <input type="text" id="new-user-class" placeholder="الصف الدراسي">
-                    <label style="display:flex; align-items:center; gap:10px; background:var(--bg-color); padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid var(--border);">
-                        <input type="checkbox" id="new-user-star" style="width:20px; height:20px; margin:0;"><strong>طالب مميز ⭐</strong>
-                    </label>
-                    <div style="display:flex; gap:10px;">
-                        <button id="save-user-btn" class="btn-success" onclick="saveUser()" style="flex:1; padding: 15px;">➕ إضافة الطالب</button>
-                        <button id="cancel-edit-user-btn" onclick="cancelEditUser()" class="btn-danger hidden" style="padding: 15px;">❌ إلغاء</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-users-manage" class="tab-content">
-                <h2 style="margin-top:0; color:var(--primary);">إدارة الطلاب المسجلين</h2>
-                <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="admin-search-users" placeholder="بحث..." onkeyup="filterAdminUsers()"></div>
-                <div id="admin-users-list"></div>
-            </div>
-            
-            <div id="tab-settings" class="tab-content">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-                    <div style="background: white; padding: 25px; border-radius: 12px; border: 1px solid var(--border);">
-                        <h3 style="margin-top:0; color:var(--primary);">تغيير بيانات الأدمن</h3>
-                        <input type="text" id="admin-new-user" placeholder="اسم المستخدم الجديد">
-                        <input type="password" id="admin-new-pass" placeholder="كلمة المرور الجديدة">
-                        <button onclick="updateAdminCredentials()" class="btn-danger" style="width:100%;">🔄 تحديث</button>
-                    </div>
-                    <div style="background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid var(--border);">
-                        <h3 style="margin-top:0; color:var(--success);">النسخ الاحتياطي السحابي 🛡️</h3>
-                        <button onclick="exportDB()" class="btn-success" style="width:100%; margin-bottom: 15px;">📥 تحميل نسخة احتياطية</button>
-                        <hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
-                        <label style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 5px;">استعادة السحابة من ملف:</label>
-                        <input type="file" id="import-file" accept=".json" style="padding: 5px; background: white;">
-                        <button onclick="importDB()" class="btn-warning" style="width:100%; color: black;">📤 استعادة</button>
-                    </div>
-                </div>
-            </div>
+            <div id="tab-content-manage" class="tab-content"><h2 style="margin-top:0; color:var(--primary);">إدارة المحتوى المضاف</h2><div class="search-box"><span class="search-icon">🔍</span><input type="text" id="admin-search-content" placeholder="بحث..." onkeyup="filterAdminContent()"></div><div id="admin-content-list"></div></div>
+            <div id="tab-menus" class="tab-content"><h2 style="margin-top:0; color:var(--primary);">إدارة القوائم المنسدلة</h2><div style="max-width: 600px; display: flex; gap: 10px; margin-bottom: 30px;"><input type="text" id="new-folder-name" placeholder="اسم القائمة..." style="margin-bottom:0;"><button onclick="addFolder()" class="btn-success" style="white-space:nowrap;">➕ إضافة قائمة</button></div><div style="max-width: 600px;"><ul id="admin-folders-list" style="list-style: none; padding: 0;"></ul></div></div>
+            <div id="tab-users-add" class="tab-content"><h2 id="add-edit-user-title" style="margin-top:0; color:var(--primary);">تسجيل طالب جديد</h2><div style="max-width: 600px;"><input type="text" id="new-user-name" placeholder="اسم المستخدم"><div class="btn-group"><input type="text" id="new-user-pass" placeholder="كلمة المرور" style="margin-bottom:0;"><button type="button" onclick="generatePassword()" class="btn-warning">توليد</button></div><br><input type="text" id="new-user-class" placeholder="الصف الدراسي"><label style="display:flex; align-items:center; gap:10px; background:var(--bg-color); padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid var(--border);"><input type="checkbox" id="new-user-star" style="width:20px; height:20px; margin:0;"><strong>طالب مميز ⭐</strong></label><div style="display:flex; gap:10px;"><button id="save-user-btn" class="btn-success" onclick="saveUser()" style="flex:1; padding: 15px;">➕ إضافة الطالب</button><button id="cancel-edit-user-btn" onclick="cancelEditUser()" class="btn-danger hidden" style="padding: 15px;">❌ إلغاء</button></div></div></div>
+            <div id="tab-users-manage" class="tab-content"><h2 style="margin-top:0; color:var(--primary);">إدارة الطلاب المسجلين</h2><div class="search-box"><span class="search-icon">🔍</span><input type="text" id="admin-search-users" placeholder="بحث..." onkeyup="filterAdminUsers()"></div><div id="admin-users-list"></div></div>
+            <div id="tab-settings" class="tab-content"><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;"><div style="background: white; padding: 25px; border-radius: 12px; border: 1px solid var(--border);"><h3 style="margin-top:0; color:var(--primary);">تغيير بيانات الأدمن</h3><input type="text" id="admin-new-user" placeholder="اسم المستخدم الجديد"><input type="password" id="admin-new-pass" placeholder="كلمة المرور الجديدة"><button onclick="updateAdminCredentials()" class="btn-danger" style="width:100%;">🔄 تحديث</button></div><div style="background: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid var(--border);"><h3 style="margin-top:0; color:var(--success);">النسخ الاحتياطي 🛡️</h3><button onclick="exportDB()" class="btn-success" style="width:100%; margin-bottom: 15px;">📥 تحميل نسخة احتياطية</button><hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;"><label style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 5px;">استعادة من ملف:</label><input type="file" id="import-file" accept=".json" style="padding: 5px; background: white;"><button onclick="importDB()" class="btn-warning" style="width:100%; color: black;">📤 استعادة</button></div></div></div>
         </div>
     </div>
 
@@ -251,26 +250,18 @@
         let db = { users: [], contents: [], folders: [] };
         let currentUser = null; let isPreviewMode = false; let currentEditContentId = null; let currentEditUserOldName = null; let isFirstLoad = true;
 
-        // دالة حماية المصفوفات (لمنع مشاكل حذف Firebase للقوائم الفارغة)
         function sanitizeArray(arr) {
             if (!arr) return [];
             return Object.values(arr).filter(item => item !== null && item !== undefined);
         }
 
-        // استدعاء البيانات لحظياً من Firebase
         database.ref('/').on('value', (snapshot) => {
             const data = snapshot.val();
-            
             if (data) {
-                // استخدام دالة الحماية للتأكد من أن البيانات دائماً مصفوفة (Array) سليمة
                 db.users = sanitizeArray(data.users);
                 db.contents = sanitizeArray(data.contents);
                 db.folders = sanitizeArray(data.folders);
-                
-                // التأكد الإجباري من وجود حقل "الصفوف" في كل درس
-                db.contents.forEach(item => {
-                    if (!item.classes) item.classes = [];
-                });
+                db.contents.forEach(item => { if (!item.classes) item.classes = []; if(!item.ratio) item.ratio = '16:9'; }); // إضافة ratio كقيمة افتراضية
             } else {
                 db = { users: [{ username: '228820', password: '228820', role: 'admin' }], contents: [], folders: [] };
                 saveDB(); 
@@ -285,13 +276,7 @@
             }
         });
 
-        // دالة الحفظ
-        function saveDB() {
-            database.ref('/').set(db).catch(error => {
-                alert("⚠️ فشل الحفظ! تحقق من اتصالك بالإنترنت.");
-                console.error(error);
-            });
-        }
+        function saveDB() { database.ref('/').set(db).catch(error => { console.error(error); }); }
 
         // --- الجلسة والواجهة ---
         function checkSession() {
@@ -331,6 +316,39 @@
             if (!document.fullscreenElement) { if (w.requestFullscreen) w.requestFullscreen(); else if (w.webkitRequestFullscreen) w.webkitRequestFullscreen(); } 
             else { if (document.exitFullscreen) document.exitFullscreen(); }
         }
+
+        // ==========================================
+        // النظام السحري لتكبير وتصغير الـ HTML
+        // ==========================================
+        function applyScaling() {
+            document.querySelectorAll('.iframe-responsive-wrapper').forEach(wrapper => {
+                const iframe = wrapper.querySelector('iframe');
+                if (iframe) {
+                    const vWidth = parseFloat(iframe.getAttribute('data-vwidth')) || 1280;
+                    const vHeight = parseFloat(iframe.getAttribute('data-vheight')) || 720;
+                    
+                    let scale;
+                    // حساب مقياس التكبير بناءً على عرض الحاوية (الكمبيوتر أو الموبايل)
+                    if (document.fullscreenElement === wrapper) {
+                        const scaleX = window.innerWidth / vWidth;
+                        const scaleY = window.innerHeight / vHeight;
+                        scale = Math.min(scaleX, scaleY); 
+                    } else {
+                        scale = wrapper.clientWidth / vWidth;
+                    }
+                    
+                    // تطبيق الأبعاد والمقياس
+                    iframe.style.width = vWidth + 'px';
+                    iframe.style.height = vHeight + 'px';
+                    // خدعة التمركز باستخدام translateX لضبط العنصر في المنتصف بعد التكبير
+                    iframe.style.transform = `translateX(-50%) scale(${scale})`;
+                }
+            });
+        }
+        // تشغيل الدالة عند تغيير حجم النافذة
+        window.addEventListener('resize', applyScaling);
+        document.addEventListener('fullscreenchange', applyScaling);
+
         function updateClassesDropdown() {
             const select = document.getElementById('content-classes'); if(!select) return;
             const currentVal = select.value;
@@ -352,19 +370,13 @@
             const newName = prompt(`تغيير اسم القائمة "${oldName}" إلى:`, oldName);
             if (newName && newName.trim() !== "" && newName !== oldName) {
                 const trimmedName = newName.trim();
-                if (db.folders.includes(trimmedName)) return alert('هذا الاسم موجود بالفعل!');
-                const index = db.folders.indexOf(oldName);
-                if (index !== -1) db.folders[index] = trimmedName;
-                db.contents.forEach(c => { if (c.folder === oldName) c.folder = trimmedName; });
-                saveDB();
+                if (db.folders.includes(trimmedName)) return alert('موجود بالفعل!');
+                const index = db.folders.indexOf(oldName); if (index !== -1) db.folders[index] = trimmedName;
+                db.contents.forEach(c => { if (c.folder === oldName) c.folder = trimmedName; }); saveDB();
             }
         }
         function deleteFolder(folderName) {
-            if(confirm(`حذف قائمة "${folderName}"؟ (الدروس بداخلها ستصبح مستقلة)`)) {
-                db.folders = db.folders.filter(f => f !== folderName);
-                db.contents.forEach(c => { if(c.folder === folderName) c.folder = 'none'; });
-                saveDB();
-            }
+            if(confirm(`حذف قائمة "${folderName}"؟`)) { db.folders = db.folders.filter(f => f !== folderName); db.contents.forEach(c => { if(c.folder === folderName) c.folder = 'none'; }); saveDB(); }
         }
         function renderAdminFolders() {
             const list = document.getElementById('admin-folders-list'); list.innerHTML = '';
@@ -374,8 +386,7 @@
             });
         }
         function updateFolderDropdowns() {
-            const select = document.getElementById('content-folder');
-            select.innerHTML = '<option value="none">-- عرض مستقل (بدون قائمة منسدلة) --</option>';
+            const select = document.getElementById('content-folder'); select.innerHTML = '<option value="none">-- عرض مستقل (بدون قائمة منسدلة) --</option>';
             db.folders.forEach(folder => { select.innerHTML += `<option value="${folder}">${folder}</option>`; });
         }
 
@@ -384,20 +395,19 @@
             const title = document.getElementById('content-title').value.trim(); const type = document.getElementById('content-type').value;
             const folder = document.getElementById('content-folder').value; const data = document.getElementById('content-data').value.trim();
             const classesVal = document.getElementById('content-classes').value;
+            const ratio = document.getElementById('content-ratio').value; // جلب الأبعاد
             
             let classesArray = [];
-            if (classesVal === 'admin') classesArray = ['admin_only']; 
-            else if (classesVal === 'all') classesArray = []; 
-            else classesArray = [classesVal];
+            if (classesVal === 'admin') classesArray = ['admin_only']; else if (classesVal === 'all') classesArray = []; else classesArray = [classesVal];
 
             if (!title || !data) return alert('البيانات غير مكتملة!');
             
             if (currentEditContentId) {
                 const index = db.contents.findIndex(c => c.id === currentEditContentId);
-                db.contents[index] = { id: currentEditContentId, title, type, data, classes: classesArray, folder };
+                db.contents[index] = { id: currentEditContentId, title, type, data, classes: classesArray, folder, ratio };
                 cancelEditContent();
             } else {
-                db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, folder });
+                db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, folder, ratio });
                 document.getElementById('content-title').value = ''; document.getElementById('content-data').value = '';
             }
             saveDB();
@@ -410,10 +420,7 @@
             [...filtered].reverse().forEach(item => {
                 const folderText = item.folder === 'none' ? 'عرض مستقل' : item.folder;
                 let classesText = 'كل الصفوف';
-                if(item.classes) {
-                    if (item.classes.includes('admin_only')) classesText = '<span style="color:var(--danger)">خاص بالإدارة</span>';
-                    else if (item.classes.length > 0) classesText = item.classes.join(', ');
-                }
+                if(item.classes) { if (item.classes.includes('admin_only')) classesText = '<span style="color:var(--danger)">خاص بالإدارة</span>'; else if (item.classes.length > 0) classesText = item.classes.join(', '); }
                 listDiv.innerHTML += `
                     <div class="admin-list-item">
                         <div class="admin-item-info"><h4>${item.title}</h4><div class="admin-item-meta"><span>📁 ${folderText}</span><span>👥 ${classesText}</span></div></div>
@@ -427,17 +434,18 @@
             const item = db.contents.find(c => c.id === id); if(!item) return;
             document.getElementById('content-title').value = item.title; document.getElementById('content-type').value = item.type;
             document.getElementById('content-folder').value = item.folder || 'none'; document.getElementById('content-data').value = item.data;
+            document.getElementById('content-ratio').value = item.ratio || '16:9';
             document.getElementById('content-classes').value = (item.classes && item.classes.includes('admin_only')) ? 'admin' : ((!item.classes || item.classes.length === 0) ? 'all' : item.classes[0]);
             currentEditContentId = id; document.getElementById('add-edit-title').innerText = `✏️ تعديل: ${item.title}`;
             document.getElementById('save-content-btn').innerHTML = '🔄 تحديث'; document.getElementById('cancel-edit-btn').classList.remove('hidden');
             openTab(null, 'tab-content-add'); document.getElementById('tab-btn-add').classList.add('active');
         }
         function cancelEditContent() {
-            currentEditContentId = null; document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; document.getElementById('content-classes').value = 'admin';
+            currentEditContentId = null; document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; document.getElementById('content-classes').value = 'admin'; document.getElementById('content-ratio').value = '16:9';
             document.getElementById('add-edit-title').innerText = 'نشر محتوى جديد'; document.getElementById('save-content-btn').innerHTML = '💾 حفظ'; document.getElementById('cancel-edit-btn').classList.add('hidden');
         }
 
-        // --- الطلاب ---
+        // --- الطلاب وميزات التسجيل وباقي الكود ---
         function generatePassword() { document.getElementById('new-user-pass').value = Math.random().toString(36).slice(-6); }
         function saveUser() {
             const name = document.getElementById('new-user-name').value.trim(); const pass = document.getElementById('new-user-pass').value.trim();
@@ -451,8 +459,7 @@
                 if (db.users.find(u => u.username === name)) return alert('مستخدم بالفعل!');
                 db.users.push({ username: name, password: pass, role: 'student', class: userClass, isStar: isStar });
                 document.getElementById('new-user-name').value=''; document.getElementById('new-user-pass').value=''; document.getElementById('new-user-class').value='';
-            }
-            saveDB();
+            } saveDB();
         }
         function renderAdminUsersList(searchTerm = '') {
             const listDiv = document.getElementById('admin-users-list'); listDiv.innerHTML = '';
@@ -481,8 +488,6 @@
             document.getElementById('add-edit-user-title').innerText = 'تسجيل جديد'; document.getElementById('save-user-btn').innerHTML = '➕ إضافة'; document.getElementById('cancel-edit-user-btn').classList.add('hidden');
         }
         function copyCredentials(username, pass) { navigator.clipboard.writeText(`اسم المستخدم: ${username}\nكلمة المرور: ${pass}`).then(() => alert('تم النسخ!')); }
-
-        // --- تسجيل الدخول والنسخ ---
         function login() {
             const userIn = document.getElementById('login-username').value.trim(); const passIn = document.getElementById('login-password').value;
             const user = db.users.find(u => u.username === userIn && u.password === passIn);
@@ -501,12 +506,8 @@
         }
         function importDB() {
             const fileInput = document.getElementById('import-file'); if(!fileInput.files.length) return alert('اختر ملف!');
-            const reader = new FileReader();
-            reader.onload = function(e) { try { const importedDB = JSON.parse(e.target.result); if(importedDB.users && importedDB.contents) { db = importedDB; saveDB(); alert('تم الرفع للسحابة!'); } } catch(err) { alert('خطأ.'); } };
-            reader.readAsText(fileInput.files[0]);
+            const reader = new FileReader(); reader.onload = function(e) { try { const importedDB = JSON.parse(e.target.result); if(importedDB.users && importedDB.contents) { db = importedDB; saveDB(); alert('تم الرفع للسحابة!'); } } catch(err) { alert('خطأ.'); } }; reader.readAsText(fileInput.files[0]);
         }
-
-        // --- المعاينة وعرض الفهرس ---
         function showPreview() {
             isPreviewMode = true; document.getElementById('admin-section').classList.add('hidden'); document.getElementById('preview-btn').classList.add('hidden');
             document.getElementById('back-admin-btn').classList.remove('hidden'); document.getElementById('sidebar-toggle').classList.remove('hidden');
@@ -528,6 +529,7 @@
             return false;
         }
 
+        // --- بناء الفهرس الجانبي (Accordion المطور) ---
         function showUserDashboard() {
             document.getElementById('user-section').classList.remove('hidden');
             const sidebarDiv = document.getElementById('sidebar-content-list');
@@ -537,29 +539,51 @@
             let groupedContent = {}; let independentContent = [];
             visibleContents.forEach(item => { if(item.folder && item.folder !== 'none') { if(!groupedContent[item.folder]) groupedContent[item.folder] = []; groupedContent[item.folder].push(item); } else independentContent.push(item); });
 
+            // بناء القوائم المنسدلة (Folders)
             for(let folderName in groupedContent) {
+                // استخدام details و summary لعمل Accordion أصلي
                 let detailsHTML = `<details><summary>📁 ${folderName}</summary><ul>`;
                 groupedContent[folderName].forEach(item => { detailsHTML += `<li class="sidebar-item" onclick="showSingleContent(${item.id}, this)">📄 ${item.title}</li>`; });
                 detailsHTML += `</ul></details>`; sidebarDiv.innerHTML += detailsHTML;
             }
+            // بناء الدروس المستقلة
             independentContent.forEach(item => { sidebarDiv.innerHTML += `<div class="independent-item" onclick="showSingleContent(${item.id}, this)">📌 ${item.title}</div>`; });
+            
             document.getElementById('content-display').innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-muted); background: white; border-radius: 12px;">👈 يرجى اختيار درس من الفهرس الجانبي لعرضه.</div>';
         }
 
-        function setActiveSidebarItem(element) { document.querySelectorAll('.sidebar-item, .independent-item').forEach(el => el.classList.remove('active')); element.classList.add('active'); if(window.innerWidth <= 768) toggleSidebar(); }
+        function setActiveSidebarItem(element) { 
+            document.querySelectorAll('.sidebar-item, .independent-item').forEach(el => el.classList.remove('active')); 
+            element.classList.add('active'); 
+            if(window.innerWidth <= 768) toggleSidebar(); 
+        }
+        
         function showAllContent(element) { setActiveSidebarItem(element); renderContentItems(db.contents.filter(canViewContent).reverse()); }
         function showSingleContent(id, element) { setActiveSidebarItem(element); const item = db.contents.find(c => c.id === id); if(item) renderContentItems([item]); }
 
         function renderContentItems(itemsArray) {
             const displayArea = document.getElementById('content-display'); displayArea.innerHTML = '';
             if(itemsArray.length === 0) return displayArea.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px; color:var(--text-muted);">لا يوجد محتوى.</div>';
+            
             itemsArray.forEach(item => {
                 const contentDiv = document.createElement('div'); contentDiv.className = 'content-item';
                 let innerMedia = ''; let fullScreenBtnHTML = '';
                 let folderBadge = (item.folder && item.folder !== 'none') ? `<span class="category-badge">${item.folder}</span>` : '';
+                
                 if (item.type === 'html') {
                     const wrapperId = `wrapper-${item.id}`; let safeHTML = item.data.replace(/"/g, '&quot;');
-                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper"><iframe class="html-sandbox" srcdoc="${safeHTML}"></iframe></div>`;
+                    
+                    // استخراج الأبعاد للـ Scale-to-Fit
+                    const isSquare = item.ratio === '4:3';
+                    const cssRatio = isSquare ? '4/3' : '16/9';
+                    const vWidth = isSquare ? 1024 : 1280;
+                    const vHeight = isSquare ? 768 : 720;
+
+                    // الحاوية الخارجية والـ Iframe الداخلي
+                    innerMedia = `
+                    <div id="${wrapperId}" class="iframe-responsive-wrapper" style="aspect-ratio: ${cssRatio};">
+                        <iframe class="html-sandbox" srcdoc="${safeHTML}" data-vwidth="${vWidth}" data-vheight="${vHeight}"></iframe>
+                    </div>`;
                     fullScreenBtnHTML = `<button onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
                 } else {
                     innerMedia = `<a href="${item.data}" target="_blank" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط في نافذة جديدة</a>`;
@@ -567,6 +591,9 @@
                 contentDiv.innerHTML = `<div class="content-header"><h3 class="content-title">${item.title}</h3><div class="header-actions">${fullScreenBtnHTML}${folderBadge}</div></div>${innerMedia}`;
                 displayArea.appendChild(contentDiv);
             });
+
+            // مهم جداً: استدعاء التكبير والتصغير بعد رسم العناصر مباشرة بـ 50 جزء من الثانية لضمان حساب العرض بدقة
+            setTimeout(applyScaling, 50);
         }
     </script>
 </body>
