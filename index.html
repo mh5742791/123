@@ -65,6 +65,7 @@
 
         /* --- قوائم الإدارة --- */
         .admin-list-item { background: var(--bg-color); border: 1px solid var(--border); padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .admin-list-item:hover { border-color: var(--secondary); background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .admin-item-info h4 { margin: 0 0 5px 0; color: var(--primary); font-size: 18px; display: flex; align-items: center; gap: 8px; }
         .admin-item-meta { font-size: 13px; color: var(--text-muted); display: flex; gap: 15px; flex-wrap: wrap; }
         .admin-item-actions { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -250,15 +251,31 @@
         let db = { users: [], contents: [], folders: [] };
         let currentUser = null; let isPreviewMode = false; let currentEditContentId = null; let currentEditUserOldName = null; let isFirstLoad = true;
 
-        // استدعاء البيانات لحظياً
+        // دالة حماية المصفوفات (لمنع مشاكل حذف Firebase للقوائم الفارغة)
+        function sanitizeArray(arr) {
+            if (!arr) return [];
+            return Object.values(arr).filter(item => item !== null && item !== undefined);
+        }
+
+        // استدعاء البيانات لحظياً من Firebase
         database.ref('/').on('value', (snapshot) => {
             const data = snapshot.val();
+            
             if (data) {
-                db.users = data.users || []; db.contents = data.contents || []; db.folders = data.folders || [];
+                // استخدام دالة الحماية للتأكد من أن البيانات دائماً مصفوفة (Array) سليمة
+                db.users = sanitizeArray(data.users);
+                db.contents = sanitizeArray(data.contents);
+                db.folders = sanitizeArray(data.folders);
+                
+                // التأكد الإجباري من وجود حقل "الصفوف" في كل درس
+                db.contents.forEach(item => {
+                    if (!item.classes) item.classes = [];
+                });
             } else {
                 db = { users: [{ username: '228820', password: '228820', role: 'admin' }], contents: [], folders: [] };
                 saveDB(); 
             }
+
             if (isFirstLoad) {
                 document.getElementById('loading-overlay').classList.add('hidden');
                 checkSession(); isFirstLoad = false;
@@ -266,15 +283,12 @@
                 const verifyUser = db.users.find(u => u.username === currentUser.username && u.password === currentUser.password);
                 if (verifyUser) { currentUser = verifyUser; refreshDashboard(); } else { logout(); }
             }
-        }, (error) => {
-            alert("⚠️ خطأ في قراءة البيانات: يرجى التأكد من تعديل قواعد Rules في Firebase لتكون true كما في التعليمات.");
-            document.getElementById('loading-overlay').classList.add('hidden');
         });
 
-        // دالة الحفظ مع تنبيه الأخطاء
+        // دالة الحفظ
         function saveDB() {
             database.ref('/').set(db).catch(error => {
-                alert("⚠️ فشل الحفظ! قاعدة البيانات مغلقة، تأكد من تعديل Rules إلى true.");
+                alert("⚠️ فشل الحفظ! تحقق من اتصالك بالإنترنت.");
                 console.error(error);
             });
         }
@@ -323,35 +337,28 @@
             select.innerHTML = `<option value="admin">🔒 خاص بالإدارة فقط</option><option value="all">🌍 للكل</option>`;
             const uniqueClasses = new Set();
             db.users.forEach(u => { if (u.role === 'student' && u.class && u.class.trim() !== '') uniqueClasses.add(u.class.trim()); });
-            db.contents.forEach(c => { c.classes.forEach(cls => { if(cls !== 'admin_only') uniqueClasses.add(cls); }); });
+            db.contents.forEach(c => { if(c.classes) { c.classes.forEach(cls => { if(cls !== 'admin_only') uniqueClasses.add(cls); }); } });
             uniqueClasses.forEach(cls => { select.innerHTML += `<option value="${cls}">📁 ${cls}</option>`; });
             if(currentVal && Array.from(select.options).some(opt => opt.value === currentVal)) select.value = currentVal;
         }
 
-        // --- المجلدات (تعديل القوائم الجانبية) ---
+        // --- المجلدات ---
         function addFolder() {
             const folderName = document.getElementById('new-folder-name').value.trim();
             if(!folderName || db.folders.includes(folderName)) return alert('الاسم غير صحيح أو موجود مسبقاً!');
             db.folders.push(folderName); saveDB(); document.getElementById('new-folder-name').value = '';
         }
-        
-        // ميزة التعديل الجديدة للمجلدات
         function editFolder(oldName) {
             const newName = prompt(`تغيير اسم القائمة "${oldName}" إلى:`, oldName);
             if (newName && newName.trim() !== "" && newName !== oldName) {
                 const trimmedName = newName.trim();
                 if (db.folders.includes(trimmedName)) return alert('هذا الاسم موجود بالفعل!');
-                
-                // تحديث مصفوفة المجلدات
                 const index = db.folders.indexOf(oldName);
                 if (index !== -1) db.folders[index] = trimmedName;
-                
-                // تحديث جميع الدروس التي كانت تابعة لهذا المجلد
                 db.contents.forEach(c => { if (c.folder === oldName) c.folder = trimmedName; });
                 saveDB();
             }
         }
-
         function deleteFolder(folderName) {
             if(confirm(`حذف قائمة "${folderName}"؟ (الدروس بداخلها ستصبح مستقلة)`)) {
                 db.folders = db.folders.filter(f => f !== folderName);
@@ -359,22 +366,13 @@
                 saveDB();
             }
         }
-
         function renderAdminFolders() {
             const list = document.getElementById('admin-folders-list'); list.innerHTML = '';
             if(db.folders.length === 0) list.innerHTML = '<li style="color:var(--text-muted)">لا توجد قوائم منسدلة.</li>';
             db.folders.forEach(folder => {
-                list.innerHTML += `
-                <li style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-color); padding:10px 15px; margin-bottom:10px; border-radius:5px; border:1px solid var(--border);">
-                    <strong>📁 ${folder}</strong>
-                    <div>
-                        <button onclick="editFolder('${folder}')" style="background:var(--warning); color:#000; padding:5px 10px; font-size:12px; margin-left:5px;">✏️ تعديل</button>
-                        <button onclick="deleteFolder('${folder}')" style="background:var(--danger); padding:5px 10px; font-size:12px;">🗑️ حذف</button>
-                    </div>
-                </li>`;
+                list.innerHTML += `<li style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-color); padding:10px 15px; margin-bottom:10px; border-radius:5px; border:1px solid var(--border);"><strong>📁 ${folder}</strong><div><button onclick="editFolder('${folder}')" style="background:var(--warning); color:#000; padding:5px 10px; font-size:12px; margin-left:5px;">✏️ تعديل</button><button onclick="deleteFolder('${folder}')" style="background:var(--danger); padding:5px 10px; font-size:12px;">🗑️ حذف</button></div></li>`;
             });
         }
-
         function updateFolderDropdowns() {
             const select = document.getElementById('content-folder');
             select.innerHTML = '<option value="none">-- عرض مستقل (بدون قائمة منسدلة) --</option>';
@@ -386,9 +384,14 @@
             const title = document.getElementById('content-title').value.trim(); const type = document.getElementById('content-type').value;
             const folder = document.getElementById('content-folder').value; const data = document.getElementById('content-data').value.trim();
             const classesVal = document.getElementById('content-classes').value;
+            
             let classesArray = [];
-            if (classesVal === 'admin') classesArray = ['admin_only']; else if (classesVal === 'all') classesArray = []; else classesArray = [classesVal];
+            if (classesVal === 'admin') classesArray = ['admin_only']; 
+            else if (classesVal === 'all') classesArray = []; 
+            else classesArray = [classesVal];
+
             if (!title || !data) return alert('البيانات غير مكتملة!');
+            
             if (currentEditContentId) {
                 const index = db.contents.findIndex(c => c.id === currentEditContentId);
                 db.contents[index] = { id: currentEditContentId, title, type, data, classes: classesArray, folder };
@@ -402,11 +405,15 @@
 
         function renderAdminContentList(searchTerm = '') {
             const listDiv = document.getElementById('admin-content-list'); listDiv.innerHTML = '';
-            const filtered = db.contents.filter(item => { const term = searchTerm.toLowerCase(); return item.title.toLowerCase().includes(term) || (item.folder || '').toLowerCase().includes(term) || item.classes.join(' ').toLowerCase().includes(term); });
+            const filtered = db.contents.filter(item => { const term = searchTerm.toLowerCase(); return item.title.toLowerCase().includes(term) || (item.folder || '').toLowerCase().includes(term) || (item.classes && item.classes.join(' ').toLowerCase().includes(term)); });
             if(filtered.length === 0) return listDiv.innerHTML = '<p style="color:var(--text-muted);">لا يوجد محتوى.</p>';
             [...filtered].reverse().forEach(item => {
                 const folderText = item.folder === 'none' ? 'عرض مستقل' : item.folder;
-                let classesText = item.classes.includes('admin_only') ? '<span style="color:var(--danger)">خاص بالإدارة</span>' : (item.classes.length === 0 ? 'كل الصفوف' : item.classes.join(', '));
+                let classesText = 'كل الصفوف';
+                if(item.classes) {
+                    if (item.classes.includes('admin_only')) classesText = '<span style="color:var(--danger)">خاص بالإدارة</span>';
+                    else if (item.classes.length > 0) classesText = item.classes.join(', ');
+                }
                 listDiv.innerHTML += `
                     <div class="admin-list-item">
                         <div class="admin-item-info"><h4>${item.title}</h4><div class="admin-item-meta"><span>📁 ${folderText}</span><span>👥 ${classesText}</span></div></div>
@@ -420,7 +427,7 @@
             const item = db.contents.find(c => c.id === id); if(!item) return;
             document.getElementById('content-title').value = item.title; document.getElementById('content-type').value = item.type;
             document.getElementById('content-folder').value = item.folder || 'none'; document.getElementById('content-data').value = item.data;
-            document.getElementById('content-classes').value = item.classes.includes('admin_only') ? 'admin' : (item.classes.length === 0 ? 'all' : item.classes[0]);
+            document.getElementById('content-classes').value = (item.classes && item.classes.includes('admin_only')) ? 'admin' : ((!item.classes || item.classes.length === 0) ? 'all' : item.classes[0]);
             currentEditContentId = id; document.getElementById('add-edit-title').innerText = `✏️ تعديل: ${item.title}`;
             document.getElementById('save-content-btn').innerHTML = '🔄 تحديث'; document.getElementById('cancel-edit-btn').classList.remove('hidden');
             openTab(null, 'tab-content-add'); document.getElementById('tab-btn-add').classList.add('active');
@@ -512,6 +519,7 @@
         }
 
         function canViewContent(item) {
+            if (!item.classes) return true; 
             if (item.classes.includes('admin_only')) return currentUser.role === 'admin' && !isPreviewMode;
             if (item.classes.length === 0) return true;
             if (currentUser.role === 'admin' && !isPreviewMode) return true;
