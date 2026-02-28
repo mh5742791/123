@@ -136,18 +136,18 @@
         .iframe-responsive-wrapper { position: relative; width: 100%; background: #ffffff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .html-sandbox { border: none; background: #fff; transform-origin: top center; position: absolute; top: 0; left: 50%; }
         
-        /* التعديلات الخاصة بدعم الزووم في وضع ملء الشاشة */
+        /* التعديلات الخاصة بدعم الزووم في وضع ملء الشاشة للأجهزة اللمسية */
         .iframe-responsive-wrapper:fullscreen, .iframe-responsive-wrapper:-webkit-full-screen { 
             aspect-ratio: auto !important; width: 100vw; height: 100vh; background: #ffffff; 
-            border-radius: 0; border: none; overflow: auto; 
-            touch-action: pan-x pan-y pinch-zoom !important; 
+            border-radius: 0; border: none; overflow: auto !important; 
+            touch-action: auto !important; /* هام جداً لدعم الزووم والسحب */
             -webkit-overflow-scrolling: touch !important; 
         }
         .iframe-responsive-wrapper:fullscreen .html-sandbox, .iframe-responsive-wrapper:-webkit-full-screen .html-sandbox { 
             position: static !important; transform: none !important; 
             width: 100% !important; height: 100% !important; 
             min-width: 100vw; min-height: 100vh;
-            touch-action: pan-x pan-y pinch-zoom !important; 
+            touch-action: auto !important; /* هام جداً لدعم الزووم والسحب */
         }
         
         @media (max-width: 768px) {
@@ -363,18 +363,17 @@
                     else { localStorage.removeItem('eduRememberMe'); } 
                 } catch(e) {}
                 
-                currentUser = user; // تحديث بيانات المستخدم الحالي فوراً
+                currentUser = user; 
                 
-                // إظهار شاشة التحميل كخدعة بصرية احترافية
                 document.getElementById('loading-overlay').classList.remove('hidden');
                 document.getElementById('loading-text').innerText = 'جاري تحضير المنصة...';
                 
                 setTimeout(() => { 
                     document.getElementById('loading-overlay').classList.add('hidden');
-                    initDashboard(); // الدخول المباشر بدون عمل ريفريش للصفحة
+                    initDashboard(); 
                 }, 400); 
             } else { 
-                showToast('بيانات الدخول غير صحيحة', 'error'); // استبدال الكود الذي كان يسبب خطأ
+                showToast('بيانات الدخول غير صحيحة', 'error'); 
             }
         }
         
@@ -535,9 +534,22 @@
                 let innerMedia = ''; let fullScreenBtnHTML = ''; let folderBadge = (item.folder && item.folder !== 'none') ? `<span class="category-badge">${item.folder}</span>` : '';
                 
                 if (item.type === 'html') {
-                    const wrapperId = `wrapper-${item.id}`; let safeHTML = item.data.replace(/"/g, '&quot;');
+                    const wrapperId = `wrapper-${item.id}`; 
+                    let contentData = item.data;
+                    
+                    // حقن كود الميتا الخاص بالسماح بالزووم داخل الـ iframe
+                    const zoomMeta = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">`;
+                    if (contentData.toLowerCase().includes('<head>')) {
+                        contentData = contentData.replace(/<head>/i, '<head>' + zoomMeta);
+                    } else if (contentData.toLowerCase().includes('<html>')) {
+                        contentData = contentData.replace(/<html>/i, '<html><head>' + zoomMeta + '</head>');
+                    } else {
+                        contentData = zoomMeta + contentData;
+                    }
+                    
+                    let safeHTML = contentData.replace(/"/g, '&quot;');
+                    
                     const isSquare = item.ratio === '4:3'; const cssRatio = isSquare ? '4/3' : '16/9'; const vWidth = isSquare ? 1024 : 1280; const vHeight = isSquare ? 768 : 720;
-                    // إضافة scrolling="yes" لتفعيل السكرول داخل الـ iframe
                     innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper" style="aspect-ratio: ${cssRatio};"><iframe class="html-sandbox" srcdoc="${safeHTML}" data-vwidth="${vWidth}" data-vheight="${vHeight}" allowfullscreen scrolling="yes" style="touch-action: auto;"></iframe></div>`;
                     fullScreenBtnHTML = `<button type="button" onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
                 } else { innerMedia = `<a href="${item.data}" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`; }
