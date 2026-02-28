@@ -132,36 +132,22 @@
         .category-badge { font-size: 13px; font-weight: bold; background: var(--bg-color); color: var(--primary); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); }
         .fullscreen-btn { padding: 6px 12px; font-size: 13px; background-color: var(--primary); }
         
-        /* حاوية العرض المتجاوبة */
+        /* حاوية العرض المتجاوبة مع ملء الشاشة والزووم */
         .iframe-responsive-wrapper { position: relative; width: 100%; background: #ffffff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .html-sandbox { border: none; background: #fff; transform-origin: top center; position: absolute; top: 0; left: 50%; }
         
-        /* --- وضع ملء الشاشة المخصص (الذي يدعم الزووم بنسبة 100%) --- */
-        .content-item.custom-fullscreen {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            z-index: 100000 !important;
-            border-radius: 0 !important;
-            border: none !important;
-            margin: 0 !important;
-            background: var(--bg-color) !important;
-            overflow-y: auto !important;
+        /* التعديلات الخاصة بدعم الزووم في وضع ملء الشاشة */
+        .iframe-responsive-wrapper:fullscreen, .iframe-responsive-wrapper:-webkit-full-screen { 
+            aspect-ratio: auto !important; width: 100vw; height: 100vh; background: #ffffff; 
+            border-radius: 0; border: none; overflow: auto; 
+            touch-action: pan-x pan-y pinch-zoom !important; 
+            -webkit-overflow-scrolling: touch !important; 
         }
-        .content-item.custom-fullscreen .iframe-responsive-wrapper {
-            aspect-ratio: auto !important;
-            flex: 1 !important; /* يتمدد ليأخذ باقي مساحة الشاشة */
-            height: auto !important;
-            border: none !important;
-            border-radius: 0 !important;
-        }
-        .content-item.custom-fullscreen .html-sandbox {
-            position: static !important;
-            transform: none !important;
-            width: 100% !important;
-            height: 100% !important;
+        .iframe-responsive-wrapper:fullscreen .html-sandbox, .iframe-responsive-wrapper:-webkit-full-screen .html-sandbox { 
+            position: static !important; transform: none !important; 
+            width: 100% !important; height: 100% !important; 
+            min-width: 100vw; min-height: 100vh;
+            touch-action: pan-x pan-y pinch-zoom !important; 
         }
         
         @media (max-width: 768px) {
@@ -350,7 +336,7 @@
 
         function saveDB() { database.ref('/').set(db).catch(error => { showToast('فشل الاتصال بقاعدة البيانات!', 'error'); }); }
 
-        // --- الجلسة والدخول ---
+        // --- الجلسة والدخول المحسن للـ APK ---
         function checkSession() {
             let savedSession = null;
             try { savedSession = sessionStorage.getItem('eduPlatformActiveSession') || localStorage.getItem('eduPlatformSession'); } catch(e) {}
@@ -377,16 +363,24 @@
                     else { localStorage.removeItem('eduRememberMe'); } 
                 } catch(e) {}
                 
-                currentUser = user;
+                currentUser = user; // تحديث بيانات المستخدم الحالي فوراً
+                
+                // إظهار شاشة التحميل كخدعة بصرية احترافية
                 document.getElementById('loading-overlay').classList.remove('hidden');
                 document.getElementById('loading-text').innerText = 'جاري تحضير المنصة...';
-                setTimeout(() => { document.getElementById('loading-overlay').classList.add('hidden'); initDashboard(); }, 400); 
-            } else { showToast('بيانات الدخول غير صحيحة', 'error'); }
+                
+                setTimeout(() => { 
+                    document.getElementById('loading-overlay').classList.add('hidden');
+                    initDashboard(); // الدخول المباشر بدون عمل ريفريش للصفحة
+                }, 400); 
+            } else { 
+                showToast('بيانات الدخول غير صحيحة', 'error'); // استبدال الكود الذي كان يسبب خطأ
+            }
         }
         
         function logout() { try { localStorage.removeItem('eduPlatformSession'); sessionStorage.removeItem('eduPlatformActiveSession'); } catch(e) {} location.reload(); }
 
-        // --- التسجيل والطلبات ---
+        // --- التسجيل والطلبات المعلقة ---
         function showRegisterForm() { document.getElementById('login-section').classList.add('hidden'); document.getElementById('register-section').classList.remove('hidden'); }
         function showLoginForm() { document.getElementById('register-section').classList.add('hidden'); document.getElementById('login-section').classList.remove('hidden'); }
         function submitRegistration() {
@@ -417,27 +411,13 @@
         function openTab(evt, tabId) { document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.getElementById(tabId).classList.add('active'); if(evt) evt.currentTarget.classList.add('active'); else document.querySelector(`[onclick*="${tabId}"]`).classList.add('active'); }
         function toggleSidebar() { document.getElementById('student-sidebar').classList.toggle('collapsed'); }
         
-        // --- دالة ملء الشاشة المخصصة الجديدة ---
-        function toggleCustomFullscreen(btn) {
-            const contentItem = btn.closest('.content-item');
-            contentItem.classList.toggle('custom-fullscreen');
-            if(contentItem.classList.contains('custom-fullscreen')) {
-                btn.innerHTML = '❌ تصغير الشاشة';
-                document.body.style.overflow = 'hidden'; // قفل السكرول الخارجي
-            } else {
-                btn.innerHTML = '🔲 ملء الشاشة';
-                document.body.style.overflow = ''; // استعادة السكرول
-            }
-            setTimeout(applyScaling, 50);
-        }
+        function toggleFullScreen(wrapperId) { let w = document.getElementById(wrapperId); if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (w.requestFullscreen) w.requestFullscreen(); else if (w.webkitRequestFullscreen) w.webkitRequestFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); } }
 
         function applyScaling() {
-            document.querySelectorAll('.content-item').forEach(contentItem => {
-                const wrapper = contentItem.querySelector('.iframe-responsive-wrapper');
-                if(!wrapper) return;
+            document.querySelectorAll('.iframe-responsive-wrapper').forEach(wrapper => {
                 const iframe = wrapper.querySelector('iframe');
                 if (iframe) {
-                    if (contentItem.classList.contains('custom-fullscreen')) { 
+                    if (document.fullscreenElement === wrapper || document.webkitFullscreenElement === wrapper) { 
                         iframe.style.width = '100%'; iframe.style.height = '100%'; iframe.style.transform = 'none'; iframe.style.position = 'static'; 
                     } else { 
                         const vW = parseFloat(iframe.getAttribute('data-vwidth')) || 1280; const vH = parseFloat(iframe.getAttribute('data-vheight')) || 720; 
@@ -446,7 +426,7 @@
                 }
             });
         }
-        window.addEventListener('resize', applyScaling); 
+        window.addEventListener('resize', applyScaling); document.addEventListener('fullscreenchange', applyScaling); document.addEventListener('webkitfullscreenchange', applyScaling);
 
         function updateClassesDropdown() {
             const select = document.getElementById('content-classes'); if(!select) return; const currentVal = select.value; select.innerHTML = `<option value="admin">🔒 خاص بالإدارة فقط</option><option value="all">🌍 للكل</option>`;
@@ -555,21 +535,11 @@
                 let innerMedia = ''; let fullScreenBtnHTML = ''; let folderBadge = (item.folder && item.folder !== 'none') ? `<span class="category-badge">${item.folder}</span>` : '';
                 
                 if (item.type === 'html') {
-                    const wrapperId = `wrapper-${item.id}`; 
-                    
-                    // حقن كود ميتا خفي داخل الدرس لإجبار المتصفح على قبول الزووم (Pinch-to-Zoom)
-                    let htmlData = item.data;
-                    if (htmlData.includes('<meta name="viewport"')) {
-                        htmlData = htmlData.replace(/user-scalable=no/gi, 'user-scalable=yes').replace(/maximum-scale=[0-9.]+/gi, 'maximum-scale=5.0');
-                    } else {
-                        htmlData = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">\n` + htmlData;
-                    }
-                    
-                    let safeHTML = htmlData.replace(/"/g, '&quot;');
+                    const wrapperId = `wrapper-${item.id}`; let safeHTML = item.data.replace(/"/g, '&quot;');
                     const isSquare = item.ratio === '4:3'; const cssRatio = isSquare ? '4/3' : '16/9'; const vWidth = isSquare ? 1024 : 1280; const vHeight = isSquare ? 768 : 720;
-                    
-                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper" style="aspect-ratio: ${cssRatio};"><iframe class="html-sandbox" srcdoc="${safeHTML}" data-vwidth="${vWidth}" data-vheight="${vHeight}" allowfullscreen scrolling="yes"></iframe></div>`;
-                    fullScreenBtnHTML = `<button type="button" onclick="toggleCustomFullscreen(this)" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
+                    // إضافة scrolling="yes" لتفعيل السكرول داخل الـ iframe
+                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper" style="aspect-ratio: ${cssRatio};"><iframe class="html-sandbox" srcdoc="${safeHTML}" data-vwidth="${vWidth}" data-vheight="${vHeight}" allowfullscreen scrolling="yes" style="touch-action: auto;"></iframe></div>`;
+                    fullScreenBtnHTML = `<button type="button" onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
                 } else { innerMedia = `<a href="${item.data}" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`; }
                 
                 contentDiv.innerHTML = `<div class="content-header"><h3 class="content-title">${item.title}</h3><div class="header-actions">${fullScreenBtnHTML} ${folderBadge}</div></div>${innerMedia}`;
