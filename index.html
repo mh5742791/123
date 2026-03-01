@@ -132,25 +132,25 @@
         .category-badge { font-size: 13px; font-weight: bold; background: var(--bg-color); color: var(--primary); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); }
         .fullscreen-btn { padding: 6px 12px; font-size: 13px; background-color: var(--primary); }
         
-        /* --- حاوية العرض المتجاوبة (تم حل مشكلة الفراغات) --- */
+        /* --- حاوية العرض المتجاوبة مع دعم التمرير القوي --- */
         .iframe-responsive-wrapper { 
             position: relative; 
             width: 100%; 
-            height: 75vh; /* يعطي ارتفاع متناسب مع الشاشة */
+            height: 75vh; /* ارتفاع متناسب ومريح */
             min-height: 400px;
             background: #ffffff; 
             border-radius: 8px; 
             border: 1px solid var(--border); 
-            overflow: hidden; 
+            overflow: auto !important; /* السماح بالتمرير العمودي */
+            -webkit-overflow-scrolling: touch !important; /* سلاسة التمرير في الآيفون */
         }
         .html-sandbox { 
             border: none; 
             background: transparent; 
             width: 100% !important; 
             height: 100% !important;
-            position: absolute; 
-            top: 0; 
-            left: 0; 
+            display: block; 
+            position: relative;
             transform-origin: center center; 
         }
         
@@ -160,7 +160,7 @@
             position: absolute;
             bottom: 20px;
             left: 20px;
-            z-index: 2147483647 !important; /* ضمان بقائه في أعلى طبقة فوق اللعبة */
+            z-index: 2147483647 !important; /* ضمان بقائه فوق أي محتوى للدرس */
             background-color: var(--primary);
             color: white;
             border: none;
@@ -177,14 +177,14 @@
             color: #000;
         }
         
-        /* التعديلات الخاصة بدعم ملء الشاشة */
+        /* التعديلات الخاصة بملء الشاشة */
         .iframe-responsive-wrapper:fullscreen, .iframe-responsive-wrapper:-webkit-full-screen { 
             width: 100vw !important; 
             height: 100vh !important; 
             background: #ffffff; 
             border-radius: 0; 
             border: none; 
-            touch-action: none !important; /* منع استجابة النظام الافتراضية للتمكن من الزووم البرمجي */
+            overflow: auto !important; 
         }
         .iframe-responsive-wrapper:fullscreen .zoom-floating-btn, .iframe-responsive-wrapper:-webkit-full-screen .zoom-floating-btn {
             display: flex; align-items: center; gap: 8px;
@@ -194,7 +194,7 @@
             #user-layout { flex-direction: column; } .sidebar { width: 100%; max-height: none; } .sidebar.collapsed { height: 0; width: 100%; display: none; }
             .admin-list-item { flex-direction: column; align-items: flex-start; gap: 15px; }
             .bulk-action-bar { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .iframe-responsive-wrapper { height: 60vh; }
+            .iframe-responsive-wrapper { height: 65vh; }
         }
 
         /* --- تنسيق رقم الإصدار في الأسفل --- */
@@ -281,8 +281,8 @@
                     <input type="text" id="content-title" placeholder="اكتب عنوان الدرس...">
                     <label>نوع المحتوى</label>
                     <select id="content-type"><option value="html">كود HTML (تفاعلي مرن)</option><option value="link">رابط خارجي</option></select>
-                    <label style="color: var(--primary); font-weight: bold;">أبعاد عرض الدرس التفاعلي (ملاحظة: تم جعل العرض ديناميكي تلقائياً)</label>
-                    <select id="content-ratio"><option value="16:9">تلقائي ومتجاوب</option></select>
+                    <label style="color: var(--primary); font-weight: bold;">أبعاد عرض الدرس التفاعلي</label>
+                    <select id="content-ratio"><option value="16:9">تلقائي ومتجاوب بالكامل</option></select>
                     <label style="color: var(--secondary); font-weight: bold;">مكان العرض في القائمة الجانبية</label>
                     <select id="content-folder"><option value="none">-- عرض مستقل --</option></select>
                     <label style="color: var(--primary); font-weight: bold;">الصفوف المستهدفة</label>
@@ -358,7 +358,7 @@
     </div>
 
     <div class="version-footer">
-        الإصدار 40
+        الإصدار 41
     </div>
 
     <script>
@@ -583,21 +583,18 @@
                         wrapper.setAttribute('data-pany', 0);
                     }
                 } else if (e.touches.length === 1) {
-                    // السحب
-                    let zoom = parseFloat(wrapper.getAttribute('data-zoom')) || 1;
-                    if (zoom > 1) {
-                        let currentX = e.touches[0].pageX;
-                        let currentY = e.touches[0].pageY;
-                        
-                        let pX = parseFloat(wrapper.getAttribute('data-panx')) || 0;
-                        let pY = parseFloat(wrapper.getAttribute('data-pany')) || 0;
-                        
-                        wrapper.setAttribute('data-panx', pX + (currentX - lastTouchX));
-                        wrapper.setAttribute('data-pany', pY + (currentY - lastTouchY));
-                        
-                        lastTouchX = currentX;
-                        lastTouchY = currentY;
-                    }
+                    // السحب متاح دائماً إذا كان وضع الزووم مُفعّل
+                    let currentX = e.touches[0].pageX;
+                    let currentY = e.touches[0].pageY;
+                    
+                    let pX = parseFloat(wrapper.getAttribute('data-panx')) || 0;
+                    let pY = parseFloat(wrapper.getAttribute('data-pany')) || 0;
+                    
+                    wrapper.setAttribute('data-panx', pX + (currentX - lastTouchX));
+                    wrapper.setAttribute('data-pany', pY + (currentY - lastTouchY));
+                    
+                    lastTouchX = currentX;
+                    lastTouchY = currentY;
                 }
                 applyScaling(); 
             }, { passive: false });
@@ -628,17 +625,19 @@
             btn.classList.toggle('active');
             
             if (btn.classList.contains('active')) {
+                // تفعيل التكبير وإيقاف اللعبة مؤقتاً لتلقي اللمسات
                 iframe.style.setProperty('pointer-events', 'none', 'important');
                 btn.innerHTML = '🖐️ إيقاف التكبير والتفاعل';
-                showToast('تم تفعيل التكبير. استخدم إصبعين للتقريب.', 'success');
+                showToast('تم تفعيل التكبير. استخدم إصبعين للتقريب، وإصبع للسحب.', 'success');
             } else {
+                // العودة للعبة وإلغاء الزووم
                 iframe.style.setProperty('pointer-events', 'auto', 'important');
                 wrapper.setAttribute('data-zoom', 1);
                 wrapper.setAttribute('data-panx', 0);
                 wrapper.setAttribute('data-pany', 0);
                 applyScaling(); 
                 btn.innerHTML = '🔍 تفعيل التكبير';
-                showToast('يمكنك الآن التفاعل مع الدرس.', 'success');
+                showToast('الآن السحب العمودي يمرر الدرس للأسفل كالمعتاد.', 'success');
             }
         }
 
@@ -652,7 +651,6 @@
                     let pX = parseFloat(wrapper.getAttribute('data-panx')) || 0;
                     let pY = parseFloat(wrapper.getAttribute('data-pany')) || 0;
                     
-                    // تطبيق التحريك والتكبير بسهولة لأن العنصر أخذ 100% من المساحة
                     iframe.style.transform = `translate(${pX}px, ${pY}px) scale(${zoom})`;
 
                     // إعادة التهيئة عند الخروج من ملء الشاشة
@@ -850,11 +848,31 @@
                     const wrapperId = `wrapper-${item.id}`; 
                     let contentData = item.data;
                     
+                    // كود الحقن القوي لفرض التمرير الإجباري داخل الدرس
+                    const scrollInjection = `
+                    <style>
+                        html, body {
+                            overflow-y: auto !important;
+                            overflow-x: hidden !important;
+                            -webkit-overflow-scrolling: touch !important;
+                            height: auto !important;
+                            min-height: 100% !important;
+                            touch-action: pan-y !important;
+                        }
+                    </style>`;
+                    
+                    if (contentData.toLowerCase().includes('</head>')) {
+                        contentData = contentData.replace(/<\/head>/i, scrollInjection + '</head>');
+                    } else if (contentData.toLowerCase().includes('<html>')) {
+                        contentData = contentData.replace(/<html>/i, '<html><head>' + scrollInjection + '</head>');
+                    } else {
+                        contentData = scrollInjection + contentData;
+                    }
+                    
                     let safeHTML = contentData.replace(/"/g, '&quot;');
                     
                     const zoomBtnHTML = `<button type="button" class="zoom-floating-btn" onclick="window.toggleZoomMode(this); event.stopPropagation();">🔍 تفعيل التكبير</button>`;
                     
-                    // إزالة aspect-ratio التي كانت تسبب فراغات
                     innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper"><iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="yes"></iframe>${zoomBtnHTML}</div>`;
                     fullScreenBtnHTML = `<button type="button" onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
                 } else { innerMedia = `<a href="${item.data}" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`; }
