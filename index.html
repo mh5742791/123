@@ -138,20 +138,21 @@
             width: 100%; 
             height: 75vh; /* ارتفاع متناسب ومريح */
             min-height: 400px;
-            background: #ffffff; 
+            background: #ffffff; /* لون خلفية محايد للدروس */
             border-radius: 8px; 
             border: 1px solid var(--border); 
             overflow: auto !important; /* السماح بالتمرير العمودي */
             -webkit-overflow-scrolling: touch !important; /* سلاسة التمرير في الآيفون */
         }
+        
         .html-sandbox { 
             border: none; 
             background: transparent; 
-            width: 100% !important; 
-            height: 100% !important;
+            /* في الوضع العادي يأخذ 100% ليناسب الشاشة تماماً */
+            width: 100%; 
+            height: 100%;
             display: block; 
             position: relative;
-            transform-origin: center center; 
         }
         
         /* --- زر وضع الزووم العائم --- */
@@ -358,7 +359,7 @@
     </div>
 
     <div class="version-footer">
-        الإصدار 41
+        الإصدار 42
     </div>
 
     <script>
@@ -583,18 +584,21 @@
                         wrapper.setAttribute('data-pany', 0);
                     }
                 } else if (e.touches.length === 1) {
-                    // السحب متاح دائماً إذا كان وضع الزووم مُفعّل
-                    let currentX = e.touches[0].pageX;
-                    let currentY = e.touches[0].pageY;
-                    
-                    let pX = parseFloat(wrapper.getAttribute('data-panx')) || 0;
-                    let pY = parseFloat(wrapper.getAttribute('data-pany')) || 0;
-                    
-                    wrapper.setAttribute('data-panx', pX + (currentX - lastTouchX));
-                    wrapper.setAttribute('data-pany', pY + (currentY - lastTouchY));
-                    
-                    lastTouchX = currentX;
-                    lastTouchY = currentY;
+                    // السحب
+                    let zoom = parseFloat(wrapper.getAttribute('data-zoom')) || 1;
+                    if (zoom > 1) {
+                        let currentX = e.touches[0].pageX;
+                        let currentY = e.touches[0].pageY;
+                        
+                        let pX = parseFloat(wrapper.getAttribute('data-panx')) || 0;
+                        let pY = parseFloat(wrapper.getAttribute('data-pany')) || 0;
+                        
+                        wrapper.setAttribute('data-panx', pX + (currentX - lastTouchX));
+                        wrapper.setAttribute('data-pany', pY + (currentY - lastTouchY));
+                        
+                        lastTouchX = currentX;
+                        lastTouchY = currentY;
+                    }
                 }
                 applyScaling(); 
             }, { passive: false });
@@ -625,12 +629,13 @@
             btn.classList.toggle('active');
             
             if (btn.classList.contains('active')) {
-                // تفعيل التكبير وإيقاف اللعبة مؤقتاً لتلقي اللمسات
+                // تفعيل التكبير الحر
                 iframe.style.setProperty('pointer-events', 'none', 'important');
                 btn.innerHTML = '🖐️ إيقاف التكبير والتفاعل';
                 showToast('تم تفعيل التكبير. استخدم إصبعين للتقريب، وإصبع للسحب.', 'success');
+                applyScaling(); // تطبيق التحويلات
             } else {
-                // العودة للعبة وإلغاء الزووم
+                // إيقاف التكبير والعودة للوضع الطبيعي 100%
                 iframe.style.setProperty('pointer-events', 'auto', 'important');
                 wrapper.setAttribute('data-zoom', 1);
                 wrapper.setAttribute('data-panx', 0);
@@ -641,29 +646,47 @@
             }
         }
 
-        // --- دالة التحكم في العرض (النسخة الحديثة المتجاوبة 100%) ---
+        // --- دالة التحكم في العرض (تأخذ الأبعاد الطبيعية للدرس) ---
         function applyScaling() {
             document.querySelectorAll('.iframe-responsive-wrapper').forEach(wrapper => {
                 const iframe = wrapper.querySelector('iframe');
+                const btn = wrapper.querySelector('.zoom-floating-btn');
                 
                 if (iframe) {
                     let zoom = parseFloat(wrapper.getAttribute('data-zoom')) || 1;
                     let pX = parseFloat(wrapper.getAttribute('data-panx')) || 0;
                     let pY = parseFloat(wrapper.getAttribute('data-pany')) || 0;
                     
-                    iframe.style.transform = `translate(${pX}px, ${pY}px) scale(${zoom})`;
+                    const isFullscreen = document.fullscreenElement === wrapper || document.webkitFullscreenElement === wrapper;
 
-                    // إعادة التهيئة عند الخروج من ملء الشاشة
-                    if (!(document.fullscreenElement === wrapper || document.webkitFullscreenElement === wrapper)) {
-                        const zoomBtn = wrapper.querySelector('.zoom-floating-btn');
-                        if(zoomBtn && zoomBtn.classList.contains('active')) {
-                            zoomBtn.classList.remove('active');
-                            zoomBtn.innerHTML = '🔍 تفعيل التكبير';
-                            iframe.style.setProperty('pointer-events', 'auto', 'important');
+                    if (btn && btn.classList.contains('active')) {
+                        // وضع التكبير مفعل: نطبق تحويلات CSS للزووم والسحب
+                        iframe.style.position = 'absolute';
+                        iframe.style.width = '100%';
+                        iframe.style.height = '100%';
+                        iframe.style.top = '0';
+                        iframe.style.left = '0';
+                        iframe.style.transformOrigin = 'center center';
+                        iframe.style.transform = `translate(${pX}px, ${pY}px) scale(${zoom})`;
+                    } else {
+                        // وضع التكبير مغلق (Default Mode): الدرس يأخذ مقاسات الشاشة طبيعياً بدون أي تلاعب
+                        iframe.style.position = 'relative';
+                        iframe.style.width = '100%';
+                        iframe.style.height = '100%';
+                        iframe.style.top = 'auto';
+                        iframe.style.left = 'auto';
+                        iframe.style.transform = 'none';
+
+                        // إعادة ضبط المتغيرات عند الخروج من الشاشة الكاملة
+                        if (!isFullscreen) {
                             wrapper.setAttribute('data-zoom', 1);
                             wrapper.setAttribute('data-panx', 0);
                             wrapper.setAttribute('data-pany', 0);
-                            iframe.style.transform = `translate(0px, 0px) scale(1)`;
+                            if(btn) {
+                                btn.classList.remove('active');
+                                btn.innerHTML = '🔍 تفعيل التكبير';
+                                iframe.style.setProperty('pointer-events', 'auto', 'important');
+                            }
                         }
                     }
                 }
@@ -852,12 +875,12 @@
                     const scrollInjection = `
                     <style>
                         html, body {
-                            overflow-y: auto !important;
                             overflow-x: hidden !important;
+                            overflow-y: auto !important;
                             -webkit-overflow-scrolling: touch !important;
-                            height: auto !important;
-                            min-height: 100% !important;
-                            touch-action: pan-y !important;
+                            height: 100% !important; /* السماح بالامتداد الطبيعي للتمرير */
+                            margin: 0;
+                            padding: 0;
                         }
                     </style>`;
                     
@@ -873,6 +896,7 @@
                     
                     const zoomBtnHTML = `<button type="button" class="zoom-floating-btn" onclick="window.toggleZoomMode(this); event.stopPropagation();">🔍 تفعيل التكبير</button>`;
                     
+                    // تم إضافة scrolling="yes" لضمان ظهور شريط التمرير
                     innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper"><iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="yes"></iframe>${zoomBtnHTML}</div>`;
                     fullScreenBtnHTML = `<button type="button" onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
                 } else { innerMedia = `<a href="${item.data}" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`; }
