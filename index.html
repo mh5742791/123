@@ -406,8 +406,48 @@
             if (currentUser.role === 'admin') { document.getElementById('admin-section').classList.remove('hidden'); document.getElementById('preview-btn').classList.remove('hidden'); refreshDashboard(); } 
             else { document.getElementById('sidebar-toggle').classList.remove('hidden'); showUserDashboard(); }
         }
-        function refreshDashboard() { if (currentUser.role === 'admin' && !isPreviewMode) { renderAdminFolders(); updateFolderDropdowns(); filterAdminContent(); filterAdminUsers(); updateClassesDropdown(); renderPendingUsers(); } else { showUserDashboard(); } }
-        function openTab(evt, tabId) { document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.getElementById(tabId).classList.add('active'); if(evt) evt.currentTarget.classList.add('active'); else document.querySelector(`[onclick*="${tabId}"]`).classList.add('active'); }
+
+        function refreshDashboard() { 
+            if (currentUser.role === 'admin' && !isPreviewMode) { 
+                renderAdminFolders(); 
+                updateFolderDropdowns(); 
+                filterAdminContent(); 
+                filterAdminUsers(); 
+                updateClassesDropdown(); 
+                renderPendingUsers(); 
+
+                // استعادة آخر تبويب للإدارة
+                if(currentUser) {
+                    const savedTabId = localStorage.getItem('lastActiveAdminTab_' + currentUser.username);
+                    if (savedTabId && document.getElementById(savedTabId)) {
+                        openTab(null, savedTabId);
+                    } else {
+                        openTab(null, 'tab-content-add'); // التبويب الافتراضي
+                    }
+                }
+            } else { 
+                showUserDashboard(); 
+            } 
+        }
+
+        function openTab(evt, tabId) { 
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active')); 
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); 
+            document.getElementById(tabId).classList.add('active'); 
+            
+            if(evt) {
+                evt.currentTarget.classList.add('active'); 
+            } else {
+                let btn = document.querySelector(`[onclick*="${tabId}"]`);
+                if(btn) btn.classList.add('active');
+            }
+
+            // حفظ التبويب الحالي للإدارة
+            if (currentUser && currentUser.role === 'admin') {
+                localStorage.setItem('lastActiveAdminTab_' + currentUser.username, tabId);
+            }
+        }
+
         function toggleSidebar() { document.getElementById('student-sidebar').classList.toggle('collapsed'); }
         
         function toggleFullScreen(wrapperId) { let w = document.getElementById(wrapperId); if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (w.requestFullscreen) w.requestFullscreen(); else if (w.webkitRequestFullscreen) w.webkitRequestFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); } }
@@ -506,7 +546,6 @@
             document.getElementById('user-section').classList.remove('hidden');
             const sidebarDiv = document.getElementById('sidebar-content-list');
             
-            // تم إزالة زر عرض الرئيسية بالكامل من هنا
             sidebarDiv.innerHTML = ''; 
             
             let visibleContents = db.contents.filter(canViewContent);
@@ -532,7 +571,6 @@
             }
 
             if (contentToLoad) {
-                // نستخدم setTimeout لضمان تحميل العناصر في الواجهة قبل محاولة تفعيلها
                 setTimeout(() => {
                     const sidebarItems = document.querySelectorAll('.sidebar-item, .independent-item');
                     let foundElement = null;
@@ -544,7 +582,6 @@
                     
                     showSingleContent(contentToLoad.id, foundElement);
                     
-                    // إذا كان الدرس داخل مجلد، قم بفتح المجلد
                     if(foundElement && foundElement.closest('details')) {
                         foundElement.closest('details').open = true;
                     }
@@ -556,7 +593,6 @@
 
         function setActiveSidebarItem(element) { document.querySelectorAll('.sidebar-item, .independent-item').forEach(el => el.classList.remove('active')); element.classList.add('active'); if(window.innerWidth <= 768) toggleSidebar(); }
         
-        // دالة showAllContent تركناها في حال احتجت لربطها بزر بحث آخر مستقبلاً
         function showAllContent(element) { setActiveSidebarItem(element); document.getElementById('student-search-input').value = ''; filterSidebar(); renderContentItems(db.contents.filter(canViewContent).reverse()); }
         
         function showSingleContent(id, element) { 
