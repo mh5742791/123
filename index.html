@@ -136,21 +136,21 @@
         .iframe-responsive-wrapper { 
             position: relative; 
             width: 100%; 
-            height: 75vh; /* ارتفاع متناسب ومريح */
+            height: 75vh; 
             min-height: 400px;
-            background: #ffffff; /* لون خلفية محايد للدروس */
+            background: #ffffff; 
             border-radius: 8px; 
             border: 1px solid var(--border); 
-            overflow: auto !important; /* السماح بالتمرير العمودي */
+            overflow-y: auto !important; /* السماح بالتمرير العمودي لغلاف الدرس */
+            overflow-x: hidden;
             -webkit-overflow-scrolling: touch !important; /* سلاسة التمرير في الآيفون */
         }
         
         .html-sandbox { 
             border: none; 
             background: transparent; 
-            /* في الوضع العادي يأخذ 100% ليناسب الشاشة تماماً */
-            width: 100%; 
-            height: 100%;
+            width: 100% !important; 
+            height: 100% !important;
             display: block; 
             position: relative;
         }
@@ -161,7 +161,7 @@
             position: absolute;
             bottom: 20px;
             left: 20px;
-            z-index: 2147483647 !important; /* ضمان بقائه فوق أي محتوى للدرس */
+            z-index: 2147483647 !important; 
             background-color: var(--primary);
             color: white;
             border: none;
@@ -359,7 +359,7 @@
     </div>
 
     <div class="version-footer">
-        الإصدار 42
+        الإصدار 43
     </div>
 
     <script>
@@ -533,7 +533,7 @@
         
         function toggleFullScreen(wrapperId) { let w = document.getElementById(wrapperId); if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (w.requestFullscreen) w.requestFullscreen(); else if (w.webkitRequestFullscreen) w.webkitRequestFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); } }
 
-        // --- محرك الزووم اللمسي المخصص (Pinch-to-Zoom Engine) ---
+        // --- محرك الزووم اللمسي المخصص ---
         function initPinchZoom(wrapper) {
             if (wrapper.dataset.zoomInitialized) return;
             wrapper.dataset.zoomInitialized = 'true';
@@ -549,7 +549,7 @@
 
             wrapper.addEventListener('touchstart', (e) => {
                 const btn = wrapper.querySelector('.zoom-floating-btn');
-                if (!btn || !btn.classList.contains('active')) return;
+                if (!btn || !btn.classList.contains('active')) return; // تجاهل اللمس إذا الزووم مغلق
 
                 if (e.touches.length === 2) {
                     initialPinchDist = Math.hypot(
@@ -565,7 +565,7 @@
 
             wrapper.addEventListener('touchmove', (e) => {
                 const btn = wrapper.querySelector('.zoom-floating-btn');
-                if (!btn || !btn.classList.contains('active')) return;
+                if (!btn || !btn.classList.contains('active')) return; // تجاهل اللمس إذا الزووم مغلق
                 
                 e.preventDefault(); 
 
@@ -603,7 +603,7 @@
                 applyScaling(); 
             }, { passive: false });
             
-            // دعم الماوس للكمبيوتر
+            // دعم الماوس
             wrapper.addEventListener('wheel', (e) => {
                 const btn = wrapper.querySelector('.zoom-floating-btn');
                 if (!btn || !btn.classList.contains('active')) return;
@@ -629,24 +629,26 @@
             btn.classList.toggle('active');
             
             if (btn.classList.contains('active')) {
-                // تفعيل التكبير الحر
+                // تفعيل التكبير الحر وتعطيل تفاعل الإطار مؤقتاً
                 iframe.style.setProperty('pointer-events', 'none', 'important');
+                wrapper.style.overflow = 'hidden'; // نمنع التمرير العادي أثناء الزووم
                 btn.innerHTML = '🖐️ إيقاف التكبير والتفاعل';
                 showToast('تم تفعيل التكبير. استخدم إصبعين للتقريب، وإصبع للسحب.', 'success');
-                applyScaling(); // تطبيق التحويلات
+                applyScaling(); 
             } else {
-                // إيقاف التكبير والعودة للوضع الطبيعي 100%
+                // إيقاف التكبير والعودة للوضع الطبيعي 100% القابل للتمرير
                 iframe.style.setProperty('pointer-events', 'auto', 'important');
+                wrapper.style.overflow = 'auto'; // نعيد التمرير العادي
                 wrapper.setAttribute('data-zoom', 1);
                 wrapper.setAttribute('data-panx', 0);
                 wrapper.setAttribute('data-pany', 0);
                 applyScaling(); 
                 btn.innerHTML = '🔍 تفعيل التكبير';
-                showToast('الآن السحب العمودي يمرر الدرس للأسفل كالمعتاد.', 'success');
+                showToast('الآن السحب يعود بك لأعلى وأسفل الصفحة كالمعتاد.', 'success');
             }
         }
 
-        // --- دالة التحكم في العرض (تأخذ الأبعاد الطبيعية للدرس) ---
+        // --- دالة التحكم في العرض ---
         function applyScaling() {
             document.querySelectorAll('.iframe-responsive-wrapper').forEach(wrapper => {
                 const iframe = wrapper.querySelector('iframe');
@@ -660,33 +662,22 @@
                     const isFullscreen = document.fullscreenElement === wrapper || document.webkitFullscreenElement === wrapper;
 
                     if (btn && btn.classList.contains('active')) {
-                        // وضع التكبير مفعل: نطبق تحويلات CSS للزووم والسحب
-                        iframe.style.position = 'absolute';
-                        iframe.style.width = '100%';
-                        iframe.style.height = '100%';
-                        iframe.style.top = '0';
-                        iframe.style.left = '0';
+                        // وضع التكبير: نطبق التحويلات
                         iframe.style.transformOrigin = 'center center';
                         iframe.style.transform = `translate(${pX}px, ${pY}px) scale(${zoom})`;
                     } else {
-                        // وضع التكبير مغلق (Default Mode): الدرس يأخذ مقاسات الشاشة طبيعياً بدون أي تلاعب
-                        iframe.style.position = 'relative';
-                        iframe.style.width = '100%';
-                        iframe.style.height = '100%';
-                        iframe.style.top = 'auto';
-                        iframe.style.left = 'auto';
+                        // وضع التفاعل العادي: بدون أي تلاعب لنسمح بالتمرير
                         iframe.style.transform = 'none';
 
                         // إعادة ضبط المتغيرات عند الخروج من الشاشة الكاملة
-                        if (!isFullscreen) {
+                        if (!isFullscreen && btn && btn.classList.contains('active')) {
                             wrapper.setAttribute('data-zoom', 1);
                             wrapper.setAttribute('data-panx', 0);
                             wrapper.setAttribute('data-pany', 0);
-                            if(btn) {
-                                btn.classList.remove('active');
-                                btn.innerHTML = '🔍 تفعيل التكبير';
-                                iframe.style.setProperty('pointer-events', 'auto', 'important');
-                            }
+                            btn.classList.remove('active');
+                            btn.innerHTML = '🔍 تفعيل التكبير';
+                            iframe.style.setProperty('pointer-events', 'auto', 'important');
+                            wrapper.style.overflow = 'auto';
                         }
                     }
                 }
@@ -871,16 +862,24 @@
                     const wrapperId = `wrapper-${item.id}`; 
                     let contentData = item.data;
                     
-                    // كود الحقن القوي لفرض التمرير الإجباري داخل الدرس
+                    // تم إصلاح الحقن: height: auto يمنع قص المحتوى الطويل، min-height تضمن عدم تقلص الدرس
                     const scrollInjection = `
                     <style>
                         html, body {
                             overflow-x: hidden !important;
                             overflow-y: auto !important;
                             -webkit-overflow-scrolling: touch !important;
-                            height: 100% !important; /* السماح بالامتداد الطبيعي للتمرير */
-                            margin: 0;
-                            padding: 0;
+                            height: auto !important;       /* تم إصلاح هذه القيمة للسماح بالتمرير */
+                            min-height: 100vh !important;  /* تأخذ على الأقل طول الشاشة */
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            touch-action: pan-y auto !important;
+                        }
+                        /* دعم الدروس المضمنة عبر روابط خارجية (iframes) */
+                        iframe {
+                            width: 100% !important;
+                            min-height: 100vh !important;
+                            border: none !important;
                         }
                     </style>`;
                     
