@@ -402,9 +402,27 @@
 
         // --- الواجهة الإدارية والتطبيقات ---
         function initDashboard() {
-            document.getElementById('login-section').classList.add('hidden'); document.getElementById('register-section').classList.add('hidden'); document.getElementById('main-header').classList.remove('hidden'); document.getElementById('welcome-msg').innerText = `أهلاً ${currentUser.username}`; document.getElementById('welcome-msg').style.display = 'block'; document.getElementById('student-search-input').value = '';
-            if (currentUser.role === 'admin') { document.getElementById('admin-section').classList.remove('hidden'); document.getElementById('preview-btn').classList.remove('hidden'); refreshDashboard(); } 
-            else { document.getElementById('sidebar-toggle').classList.remove('hidden'); showUserDashboard(); }
+            document.getElementById('login-section').classList.add('hidden'); 
+            document.getElementById('register-section').classList.add('hidden'); 
+            document.getElementById('main-header').classList.remove('hidden'); 
+            document.getElementById('welcome-msg').innerText = `أهلاً ${currentUser.username}`; 
+            document.getElementById('welcome-msg').style.display = 'block'; 
+            document.getElementById('student-search-input').value = '';
+
+            if (currentUser.role === 'admin') { 
+                const isPreviewSaved = localStorage.getItem('adminPreviewMode_' + currentUser.username) === 'true';
+                if (isPreviewSaved) {
+                    showPreview(true); // تشغيل المعاينة بدون إظهار الإشعار المزعج عند التحميل
+                } else {
+                    document.getElementById('admin-section').classList.remove('hidden'); 
+                    document.getElementById('preview-btn').classList.remove('hidden'); 
+                    refreshDashboard(); 
+                }
+            } 
+            else { 
+                document.getElementById('sidebar-toggle').classList.remove('hidden'); 
+                showUserDashboard(); 
+            }
         }
 
         function refreshDashboard() { 
@@ -513,8 +531,35 @@
         function updateAdminCredentials() { const u = document.getElementById('admin-new-user').value.trim(); const p = document.getElementById('admin-new-pass').value; if(u && p) { db.users[0].username = u; db.users[0].password = p; saveDB(); alert('تم! سجل دخول مجدداً.'); logout(); } }
         function exportDB() { const d = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db)); const a = document.createElement('a'); a.setAttribute("href", d); a.setAttribute("download", "edu_backup.json"); document.body.appendChild(a); a.click(); a.remove(); }
         function importDB() { const f = document.getElementById('import-file'); if(!f.files.length) return showToast('اختر ملف!', 'error'); const r = new FileReader(); r.onload = function(e) { try { const d = JSON.parse(e.target.result); if(d.users && d.contents) { db = d; saveDB(); showToast('تم الاستعادة!'); } } catch(err) { showToast('خطأ بالملف', 'error'); } }; r.readAsText(f.files[0]); }
-        function showPreview() { isPreviewMode = true; document.getElementById('admin-section').classList.add('hidden'); document.getElementById('preview-btn').classList.add('hidden'); document.getElementById('back-admin-btn').classList.remove('hidden'); document.getElementById('sidebar-toggle').classList.remove('hidden'); document.getElementById('student-sidebar').classList.remove('collapsed'); showUserDashboard(); showToast('أنت في وضع المعاينة'); }
-        function backToAdmin() { isPreviewMode = false; document.getElementById('user-section').classList.add('hidden'); document.getElementById('admin-section').classList.remove('hidden'); document.getElementById('preview-btn').classList.remove('hidden'); document.getElementById('back-admin-btn').classList.add('hidden'); document.getElementById('sidebar-toggle').classList.add('hidden'); document.getElementById('student-search-input').value = ''; showToast('عدت للإدارة'); }
+        
+        function showPreview(isInit = false) { 
+            isPreviewMode = true; 
+            if (currentUser) {
+                localStorage.setItem('adminPreviewMode_' + currentUser.username, 'true');
+            }
+            document.getElementById('admin-section').classList.add('hidden'); 
+            document.getElementById('preview-btn').classList.add('hidden'); 
+            document.getElementById('back-admin-btn').classList.remove('hidden'); 
+            document.getElementById('sidebar-toggle').classList.remove('hidden'); 
+            document.getElementById('student-sidebar').classList.remove('collapsed'); 
+            showUserDashboard(); 
+            if (!isInit) showToast('أنت في وضع المعاينة'); 
+        }
+
+        function backToAdmin() { 
+            isPreviewMode = false; 
+            if (currentUser) {
+                localStorage.setItem('adminPreviewMode_' + currentUser.username, 'false');
+            }
+            document.getElementById('user-section').classList.add('hidden'); 
+            document.getElementById('admin-section').classList.remove('hidden'); 
+            document.getElementById('preview-btn').classList.remove('hidden'); 
+            document.getElementById('back-admin-btn').classList.add('hidden'); 
+            document.getElementById('sidebar-toggle').classList.add('hidden'); 
+            document.getElementById('student-search-input').value = ''; 
+            refreshDashboard(); // استدعاء التحديث لإعادة تحميل تبويبات الإدارة
+            showToast('عدت للإدارة'); 
+        }
 
         function canViewContent(item) { if (!item.classes) return true; if (item.classes.includes('admin_only')) return currentUser.role === 'admin' && !isPreviewMode; if (item.classes.length === 0) return true; if (currentUser.role === 'admin' && !isPreviewMode) return true; if (currentUser.isStar) return true; if (item.classes.includes(currentUser.class)) return true; return false; }
 
