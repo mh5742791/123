@@ -141,8 +141,7 @@
             background: #ffffff; 
             border-radius: 8px; 
             border: 1px solid var(--border); 
-            overflow: auto !important; 
-            -webkit-overflow-scrolling: touch !important; 
+            overflow: hidden; /* تم التعديل لمنع ظهور أشرطة التمرير المزدوجة */
         }
         
         .html-sandbox { 
@@ -151,7 +150,9 @@
             width: 100% !important; 
             height: 100% !important;
             display: block; 
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
         
         /* --- زر وضع الزووم العائم القابل للسحب --- */
@@ -169,13 +170,13 @@
             font-size: 15px;
             font-weight: bold;
             box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-            cursor: grab;
-            transition: background-color 0.3s ease;
+            cursor: pointer;
+            /* تم إزالة transition للـ left والـ top لمنع الجلتشات أثناء السحب */
+            transition: background-color 0.3s ease, opacity 0.2s ease;
             user-select: none;
             -webkit-user-select: none;
-            touch-action: none; /* مهم للسحب باللمس */
+            touch-action: none; 
         }
-        .zoom-floating-btn:active { cursor: grabbing; }
         .zoom-floating-btn.active {
             background-color: var(--warning);
             color: #000;
@@ -189,13 +190,12 @@
             background: #ffffff; 
             border-radius: 0; 
             border: none; 
-            overflow: auto !important; 
         }
         .iframe-responsive-wrapper.zoom-active:fullscreen, .iframe-responsive-wrapper.zoom-active:-webkit-full-screen {
-            overflow: hidden !important; /* إيقاف تمرير الصفحة أثناء الزووم */
+            overflow: hidden !important; 
         }
         .iframe-responsive-wrapper:fullscreen .zoom-floating-btn, .iframe-responsive-wrapper:-webkit-full-screen .zoom-floating-btn {
-            display: flex; align-items: center; gap: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
         
         @media (max-width: 768px) {
@@ -357,7 +357,7 @@
     </div>
 
     <div class="version-footer">
-        الإصدار 44
+        الإصدار 46
     </div>
 
     <script>
@@ -399,7 +399,7 @@
 
         function saveDB() { database.ref('/').set(db).catch(error => { showToast('فشل الاتصال بقاعدة البيانات!', 'error'); }); }
 
-        // --- الجلسة والدخول ---
+        // --- الجلسة والدخول المحسن للـ APK ---
         function checkSession() {
             let savedSession = null;
             try { savedSession = sessionStorage.getItem('eduPlatformActiveSession') || localStorage.getItem('eduPlatformSession'); } catch(e) {}
@@ -531,7 +531,7 @@
         
         function toggleFullScreen(wrapperId) { let w = document.getElementById(wrapperId); if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (w.requestFullscreen) w.requestFullscreen(); else if (w.webkitRequestFullscreen) w.webkitRequestFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); } }
 
-        // --- محرك التكبير والزووم القوي ---
+        // --- محرك التكبير والزووم ---
         function initPinchZoom(wrapper) {
             if (wrapper.dataset.zoomInitialized) return;
             wrapper.dataset.zoomInitialized = 'true';
@@ -572,7 +572,7 @@
 
             wrapper.addEventListener('touchmove', (e) => {
                 if (!wrapper.classList.contains('zoom-active')) return;
-                e.preventDefault(); // إيقاف التمرير الافتراضي أثناء الزووم
+                e.preventDefault(); 
 
                 if (e.touches.length === 2) {
                     const currentDist = Math.hypot(
@@ -580,7 +580,7 @@
                         e.touches[0].clientY - e.touches[1].clientY
                     );
                     const scale = currentDist / initialPinchDist;
-                    currentZoom = Math.max(1, Math.min(startZoom * scale, 5)); // من 1x إلى 5x
+                    currentZoom = Math.max(1, Math.min(startZoom * scale, 5));
 
                     if (currentZoom === 1) {
                         currentPanX = 0;
@@ -610,14 +610,12 @@
             const iframe = wrapper.querySelector('iframe');
             
             if (!wrapper.classList.contains('zoom-active')) {
-                // تفعيل التكبير
                 wrapper.classList.add('zoom-active');
-                iframe.style.setProperty('pointer-events', 'none', 'important'); // السماح للغلاف باستقبال اللمس
+                iframe.style.setProperty('pointer-events', 'none', 'important'); 
                 btn.innerHTML = '🖐️ إيقاف التكبير والتفاعل';
                 btn.classList.add('active');
                 showToast('تفعيل التكبير: استخدم إصبعين للزووم وإصبع للسحب', 'success');
             } else {
-                // إيقاف التكبير
                 wrapper.classList.remove('zoom-active');
                 iframe.style.setProperty('pointer-events', 'auto', 'important');
                 btn.innerHTML = '🔍 تفعيل التكبير';
@@ -627,71 +625,82 @@
             }
         };
 
-        // --- دالة لجعل الزر قابلاً للسحب بالضغط المطول ---
+        // --- دالة لجعل الزر قابلاً للسحب بدون جلتشات أو تعارض مع النقر ---
         function makeButtonDraggable(btn) {
-            let isDragging = false;
             let startX, startY, initialX, initialY;
-            let pressTimer;
+            let isDragging = false;
+            let moveX = 0, moveY = 0;
 
             const startDrag = (e) => {
-                // منع تشغيل السحب إذا كان المستخدم يضغط للتفاعل السريع
-                let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-                let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-
-                isDragging = false;
-                pressTimer = setTimeout(() => {
-                    isDragging = true;
-                    btn.style.transform = 'scale(1.1)';
-                    btn.style.opacity = '0.8';
-                    startX = clientX;
-                    startY = clientY;
-                    initialX = btn.offsetLeft;
-                    initialY = btn.offsetTop;
-                    // تمكين حركة الزر وتجاهل خصائص CSS الخاصة بالموقع (bottom, left)
-                    btn.style.bottom = 'auto'; 
-                    btn.style.right = 'auto';
-                }, 300); // 300 مللي ثانية للضغط المطول
-            };
-
-            const doDrag = (e) => {
-                if (!isDragging) {
-                    clearTimeout(pressTimer); // إلغاء الضغطة المطولة إذا تحرك الإصبع مبكراً
-                    return;
-                }
-                e.preventDefault(); // منع تمرير الصفحة أثناء سحب الزر
+                e.stopPropagation(); // منع انتقال الحدث للطبقات السفلى
                 
                 let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
                 let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
 
-                let dx = clientX - startX;
-                let dy = clientY - startY;
+                startX = clientX;
+                startY = clientY;
+                
+                // حساب المكان الحالي بدقة قبل بدء التحريك
+                const rect = btn.getBoundingClientRect();
+                const parentRect = btn.parentElement.getBoundingClientRect();
+                
+                initialX = rect.left - parentRect.left;
+                initialY = rect.top - parentRect.top;
 
-                btn.style.left = `${initialX + dx}px`;
-                btn.style.top = `${initialY + dy}px`;
+                // إيقاف الـ transition لمنع الجلتش والاهتزاز أثناء السحب
+                btn.style.transition = 'none';
+                btn.style.bottom = 'auto';
+                btn.style.right = 'auto';
+                btn.style.left = `${initialX}px`;
+                btn.style.top = `${initialY}px`;
+
+                isDragging = false; 
+                moveX = 0; 
+                moveY = 0;
+
+                document.addEventListener('mousemove', doDrag, { passive: false });
+                document.addEventListener('touchmove', doDrag, { passive: false });
+                document.addEventListener('mouseup', stopDrag);
+                document.addEventListener('touchend', stopDrag);
             };
 
-            const stopDrag = (e) => {
-                clearTimeout(pressTimer);
-                if (isDragging) {
-                    isDragging = false;
-                    btn.style.transform = 'scale(1)';
-                    btn.style.opacity = '1';
-                } else {
-                    // إذا لم يكن هناك سحب (يعني كانت ضغطة سريعة)، قم بتشغيل التكبير
-                    window.toggleZoomMode(btn);
+            const doDrag = (e) => {
+                let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+
+                moveX = clientX - startX;
+                moveY = clientY - startY;
+
+                // إذا تحرك الإصبع أكثر من 5 بيكسل، نعتبرها عملية سحب وليس نقرة
+                if (Math.abs(moveX) > 5 || Math.abs(moveY) > 5) {
+                    isDragging = true;
+                    e.preventDefault(); 
+                    btn.style.left = `${initialX + moveX}px`;
+                    btn.style.top = `${initialY + moveY}px`;
                 }
             };
 
-            btn.addEventListener('touchstart', startDrag, {passive: false});
-            btn.addEventListener('touchmove', doDrag, {passive: false});
-            btn.addEventListener('touchend', stopDrag);
-            
+            const stopDrag = (e) => {
+                document.removeEventListener('mousemove', doDrag);
+                document.removeEventListener('touchmove', doDrag);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchend', stopDrag);
+
+                // إعادة تفعيل الترانزيشن بعد الانتهاء من السحب
+                btn.style.transition = 'background-color 0.3s ease, opacity 0.2s ease';
+
+                // إذا لم يتم سحب الزر (مجرد نقرة سريعة)، قم بتشغيل الزووم
+                if (!isDragging) {
+                    window.toggleZoomMode(btn);
+                }
+                isDragging = false;
+            };
+
             btn.addEventListener('mousedown', startDrag);
-            window.addEventListener('mousemove', doDrag);
-            window.addEventListener('mouseup', stopDrag);
+            btn.addEventListener('touchstart', startDrag, { passive: false });
         }
 
-        // --- دالة التحكم في العرض عند ملء الشاشة والخروج منه ---
+        // --- دالة التحكم في العرض ---
         function applyScaling() {
             document.querySelectorAll('.iframe-responsive-wrapper').forEach(wrapper => {
                 const iframe = wrapper.querySelector('iframe');
@@ -892,22 +901,15 @@
                     const wrapperId = `wrapper-${item.id}`; 
                     let contentData = item.data;
                     
+                    // الكود المعدل لضمان ظهور الدرس بالكامل وعدم اختفائه
                     const scrollInjection = `
                     <style>
                         html, body {
-                            overflow-x: hidden !important;
-                            overflow-y: auto !important;
-                            -webkit-overflow-scrolling: touch !important;
-                            height: auto !important;       
-                            min-height: 100vh !important;  
+                            width: 100% !important;
+                            height: 100% !important;
                             margin: 0 !important;
                             padding: 0 !important;
-                            touch-action: pan-y auto !important;
-                        }
-                        iframe {
-                            width: 100% !important;
-                            min-height: 100vh !important;
-                            border: none !important;
+                            -webkit-overflow-scrolling: touch !important;
                         }
                     </style>`;
                     
@@ -921,10 +923,9 @@
                     
                     let safeHTML = contentData.replace(/"/g, '&quot;');
                     
-                    // الزر أصبح بدون حدث click مدمج لتجنب التعارض مع خاصية السحب
                     const zoomBtnHTML = `<button type="button" class="zoom-floating-btn">🔍 تفعيل التكبير</button>`;
                     
-                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper"><iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="yes"></iframe>${zoomBtnHTML}</div>`;
+                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper"><iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="auto"></iframe>${zoomBtnHTML}</div>`;
                     fullScreenBtnHTML = `<button type="button" onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
                 } else { innerMedia = `<a href="${item.data}" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`; }
                 
@@ -935,7 +936,7 @@
                     const newWrapper = document.getElementById(`wrapper-${item.id}`);
                     const newBtn = newWrapper.querySelector('.zoom-floating-btn');
                     if (newWrapper) initPinchZoom(newWrapper);
-                    if (newBtn) makeButtonDraggable(newBtn); // تفعيل دالة السحب للزر العائم
+                    if (newBtn) makeButtonDraggable(newBtn);
                 }
             });
             setTimeout(applyScaling, 50);
