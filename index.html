@@ -132,28 +132,25 @@
         .category-badge { font-size: 13px; font-weight: bold; background: var(--bg-color); color: var(--primary); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); }
         .fullscreen-btn { padding: 6px 12px; font-size: 13px; background-color: var(--primary); }
         
-        /* --- حاوية العرض المتجاوبة بالكامل --- */
+        /* --- حاوية العرض المتجاوبة السليمة (بدون قص المحتوى) --- */
         .iframe-responsive-wrapper { 
             position: relative; 
             width: 100%; 
-            height: 75vh; 
-            min-height: 400px;
+            height: 80vh; /* يعطي الدرس مساحة ممتازة للرؤية */
+            min-height: 450px;
             background: #ffffff; 
             border-radius: 8px; 
             border: 1px solid var(--border); 
-            overflow: auto !important; 
-            -webkit-overflow-scrolling: touch !important; 
+            overflow: auto; /* السماح بالتمرير */
+            -webkit-overflow-scrolling: touch; 
         }
         
         .html-sandbox { 
             border: none; 
             background: transparent; 
-            width: 100% !important; 
-            height: 100% !important;
+            width: 100%; 
+            height: 100%; /* يعتمد على حجم الحاوية السليم */
             display: block; 
-            position: relative;
-            transform-origin: center center;
-            will-change: transform; /* تحسين أداء اللمس */
         }
         
         /* التعديلات الخاصة بملء الشاشة */
@@ -169,7 +166,7 @@
             #user-layout { flex-direction: column; } .sidebar { width: 100%; max-height: none; } .sidebar.collapsed { height: 0; width: 100%; display: none; }
             .admin-list-item { flex-direction: column; align-items: flex-start; gap: 15px; }
             .bulk-action-bar { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .iframe-responsive-wrapper { height: 65vh; }
+            .iframe-responsive-wrapper { height: 70vh; }
         }
 
         .version-footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 14px; font-weight: bold; width: 100%; margin-top: auto; }
@@ -324,7 +321,7 @@
     </div>
 
     <div class="version-footer">
-        الإصدار 47
+        الإصدار 48
     </div>
 
     <script>
@@ -492,153 +489,6 @@
         function toggleSidebar() { document.getElementById('student-sidebar').classList.toggle('collapsed'); }
         
         function toggleFullScreen(wrapperId) { let w = document.getElementById(wrapperId); if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (w.requestFullscreen) w.requestFullscreen(); else if (w.webkitRequestFullscreen) w.webkitRequestFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); } }
-
-        // --- محرك التكبير والزووم الذكي (مفعل دائماً ولا يتدخل إلا عند استخدام إصبعين) ---
-        window.attachAlwaysOnZoom = function(wrapper, iframe) {
-            let currentZoom = 1;
-            let currentPanX = 0;
-            let currentPanY = 0;
-            let initialPinchDist = 0;
-            let startZoom = 1;
-            let startPanX = 0;
-            let startPanY = 0;
-            let startTouchX = 0;
-            let startTouchY = 0;
-
-            const applyTransform = () => {
-                iframe.style.transform = `translate(${currentPanX}px, ${currentPanY}px) scale(${currentZoom})`;
-                if (currentZoom > 1) {
-                    wrapper.style.overflow = 'hidden'; // إيقاف التمرير الافتراضي أثناء الزووم لتجنب التعارض
-                } else {
-                    wrapper.style.overflow = 'auto'; // إعادة التمرير الافتراضي عند العودة لحجم 100%
-                }
-            };
-
-            const handleTouchStart = (e) => {
-                if (e.touches.length === 2) {
-                    initialPinchDist = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                    startZoom = currentZoom;
-                    startTouchX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-                    startTouchY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-                    startPanX = currentPanX;
-                    startPanY = currentPanY;
-                    iframe.style.transition = 'none';
-                } else if (e.touches.length === 1 && currentZoom > 1) {
-                    startTouchX = e.touches[0].clientX;
-                    startTouchY = e.touches[0].clientY;
-                    startPanX = currentPanX;
-                    startPanY = currentPanY;
-                    iframe.style.transition = 'none';
-                }
-                // في حالة إصبع واحد وحجم 100%، لن نتدخل ونترك اللمس يعمل للعبة
-            };
-
-            const handleTouchMove = (e) => {
-                if (e.touches.length === 2) {
-                    e.preventDefault(); // إيقاف وظائف المتصفح لمنع تشوه الصفحة
-                    const currentDist = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                    const scale = currentDist / initialPinchDist;
-                    currentZoom = Math.max(1, Math.min(startZoom * scale, 5));
-
-                    const currentTouchX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-                    const currentTouchY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-                    
-                    const dx = currentTouchX - startTouchX;
-                    const dy = currentTouchY - startTouchY;
-
-                    if (currentZoom <= 1.05) { // تحسين: إذا كان التكبير شبه معدوم، نلغيه
-                        currentZoom = 1;
-                        currentPanX = 0;
-                        currentPanY = 0;
-                    } else {
-                        currentPanX = startPanX + dx;
-                        currentPanY = startPanY + dy;
-                    }
-                    applyTransform();
-                } else if (e.touches.length === 1 && currentZoom > 1) {
-                    e.preventDefault(); // نمنع اللعبة من التقاط اللمس لأننا الآن نسحب الشاشة المكبرة
-                    const dx = e.touches[0].clientX - startTouchX;
-                    const dy = e.touches[0].clientY - startTouchY;
-                    currentPanX = startPanX + dx;
-                    currentPanY = startPanY + dy;
-                    applyTransform();
-                }
-            };
-
-            const handleTouchEnd = (e) => {
-                if (e.touches.length === 0 && currentZoom <= 1.05) {
-                    currentZoom = 1;
-                    currentPanX = 0;
-                    currentPanY = 0;
-                    iframe.style.transition = 'transform 0.3s ease';
-                    applyTransform();
-                }
-            };
-
-            // ربط الأحداث بالإطار الخارجي
-            wrapper.addEventListener('touchstart', handleTouchStart, { passive: false });
-            wrapper.addEventListener('touchmove', handleTouchMove, { passive: false });
-            wrapper.addEventListener('touchend', handleTouchEnd);
-
-            // ربط الأحداث بداخل الدرس بمجرد تحميله لتأكيد العمل
-            iframe.addEventListener('load', () => {
-                try {
-                    const doc = iframe.contentDocument || iframe.contentWindow.document;
-                    doc.addEventListener('touchstart', handleTouchStart, { passive: false });
-                    doc.addEventListener('touchmove', handleTouchMove, { passive: false });
-                    doc.addEventListener('touchend', handleTouchEnd);
-                    
-                    // دعم التكبير بالكمبيوتر عبر زر CTRL + عجلة الماوس
-                    doc.addEventListener('wheel', (e) => {
-                        if (e.ctrlKey || e.metaKey) {
-                            e.preventDefault();
-                            let zoom = currentZoom;
-                            zoom += e.deltaY * -0.01;
-                            currentZoom = Math.min(Math.max(1, zoom), 5);
-                            if (currentZoom <= 1.05) {
-                                currentZoom = 1;
-                                currentPanX = 0;
-                                currentPanY = 0;
-                            }
-                            iframe.style.transition = 'none';
-                            applyTransform();
-                        }
-                    }, { passive: false });
-                } catch(err) {
-                    // تجاهل بصمت في حال كان الدرس من موقع خارجي ولا يسمح بالحقن
-                }
-            });
-
-            // دالة لإعادة الضبط الكامل للدرس
-            iframe.resetZoom = () => {
-                currentZoom = 1;
-                currentPanX = 0;
-                currentPanY = 0;
-                iframe.style.transition = 'transform 0.3s ease';
-                applyTransform();
-            };
-        };
-
-        // --- إعادة الضبط عند الخروج من ملء الشاشة ---
-        function handleFullscreenExit() {
-            document.querySelectorAll('.iframe-responsive-wrapper').forEach(wrapper => {
-                const iframe = wrapper.querySelector('iframe');
-                const isFullscreen = document.fullscreenElement === wrapper || document.webkitFullscreenElement === wrapper;
-                if (!isFullscreen && iframe && iframe.resetZoom) {
-                    iframe.resetZoom();
-                }
-            });
-        }
-        window.addEventListener('resize', handleFullscreenExit);
-        document.addEventListener('fullscreenchange', handleFullscreenExit);
-        document.addEventListener('webkitfullscreenchange', handleFullscreenExit);
-
 
         function updateClassesDropdown() {
             const select = document.getElementById('content-classes'); if(!select) return; const currentVal = select.value; select.innerHTML = `<option value="admin">🔒 خاص بالإدارة فقط</option><option value="all">🌍 للكل</option>`;
@@ -817,52 +667,40 @@
                     const wrapperId = `wrapper-${item.id}`; 
                     let contentData = item.data;
                     
-                    // حقن قوي للمحافظة على أبعاد وتصميم الدرس الأصلي دون تقطيع
-                    const scrollInjection = `
+                    // تم إزالة الأكواد المدمرة للتصميم (height: 100% !important)
+                    // وتم كتابة كود ذكي (Regex) يسمح للمتصفح بعمل زووم أصلي سلس جداً
+                    let safeHTML = contentData;
+                    safeHTML = safeHTML.replace(/user-scalable=0/gi, 'user-scalable=yes');
+                    safeHTML = safeHTML.replace(/user-scalable=no/gi, 'user-scalable=yes');
+                    safeHTML = safeHTML.replace(/maximum-scale=1\.0/gi, 'maximum-scale=5.0');
+                    safeHTML = safeHTML.replace(/maximum-scale=1/gi, 'maximum-scale=5.0');
+                    
+                    const properMeta = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
                     <style>
                         html, body {
-                            overflow-x: hidden !important;
-                            overflow-y: auto !important;
                             -webkit-overflow-scrolling: touch !important;
-                            height: auto !important;       
-                            min-height: 100vh !important;  
-                            margin: 0 !important;
-                            padding: 0 !important;
-                            touch-action: pan-y pinch-zoom !important;
-                        }
-                        iframe {
-                            width: 100% !important;
-                            min-height: 100vh !important;
-                            border: none !important;
+                            touch-action: pan-x pan-y pinch-zoom !important;
                         }
                     </style>`;
                     
-                    if (contentData.toLowerCase().includes('</head>')) {
-                        contentData = contentData.replace(/<\/head>/i, scrollInjection + '</head>');
-                    } else if (contentData.toLowerCase().includes('<html>')) {
-                        contentData = contentData.replace(/<html>/i, '<html><head>' + scrollInjection + '</head>');
-                    } else {
-                        contentData = scrollInjection + contentData;
+                    if (!safeHTML.toLowerCase().includes('touch-action: pan-x')) {
+                        if (safeHTML.toLowerCase().includes('</head>')) {
+                            safeHTML = safeHTML.replace(/<\/head>/i, properMeta + '</head>');
+                        } else if (safeHTML.toLowerCase().includes('<html')) {
+                            safeHTML = safeHTML.replace(/<html[^>]*>/i, '$&<head>' + properMeta + '</head>');
+                        } else {
+                            safeHTML = properMeta + safeHTML;
+                        }
                     }
                     
-                    let safeHTML = contentData.replace(/"/g, '&quot;');
+                    safeHTML = safeHTML.replace(/"/g, '&quot;');
                     
-                    // تم إزالة زر التكبير العائم بالكامل من الـ HTML
                     innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper"><iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="yes"></iframe></div>`;
                     fullScreenBtnHTML = `<button type="button" onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
                 } else { innerMedia = `<a href="${item.data}" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`; }
                 
                 contentDiv.innerHTML = `<div class="content-header"><h3 class="content-title">${item.title}</h3><div class="header-actions">${fullScreenBtnHTML} ${folderBadge}</div></div>${innerMedia}`;
                 displayArea.appendChild(contentDiv);
-                
-                // تشغيل المحرك الذكي للتكبير باللمس بدون أزرار
-                if (item.type === 'html') {
-                    const newWrapper = document.getElementById(`wrapper-${item.id}`);
-                    const iframe = newWrapper.querySelector('iframe');
-                    if (newWrapper && iframe) {
-                        window.attachAlwaysOnZoom(newWrapper, iframe);
-                    }
-                }
             });
         }
     </script>
