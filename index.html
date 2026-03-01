@@ -34,9 +34,9 @@
         }
 
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; transition: background-color 0.3s, color 0.3s; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; transition: background-color 0.3s, color 0.3s; display: flex; flex-direction: column; min-height: 100vh; }
         .hidden { display: none !important; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; }
         
         #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.3s; }
         .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
@@ -65,14 +65,14 @@
         .btn-group { display: flex; gap: 10px; align-items: flex-start; }
 
         /* --- واجهات الدخول والتسجيل --- */
-        .auth-section { display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        .auth-section { display: flex; justify-content: center; align-items: center; height: 100vh; width: 100%; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
         .login-box { background: var(--card-bg); padding: 50px 40px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); width: 100%; max-width: 420px; text-align: center; }
         .login-box h2 { margin-top: 0; color: var(--primary); font-size: 28px; margin-bottom: 30px; }
         .remember-container { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; cursor: pointer; color: var(--text-main); font-weight: bold; justify-content: flex-start; }
         .remember-container input { width: 18px; height: 18px; margin: 0; accent-color: var(--primary); cursor: pointer; }
 
         /* --- الهيدر والتبويبات --- */
-        header { background: var(--card-bg); color: var(--text-main); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
+        header { background: var(--card-bg); color: var(--text-main); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); width: 100%; }
         .header-right { display: flex; align-items: center; gap: 15px; }
         header h3 { margin: 0; color: var(--primary); font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         .header-left { display: flex; align-items: center; gap: 15px; }
@@ -101,7 +101,7 @@
         input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
 
         /* --- واجهة الطالب والفهرس --- */
-        #user-layout { display: flex; min-height: calc(100vh - 76px); max-width: 1500px; margin: 0 auto; padding: 20px; gap: 25px; transition: all 0.3s ease; }
+        #user-layout { display: flex; min-height: calc(100vh - 76px); max-width: 1500px; margin: 0 auto; padding: 20px; gap: 25px; transition: all 0.3s ease; flex: 1; width: 100%; }
         .sidebar { width: 300px; background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); transition: all 0.3s ease; flex-shrink: 0; height: fit-content; max-height: 85vh; overflow-y: auto; display: flex; flex-direction: column;}
         .sidebar.collapsed { width: 0; padding: 0; border: none; margin: 0; opacity: 0; overflow: hidden; }
         .sidebar h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 15px; }
@@ -123,59 +123,76 @@
         .sidebar-item.active, .independent-item.active { background: var(--primary); color: white; border-color: var(--primary); border-right: 4px solid var(--warning); }
         .independent-item { background: var(--bg-color); border-radius: 8px; margin-bottom: 8px; padding: 12px 15px; border: 1px solid var(--border); cursor: pointer; font-weight: bold; color: var(--text-muted); transition: 0.2s; border-right: 4px solid transparent; display: flex; align-items: center; gap: 8px;}
 
-        .main-content { flex: 1; min-width: 0; transition: all 0.3s ease; }
-        .content-grid { display: grid; grid-template-columns: 1fr; gap: 25px; } 
-        .content-item { background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .main-content { flex: 1; min-width: 0; transition: all 0.3s ease; display: flex; flex-direction: column; }
+        .content-grid { display: flex; flex-direction: column; gap: 25px; flex: 1;} 
+        .content-item { background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); flex: 1;}
         .content-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--bg-color); padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .content-title { margin: 0; color: var(--primary); font-size: 20px; }
         .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .category-badge { font-size: 13px; font-weight: bold; background: var(--bg-color); color: var(--primary); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); }
         .fullscreen-btn { padding: 6px 12px; font-size: 13px; background-color: var(--primary); }
         
-        /* حاوية العرض المتجاوبة مع ملء الشاشة والزووم */
-        .iframe-responsive-wrapper { position: relative; width: 100%; background: #ffffff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; justify-content: center; align-items: center; }
-        .html-sandbox { border: none; background: #fff; transform-origin: top center; position: absolute; top: 0; left: 50%; }
+        /* --- حاوية العرض المتجاوبة --- */
+        .iframe-responsive-wrapper { 
+            position: relative; 
+            width: 100%; 
+            height: 75vh; 
+            min-height: 400px;
+            background: #ffffff; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            overflow: auto !important; 
+            -webkit-overflow-scrolling: touch !important; 
+        }
         
-        /* --- زر وضع الزووم العائم --- */
+        .html-sandbox { 
+            border: none; 
+            background: transparent; 
+            width: 100% !important; 
+            height: 100% !important;
+            display: block; 
+            position: relative;
+        }
+        
+        /* --- زر وضع الزووم العائم القابل للسحب --- */
         .zoom-floating-btn {
-            display: none;
+            display: none; /* يظهر فقط في ملء الشاشة */
             position: absolute;
             bottom: 20px;
             left: 20px;
-            z-index: 2147483647 !important;
+            z-index: 2147483647 !important; 
             background-color: var(--primary);
             color: white;
-            border: none;
+            border: 2px solid white;
             border-radius: 50px;
             padding: 12px 20px;
             font-size: 15px;
             font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            cursor: pointer;
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            cursor: grab;
+            transition: background-color 0.3s ease;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none; /* مهم للسحب باللمس */
         }
+        .zoom-floating-btn:active { cursor: grabbing; }
         .zoom-floating-btn.active {
             background-color: var(--warning);
             color: #000;
+            border-color: #000;
         }
-
-        /* التعديلات الخاصة بدعم الزووم في وضع ملء الشاشة للأجهزة اللمسية */
+        
+        /* التعديلات الخاصة بملء الشاشة */
         .iframe-responsive-wrapper:fullscreen, .iframe-responsive-wrapper:-webkit-full-screen { 
-            aspect-ratio: auto !important; width: 100vw; height: 100vh; background: #ffffff; 
-            border-radius: 0; border: none; overflow: auto !important; 
-            touch-action: auto !important; 
-            -webkit-overflow-scrolling: touch !important; 
+            width: 100vw !important; 
+            height: 100vh !important; 
+            background: #ffffff; 
+            border-radius: 0; 
+            border: none; 
+            overflow: auto !important; 
         }
-        /* عند تفعيل وضع الزووم، نمنع التمرير الافتراضي */
         .iframe-responsive-wrapper.zoom-active:fullscreen, .iframe-responsive-wrapper.zoom-active:-webkit-full-screen {
-            touch-action: none !important;
-            overflow: hidden !important;
-        }
-        .iframe-responsive-wrapper:fullscreen .html-sandbox, .iframe-responsive-wrapper:-webkit-full-screen .html-sandbox { 
-            position: static !important; transform: none !important; 
-            width: 100% !important; height: 100% !important; 
-            min-width: 100vw; min-height: 100vh;
-            touch-action: auto !important; 
+            overflow: hidden !important; /* إيقاف تمرير الصفحة أثناء الزووم */
         }
         .iframe-responsive-wrapper:fullscreen .zoom-floating-btn, .iframe-responsive-wrapper:-webkit-full-screen .zoom-floating-btn {
             display: flex; align-items: center; gap: 8px;
@@ -185,7 +202,10 @@
             #user-layout { flex-direction: column; } .sidebar { width: 100%; max-height: none; } .sidebar.collapsed { height: 0; width: 100%; display: none; }
             .admin-list-item { flex-direction: column; align-items: flex-start; gap: 15px; }
             .bulk-action-bar { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .iframe-responsive-wrapper { height: 65vh; }
         }
+
+        .version-footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 14px; font-weight: bold; width: 100%; margin-top: auto; }
     </style>
 </head>
 <body>
@@ -261,7 +281,7 @@
                     <label>نوع المحتوى</label>
                     <select id="content-type"><option value="html">كود HTML (تفاعلي مرن)</option><option value="link">رابط خارجي</option></select>
                     <label style="color: var(--primary); font-weight: bold;">أبعاد عرض الدرس التفاعلي</label>
-                    <select id="content-ratio"><option value="16:9">عريض (16:9)</option><option value="4:3">مربع (4:3)</option></select>
+                    <select id="content-ratio"><option value="16:9">تلقائي ومتجاوب بالكامل</option></select>
                     <label style="color: var(--secondary); font-weight: bold;">مكان العرض في القائمة الجانبية</label>
                     <select id="content-folder"><option value="none">-- عرض مستقل --</option></select>
                     <label style="color: var(--primary); font-weight: bold;">الصفوف المستهدفة</label>
@@ -322,7 +342,7 @@
         </div>
     </div>
 
-    <div id="user-section" class="hidden">
+    <div id="user-section" class="hidden" style="flex: 1; display: flex;">
         <div id="user-layout">
             <aside id="student-sidebar" class="sidebar">
                 <h3>📑 فهرس المحتوى</h3>
@@ -336,7 +356,7 @@
         </div>
     </div>
 
-    <div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 14px; font-weight: bold;">
+    <div class="version-footer">
         الإصدار 44
     </div>
 
@@ -347,7 +367,15 @@
         if (localStorage.getItem('eduDarkMode') === 'true') { document.body.classList.add('dark-mode'); }
 
         // --- تهيئة Firebase ---
-        const firebaseConfig = { apiKey: "AIzaSyDBf1WRxgtd7oFuQKbdLC9EO78KQzrh1bM", authDomain: "tech-53a3b.firebaseapp.com", databaseURL: "https://tech-53a3b-default-rtdb.firebaseio.com", projectId: "tech-53a3b", storageBucket: "tech-53a3b.firebasestorage.app", messagingSenderId: "800965684824", appId: "1:800965684824:web:c2bea26af815f15aac642d" };
+        const firebaseConfig = { 
+            apiKey: "AIzaSyAYfUWjixDK7MsaLNm9VudD0EIN-QeEDCw", 
+            authDomain: "tech-53a3b.firebaseapp.com", 
+            databaseURL: "https://tech-53a3b-default-rtdb.firebaseio.com", 
+            projectId: "tech-53a3b", 
+            storageBucket: "tech-53a3b.firebasestorage.app", 
+            messagingSenderId: "800965684824", 
+            appId: "1:800965684824:web:c2bea26af815f15aac642d" 
+        };
         firebase.initializeApp(firebaseConfig); const database = firebase.database();
 
         let db = { users: [], contents: [], folders: [], pendingUsers: [] };
@@ -503,163 +531,184 @@
         
         function toggleFullScreen(wrapperId) { let w = document.getElementById(wrapperId); if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (w.requestFullscreen) w.requestFullscreen(); else if (w.webkitRequestFullscreen) w.webkitRequestFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); } }
 
-        // --- محرك التكبير والزووم الجديد ---
+        // --- محرك التكبير والزووم القوي ---
         function initPinchZoom(wrapper) {
             if (wrapper.dataset.zoomInitialized) return;
             wrapper.dataset.zoomInitialized = 'true';
             
-            wrapper.setAttribute('data-zoom', 1);
-            wrapper.setAttribute('data-panx', 0);
-            wrapper.setAttribute('data-pany', 0);
+            let currentZoom = 1;
+            let currentPanX = 0;
+            let currentPanY = 0;
 
             let initialPinchDist = 0;
-            let initialZoom = 1;
-            let lastTouchX = 0;
-            let lastTouchY = 0;
+            let startZoom = 1;
+
+            let isPanning = false;
+            let startPanX = 0;
+            let startPanY = 0;
+            let startTouchX = 0;
+            let startTouchY = 0;
+
+            const iframe = wrapper.querySelector('iframe');
 
             wrapper.addEventListener('touchstart', (e) => {
-                const btn = wrapper.querySelector('.zoom-floating-btn');
-                if (!btn || !btn.classList.contains('active')) return;
+                if (!wrapper.classList.contains('zoom-active')) return;
 
                 if (e.touches.length === 2) {
+                    isPanning = false;
                     initialPinchDist = Math.hypot(
-                        e.touches[0].pageX - e.touches[1].pageX,
-                        e.touches[0].pageY - e.touches[1].pageY
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
                     );
-                    initialZoom = parseFloat(wrapper.getAttribute('data-zoom')) || 1;
+                    startZoom = currentZoom;
                 } else if (e.touches.length === 1) {
-                    lastTouchX = e.touches[0].pageX;
-                    lastTouchY = e.touches[0].pageY;
+                    isPanning = true;
+                    startTouchX = e.touches[0].clientX;
+                    startTouchY = e.touches[0].clientY;
+                    startPanX = currentPanX;
+                    startPanY = currentPanY;
                 }
             }, { passive: false });
 
             wrapper.addEventListener('touchmove', (e) => {
-                const btn = wrapper.querySelector('.zoom-floating-btn');
-                if (!btn || !btn.classList.contains('active')) return;
-                
-                e.preventDefault(); 
+                if (!wrapper.classList.contains('zoom-active')) return;
+                e.preventDefault(); // إيقاف التمرير الافتراضي أثناء الزووم
 
                 if (e.touches.length === 2) {
-                    const currentPinchDist = Math.hypot(
-                        e.touches[0].pageX - e.touches[1].pageX,
-                        e.touches[0].pageY - e.touches[1].pageY
+                    const currentDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
                     );
-                    const scale = currentPinchDist / initialPinchDist;
-                    let newZoom = Math.min(Math.max(1, initialZoom * scale), 5); 
-                    wrapper.setAttribute('data-zoom', newZoom);
-                    
-                    if (newZoom === 1) {
-                        wrapper.setAttribute('data-panx', 0);
-                        wrapper.setAttribute('data-pany', 0);
-                    }
-                } else if (e.touches.length === 1) {
-                    let zoom = parseFloat(wrapper.getAttribute('data-zoom')) || 1;
-                    if (zoom > 1) {
-                        let currentX = e.touches[0].pageX;
-                        let currentY = e.touches[0].pageY;
-                        
-                        let pX = parseFloat(wrapper.getAttribute('data-panx')) || 0;
-                        let pY = parseFloat(wrapper.getAttribute('data-pany')) || 0;
-                        
-                        wrapper.setAttribute('data-panx', pX + (currentX - lastTouchX));
-                        wrapper.setAttribute('data-pany', pY + (currentY - lastTouchY));
-                        
-                        lastTouchX = currentX;
-                        lastTouchY = currentY;
-                    }
-                }
-                applyScaling(); 
-            }, { passive: false });
-            
-            wrapper.addEventListener('wheel', (e) => {
-                const btn = wrapper.querySelector('.zoom-floating-btn');
-                if (!btn || !btn.classList.contains('active')) return;
-                e.preventDefault();
-                
-                let zoom = parseFloat(wrapper.getAttribute('data-zoom')) || 1;
-                zoom += e.deltaY * -0.002;
-                zoom = Math.min(Math.max(1, zoom), 5);
-                wrapper.setAttribute('data-zoom', zoom);
-                
-                if (zoom === 1) {
-                    wrapper.setAttribute('data-panx', 0);
-                    wrapper.setAttribute('data-pany', 0);
-                }
-                applyScaling();
-            }, { passive: false });
-        }
+                    const scale = currentDist / initialPinchDist;
+                    currentZoom = Math.max(1, Math.min(startZoom * scale, 5)); // من 1x إلى 5x
 
-        window.toggleZoomMode = function(btn) {
-            const wrapper = btn.closest('.iframe-responsive-wrapper');
-            const iframe = wrapper.querySelector('iframe');
-            btn.classList.toggle('active');
-            
-            if (btn.classList.contains('active')) {
-                wrapper.classList.add('zoom-active');
-                iframe.style.setProperty('pointer-events', 'none', 'important');
-                btn.innerHTML = '🖐️ إيقاف التكبير والتفاعل';
-                showToast('تم تفعيل التكبير. استخدم إصبعين للتقريب.', 'success');
-            } else {
-                wrapper.classList.remove('zoom-active');
-                iframe.style.setProperty('pointer-events', 'auto', 'important');
-                wrapper.setAttribute('data-zoom', 1);
-                wrapper.setAttribute('data-panx', 0);
-                wrapper.setAttribute('data-pany', 0);
-                applyScaling(); 
-                btn.innerHTML = '🔍 تفعيل التكبير';
-                showToast('يمكنك الآن التفاعل مع الدرس.', 'success');
+                    if (currentZoom === 1) {
+                        currentPanX = 0;
+                        currentPanY = 0;
+                    }
+                } else if (e.touches.length === 1 && isPanning && currentZoom > 1) {
+                    const dx = e.touches[0].clientX - startTouchX;
+                    const dy = e.touches[0].clientY - startTouchY;
+                    currentPanX = startPanX + dx;
+                    currentPanY = startPanY + dy;
+                }
+
+                iframe.style.transform = `translate(${currentPanX}px, ${currentPanY}px) scale(${currentZoom})`;
+            }, { passive: false });
+
+            wrapper.resetZoom = () => {
+                currentZoom = 1;
+                currentPanX = 0;
+                currentPanY = 0;
+                iframe.style.transform = 'none';
             }
         }
 
+        // --- دالة تشغيل وإيقاف وضع الزووم ---
+        window.toggleZoomMode = function(btn) {
+            const wrapper = btn.closest('.iframe-responsive-wrapper');
+            const iframe = wrapper.querySelector('iframe');
+            
+            if (!wrapper.classList.contains('zoom-active')) {
+                // تفعيل التكبير
+                wrapper.classList.add('zoom-active');
+                iframe.style.setProperty('pointer-events', 'none', 'important'); // السماح للغلاف باستقبال اللمس
+                btn.innerHTML = '🖐️ إيقاف التكبير والتفاعل';
+                btn.classList.add('active');
+                showToast('تفعيل التكبير: استخدم إصبعين للزووم وإصبع للسحب', 'success');
+            } else {
+                // إيقاف التكبير
+                wrapper.classList.remove('zoom-active');
+                iframe.style.setProperty('pointer-events', 'auto', 'important');
+                btn.innerHTML = '🔍 تفعيل التكبير';
+                btn.classList.remove('active');
+                if (wrapper.resetZoom) wrapper.resetZoom();
+                showToast('تم العودة لوضع التفاعل الطبيعي', 'success');
+            }
+        };
+
+        // --- دالة لجعل الزر قابلاً للسحب بالضغط المطول ---
+        function makeButtonDraggable(btn) {
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+            let pressTimer;
+
+            const startDrag = (e) => {
+                // منع تشغيل السحب إذا كان المستخدم يضغط للتفاعل السريع
+                let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+
+                isDragging = false;
+                pressTimer = setTimeout(() => {
+                    isDragging = true;
+                    btn.style.transform = 'scale(1.1)';
+                    btn.style.opacity = '0.8';
+                    startX = clientX;
+                    startY = clientY;
+                    initialX = btn.offsetLeft;
+                    initialY = btn.offsetTop;
+                    // تمكين حركة الزر وتجاهل خصائص CSS الخاصة بالموقع (bottom, left)
+                    btn.style.bottom = 'auto'; 
+                    btn.style.right = 'auto';
+                }, 300); // 300 مللي ثانية للضغط المطول
+            };
+
+            const doDrag = (e) => {
+                if (!isDragging) {
+                    clearTimeout(pressTimer); // إلغاء الضغطة المطولة إذا تحرك الإصبع مبكراً
+                    return;
+                }
+                e.preventDefault(); // منع تمرير الصفحة أثناء سحب الزر
+                
+                let clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                let clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+
+                let dx = clientX - startX;
+                let dy = clientY - startY;
+
+                btn.style.left = `${initialX + dx}px`;
+                btn.style.top = `${initialY + dy}px`;
+            };
+
+            const stopDrag = (e) => {
+                clearTimeout(pressTimer);
+                if (isDragging) {
+                    isDragging = false;
+                    btn.style.transform = 'scale(1)';
+                    btn.style.opacity = '1';
+                } else {
+                    // إذا لم يكن هناك سحب (يعني كانت ضغطة سريعة)، قم بتشغيل التكبير
+                    window.toggleZoomMode(btn);
+                }
+            };
+
+            btn.addEventListener('touchstart', startDrag, {passive: false});
+            btn.addEventListener('touchmove', doDrag, {passive: false});
+            btn.addEventListener('touchend', stopDrag);
+            
+            btn.addEventListener('mousedown', startDrag);
+            window.addEventListener('mousemove', doDrag);
+            window.addEventListener('mouseup', stopDrag);
+        }
+
+        // --- دالة التحكم في العرض عند ملء الشاشة والخروج منه ---
         function applyScaling() {
             document.querySelectorAll('.iframe-responsive-wrapper').forEach(wrapper => {
                 const iframe = wrapper.querySelector('iframe');
                 const btn = wrapper.querySelector('.zoom-floating-btn');
                 
                 if (iframe) {
-                    if (document.fullscreenElement === wrapper || document.webkitFullscreenElement === wrapper) { 
-                        // Fullscreen Mode Logic
-                        let zoom = parseFloat(wrapper.getAttribute('data-zoom')) || 1;
-                        let pX = parseFloat(wrapper.getAttribute('data-panx')) || 0;
-                        let pY = parseFloat(wrapper.getAttribute('data-pany')) || 0;
-
-                        iframe.style.width = '100%'; 
-                        iframe.style.height = '100%'; 
-                        iframe.style.position = 'absolute';
-                        iframe.style.top = '0'; 
-                        iframe.style.left = '0'; 
-
-                        if (btn && btn.classList.contains('active')) {
-                            // Zoom Active
-                            iframe.style.transformOrigin = 'center center';
-                            iframe.style.transform = `translate(${pX}px, ${pY}px) scale(${zoom})`;
-                        } else {
-                            // Zoom Inactive - regular fullscreen
-                            iframe.style.transform = 'none';
-                        }
-                    } else { 
-                        // Normal mode (maintain aspect ratio scaling)
-                        const vW = parseFloat(iframe.getAttribute('data-vwidth')) || 1280; 
-                        const vH = parseFloat(iframe.getAttribute('data-vheight')) || 720; 
-                        const scale = wrapper.clientWidth / vW; 
-                        iframe.style.width = vW + 'px'; 
-                        iframe.style.height = vH + 'px'; 
-                        iframe.style.position = 'absolute'; 
-                        iframe.style.top = '0'; 
-                        iframe.style.left = '50%'; 
-                        iframe.style.transformOrigin = 'top center';
-                        iframe.style.transform = `translateX(-50%) scale(${scale})`; 
-                        
-                        // Reset zoom btn safely if exiting fullscreen
+                    const isFullscreen = document.fullscreenElement === wrapper || document.webkitFullscreenElement === wrapper;
+                    
+                    if (!isFullscreen) {
+                        // عند الخروج من ملء الشاشة: إعادة ضبط كل شيء
                         if(btn && btn.classList.contains('active')) {
                             btn.classList.remove('active');
                             btn.innerHTML = '🔍 تفعيل التكبير';
-                            wrapper.classList.remove('zoom-active');
-                            iframe.style.setProperty('pointer-events', 'auto', 'important');
-                            wrapper.setAttribute('data-zoom', 1);
-                            wrapper.setAttribute('data-panx', 0);
-                            wrapper.setAttribute('data-pany', 0);
                         }
+                        wrapper.classList.remove('zoom-active');
+                        iframe.style.setProperty('pointer-events', 'auto', 'important');
+                        if (wrapper.resetZoom) wrapper.resetZoom();
                     }
                 }
             });
@@ -843,22 +892,39 @@
                     const wrapperId = `wrapper-${item.id}`; 
                     let contentData = item.data;
                     
-                    const zoomMeta = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">`;
-                    if (contentData.toLowerCase().includes('<head>')) {
-                        contentData = contentData.replace(/<head>/i, '<head>' + zoomMeta);
+                    const scrollInjection = `
+                    <style>
+                        html, body {
+                            overflow-x: hidden !important;
+                            overflow-y: auto !important;
+                            -webkit-overflow-scrolling: touch !important;
+                            height: auto !important;       
+                            min-height: 100vh !important;  
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            touch-action: pan-y auto !important;
+                        }
+                        iframe {
+                            width: 100% !important;
+                            min-height: 100vh !important;
+                            border: none !important;
+                        }
+                    </style>`;
+                    
+                    if (contentData.toLowerCase().includes('</head>')) {
+                        contentData = contentData.replace(/<\/head>/i, scrollInjection + '</head>');
                     } else if (contentData.toLowerCase().includes('<html>')) {
-                        contentData = contentData.replace(/<html>/i, '<html><head>' + zoomMeta + '</head>');
+                        contentData = contentData.replace(/<html>/i, '<html><head>' + scrollInjection + '</head>');
                     } else {
-                        contentData = zoomMeta + contentData;
+                        contentData = scrollInjection + contentData;
                     }
                     
                     let safeHTML = contentData.replace(/"/g, '&quot;');
                     
-                    const isSquare = item.ratio === '4:3'; const cssRatio = isSquare ? '4/3' : '16/9'; const vWidth = isSquare ? 1024 : 1280; const vHeight = isSquare ? 768 : 720;
+                    // الزر أصبح بدون حدث click مدمج لتجنب التعارض مع خاصية السحب
+                    const zoomBtnHTML = `<button type="button" class="zoom-floating-btn">🔍 تفعيل التكبير</button>`;
                     
-                    const zoomBtnHTML = `<button type="button" class="zoom-floating-btn" onclick="window.toggleZoomMode(this); event.stopPropagation();">🔍 تفعيل التكبير</button>`;
-                    
-                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper" style="aspect-ratio: ${cssRatio};"><iframe class="html-sandbox" srcdoc="${safeHTML}" data-vwidth="${vWidth}" data-vheight="${vHeight}" allowfullscreen scrolling="yes" style="touch-action: auto;"></iframe>${zoomBtnHTML}</div>`;
+                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper"><iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="yes"></iframe>${zoomBtnHTML}</div>`;
                     fullScreenBtnHTML = `<button type="button" onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
                 } else { innerMedia = `<a href="${item.data}" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`; }
                 
@@ -867,7 +933,9 @@
                 
                 if (item.type === 'html') {
                     const newWrapper = document.getElementById(`wrapper-${item.id}`);
+                    const newBtn = newWrapper.querySelector('.zoom-floating-btn');
                     if (newWrapper) initPinchZoom(newWrapper);
+                    if (newBtn) makeButtonDraggable(newBtn); // تفعيل دالة السحب للزر العائم
                 }
             });
             setTimeout(applyScaling, 50);
