@@ -486,7 +486,6 @@
                 if (hasVisibleChild) { details.style.display = 'block'; if (term !== '') details.open = true; } else { details.style.display = 'none'; }
             });
             document.querySelectorAll('#sidebar-content-list .independent-item').forEach(item => {
-                if (item.id === 'sidebar-home-btn') return; 
                 if (item.innerText.toLowerCase().includes(term)) { item.style.display = 'flex'; } else { item.style.display = 'none'; }
             });
         }
@@ -506,24 +505,71 @@
         function showUserDashboard() {
             document.getElementById('user-section').classList.remove('hidden');
             const sidebarDiv = document.getElementById('sidebar-content-list');
-            sidebarDiv.innerHTML = `<div id="sidebar-home-btn" class="independent-item active" onclick="showAllContent(this)">🏠 الرئيسية (عرض الكل)</div>`;
+            
+            // تم إزالة زر عرض الرئيسية بالكامل من هنا
+            sidebarDiv.innerHTML = ''; 
             
             let visibleContents = db.contents.filter(canViewContent);
             let groupedContent = {}; let independentContent = [];
             visibleContents.forEach(item => { if(item.folder && item.folder !== 'none') { if(!groupedContent[item.folder]) groupedContent[item.folder] = []; groupedContent[item.folder].push(item); } else independentContent.push(item); });
 
+            let sidebarHTML = '';
             for(let folderName in groupedContent) {
-                let detailsHTML = `<details><summary>📁 ${folderName}</summary><ul>`;
-                groupedContent[folderName].forEach(item => { detailsHTML += `<li class="sidebar-item" onclick="showSingleContent(${item.id}, this)">📄 ${item.title}</li>`; });
-                detailsHTML += `</ul></details>`; sidebarDiv.innerHTML += detailsHTML;
+                sidebarHTML += `<details><summary>📁 ${folderName}</summary><ul>`;
+                groupedContent[folderName].forEach(item => { sidebarHTML += `<li class="sidebar-item" onclick="showSingleContent(${item.id}, this)">📄 ${item.title}</li>`; });
+                sidebarHTML += `</ul></details>`; 
             }
-            independentContent.forEach(item => { sidebarDiv.innerHTML += `<div class="independent-item" onclick="showSingleContent(${item.id}, this)">📌 ${item.title}</div>`; });
-            document.getElementById('content-display').innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-muted); background: var(--card-bg); border-radius: 12px;">👈 يرجى اختيار درس من الفهرس الجانبي لعرضه.</div>';
+            independentContent.forEach(item => { sidebarHTML += `<div class="independent-item" onclick="showSingleContent(${item.id}, this)">📌 ${item.title}</div>`; });
+            
+            sidebarDiv.innerHTML = sidebarHTML;
+
+            // --- استعادة آخر درس تم فتحه ---
+            const savedContentId = localStorage.getItem('lastViewedContentId_' + currentUser.username);
+            let contentToLoad = null;
+
+            if (savedContentId) {
+                contentToLoad = visibleContents.find(c => c.id == savedContentId);
+            }
+
+            if (contentToLoad) {
+                // نستخدم setTimeout لضمان تحميل العناصر في الواجهة قبل محاولة تفعيلها
+                setTimeout(() => {
+                    const sidebarItems = document.querySelectorAll('.sidebar-item, .independent-item');
+                    let foundElement = null;
+                    sidebarItems.forEach(el => {
+                        if(el.getAttribute('onclick') && el.getAttribute('onclick').includes(`showSingleContent(${contentToLoad.id}`)) {
+                            foundElement = el;
+                        }
+                    });
+                    
+                    showSingleContent(contentToLoad.id, foundElement);
+                    
+                    // إذا كان الدرس داخل مجلد، قم بفتح المجلد
+                    if(foundElement && foundElement.closest('details')) {
+                        foundElement.closest('details').open = true;
+                    }
+                }, 50);
+            } else {
+                document.getElementById('content-display').innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-muted); background: var(--card-bg); border-radius: 12px;">👈 يرجى اختيار درس من الفهرس الجانبي لعرضه.</div>';
+            }
         }
 
         function setActiveSidebarItem(element) { document.querySelectorAll('.sidebar-item, .independent-item').forEach(el => el.classList.remove('active')); element.classList.add('active'); if(window.innerWidth <= 768) toggleSidebar(); }
+        
+        // دالة showAllContent تركناها في حال احتجت لربطها بزر بحث آخر مستقبلاً
         function showAllContent(element) { setActiveSidebarItem(element); document.getElementById('student-search-input').value = ''; filterSidebar(); renderContentItems(db.contents.filter(canViewContent).reverse()); }
-        function showSingleContent(id, element) { setActiveSidebarItem(element); const item = db.contents.find(c => c.id === id); if(item) renderContentItems([item]); }
+        
+        function showSingleContent(id, element) { 
+            if (element) setActiveSidebarItem(element); 
+            const item = db.contents.find(c => c.id === id); 
+            if (item) {
+                renderContentItems([item]); 
+                // حفظ معرّف الدرس المفتوح حالياً ليعود إليه لاحقاً
+                if (currentUser) {
+                    localStorage.setItem('lastViewedContentId_' + currentUser.username, id);
+                }
+            }
+        }
 
         function renderContentItems(itemsArray) {
             const displayArea = document.getElementById('content-display'); displayArea.innerHTML = '';
