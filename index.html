@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>المنصة التعليمية</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -123,85 +123,49 @@
         .sidebar-item.active, .independent-item.active { background: var(--primary); color: white; border-color: var(--primary); border-right: 4px solid var(--warning); }
         .independent-item { background: var(--bg-color); border-radius: 8px; margin-bottom: 8px; padding: 12px 15px; border: 1px solid var(--border); cursor: pointer; font-weight: bold; color: var(--text-muted); transition: 0.2s; border-right: 4px solid transparent; display: flex; align-items: center; gap: 8px;}
 
-        .main-content { flex: 1; min-width: 0; transition: all 0.3s ease; display: flex; flex-direction: column; }
-        .content-grid { display: flex; flex-direction: column; gap: 25px; flex: 1;} 
-        .content-item { background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); flex: 1;}
+        .main-content { flex: 1; min-width: 0; transition: all 0.3s ease; }
+        .content-grid { display: grid; grid-template-columns: 1fr; gap: 25px; } 
+        .content-item { background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .content-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--bg-color); padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .content-title { margin: 0; color: var(--primary); font-size: 20px; }
         .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .category-badge { font-size: 13px; font-weight: bold; background: var(--bg-color); color: var(--primary); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); }
         .fullscreen-btn { padding: 6px 12px; font-size: 13px; background-color: var(--primary); }
         
-        /* --- حاوية العرض المتجاوبة --- */
-        .iframe-responsive-wrapper { 
-            position: relative; 
-            width: 100%; 
-            height: 80vh; 
-            min-height: 450px;
-            background: #ffffff; 
-            border-radius: 8px; 
-            border: 1px solid var(--border); 
-            overflow: auto; 
-            -webkit-overflow-scrolling: touch; 
-        }
+        /* حاوية العرض المتجاوبة مع ملء الشاشة والزووم */
+        .iframe-responsive-wrapper { position: relative; width: 100%; background: #ffffff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .html-sandbox { border: none; background: #fff; transform-origin: top center; position: absolute; top: 0; left: 50%; }
         
-        .html-sandbox { 
-            border: none; 
-            background: transparent; 
-            width: 100%; 
-            height: 100%; 
-            display: block; 
+        /* التعديلات الخاصة بدعم الزووم في وضع ملء الشاشة للأجهزة اللمسية */
+        .iframe-responsive-wrapper:fullscreen, .iframe-responsive-wrapper:-webkit-full-screen { 
+            aspect-ratio: auto !important; width: 100vw; height: 100vh; background: #ffffff; 
+            border-radius: 0; border: none; overflow: auto !important; 
+            touch-action: auto !important; /* هام جداً لدعم الزووم والسحب */
+            -webkit-overflow-scrolling: touch !important; 
         }
-
-        /* --- سر التكبير الأصلي (CSS Fake Fullscreen) --- */
-        /* هذا النظام يغطي الشاشة بالكامل برمجياً ويحافظ على قدرة الهاتف الأصلية للتكبير والتصغير بإصبعين بدون أي أكواد معقدة */
-        .iframe-responsive-wrapper.css-fullscreen { 
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            bottom: 0 !important;
-            width: 100vw !important; 
-            height: 100vh !important; 
-            height: 100dvh !important; /* يدعم متصفحات الهواتف بشكل مثالي */
-            background: #ffffff; 
-            border-radius: 0 !important; 
-            border: none !important; 
-            z-index: 999999 !important;
-            overflow: auto !important; /* يسمح بالتمرير إذا تم تكبير الشاشة */
-        }
-        
-        /* زر إغلاق ملء الشاشة */
-        .exit-fullscreen-btn {
-            display: none;
-            position: fixed; /* يبقى ثابتاً في مكانه حتى لو كبرت الشاشة */
-            top: 15px;
-            left: 15px;
-            z-index: 9999999;
-            background-color: var(--danger);
-            color: white;
-            border: 2px solid white;
-            border-radius: 50px;
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            cursor: pointer;
-        }
-        
-        /* إظهار زر الإغلاق فقط في وضع ملء الشاشة */
-        .iframe-responsive-wrapper.css-fullscreen .exit-fullscreen-btn {
-            display: block;
+        .iframe-responsive-wrapper:fullscreen .html-sandbox, .iframe-responsive-wrapper:-webkit-full-screen .html-sandbox { 
+            position: static !important; transform: none !important; 
+            width: 100% !important; height: 100% !important; 
+            min-width: 100vw; min-height: 100vh;
+            touch-action: auto !important; /* هام جداً لدعم الزووم والسحب */
         }
         
         @media (max-width: 768px) {
             #user-layout { flex-direction: column; } .sidebar { width: 100%; max-height: none; } .sidebar.collapsed { height: 0; width: 100%; display: none; }
             .admin-list-item { flex-direction: column; align-items: flex-start; gap: 15px; }
             .bulk-action-bar { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .iframe-responsive-wrapper { height: 70vh; }
         }
 
-        .version-footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 14px; font-weight: bold; width: 100%; margin-top: auto; }
+        /* --- تنسيق رقم الإصدار في الأسفل --- */
+        .version-footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: auto;
+        }
     </style>
 </head>
 <body>
@@ -277,7 +241,7 @@
                     <label>نوع المحتوى</label>
                     <select id="content-type"><option value="html">كود HTML (تفاعلي مرن)</option><option value="link">رابط خارجي</option></select>
                     <label style="color: var(--primary); font-weight: bold;">أبعاد عرض الدرس التفاعلي</label>
-                    <select id="content-ratio"><option value="16:9">تلقائي ومتجاوب بالكامل</option></select>
+                    <select id="content-ratio"><option value="16:9">عريض (16:9)</option><option value="4:3">مربع (4:3)</option></select>
                     <label style="color: var(--secondary); font-weight: bold;">مكان العرض في القائمة الجانبية</label>
                     <select id="content-folder"><option value="none">-- عرض مستقل --</option></select>
                     <label style="color: var(--primary); font-weight: bold;">الصفوف المستهدفة</label>
@@ -353,14 +317,17 @@
     </div>
 
     <div class="version-footer">
-        الإصدار 48
+        الإصدار 36
     </div>
 
     <script>
+        // --- الإشعارات والوضع الليلي ---
         function showToast(message, type = 'success') { const c = document.getElementById('toast-container'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = (type === 'success' ? '✅ ' : (type === 'error' ? '❌ ' : '⚠️ ')) + message; c.appendChild(t); setTimeout(() => { t.remove(); }, 3000); }
         function toggleDarkMode() { document.body.classList.toggle('dark-mode'); localStorage.setItem('eduDarkMode', document.body.classList.contains('dark-mode')); }
         if (localStorage.getItem('eduDarkMode') === 'true') { document.body.classList.add('dark-mode'); }
 
+        // --- تهيئة Firebase ---
+        // تم تحديث مفتاح API
         const firebaseConfig = { 
             apiKey: "AIzaSyAYfUWjixDK7MsaLNm9VudD0EIN-QeEDCw", 
             authDomain: "tech-53a3b.firebaseapp.com", 
@@ -393,6 +360,7 @@
 
         function saveDB() { database.ref('/').set(db).catch(error => { showToast('فشل الاتصال بقاعدة البيانات!', 'error'); }); }
 
+        // --- الجلسة والدخول المحسن للـ APK ---
         function checkSession() {
             let savedSession = null;
             try { savedSession = sessionStorage.getItem('eduPlatformActiveSession') || localStorage.getItem('eduPlatformSession'); } catch(e) {}
@@ -435,6 +403,7 @@
         
         function logout() { try { localStorage.removeItem('eduPlatformSession'); sessionStorage.removeItem('eduPlatformActiveSession'); } catch(e) {} location.reload(); }
 
+        // --- التسجيل والطلبات المعلقة ---
         function showRegisterForm() { document.getElementById('login-section').classList.add('hidden'); document.getElementById('register-section').classList.remove('hidden'); }
         function showLoginForm() { document.getElementById('register-section').classList.add('hidden'); document.getElementById('login-section').classList.remove('hidden'); }
         function submitRegistration() {
@@ -455,6 +424,7 @@
         function approveUser(username) { const idx = db.pendingUsers.findIndex(u => u.username === username); if(idx > -1) { db.users.push(db.pendingUsers[idx]); db.pendingUsers.splice(idx, 1); saveDB(); showToast(`تمت الموافقة`); renderPendingUsers(); updateClassesDropdown(); } }
         function rejectUser(username) { if(confirm(`تأكيد الرفض؟`)) { db.pendingUsers = db.pendingUsers.filter(u => u.username !== username); saveDB(); showToast(`تم الرفض`, 'warning'); renderPendingUsers(); } }
 
+        // --- الواجهة الإدارية والتطبيقات ---
         function initDashboard() {
             document.getElementById('login-section').classList.add('hidden'); 
             document.getElementById('register-section').classList.add('hidden'); 
@@ -520,20 +490,22 @@
 
         function toggleSidebar() { document.getElementById('student-sidebar').classList.toggle('collapsed'); }
         
-        // --- النظام الجديد السحري لملء الشاشة ---
-        // بدلاً من أمر المتصفح الذي يقتل التكبير، نستخدم CSS ليغطي العنصر الشاشة!
-        window.toggleCSSFullScreen = function(wrapperId) {
-            const wrapper = document.getElementById(wrapperId);
-            wrapper.classList.add('css-fullscreen');
-            document.body.style.overflow = 'hidden'; // منع تمرير خلفية الموقع
-            showToast('وضع ملء الشاشة: استخدم إصبعين للتكبير بكل سلاسة', 'success');
+        function toggleFullScreen(wrapperId) { let w = document.getElementById(wrapperId); if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (w.requestFullscreen) w.requestFullscreen(); else if (w.webkitRequestFullscreen) w.webkitRequestFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); } }
+
+        function applyScaling() {
+            document.querySelectorAll('.iframe-responsive-wrapper').forEach(wrapper => {
+                const iframe = wrapper.querySelector('iframe');
+                if (iframe) {
+                    if (document.fullscreenElement === wrapper || document.webkitFullscreenElement === wrapper) { 
+                        iframe.style.width = '100%'; iframe.style.height = '100%'; iframe.style.transform = 'none'; iframe.style.position = 'static'; 
+                    } else { 
+                        const vW = parseFloat(iframe.getAttribute('data-vwidth')) || 1280; const vH = parseFloat(iframe.getAttribute('data-vheight')) || 720; 
+                        const scale = wrapper.clientWidth / vW; iframe.style.width = vW + 'px'; iframe.style.height = vH + 'px'; iframe.style.transform = `translateX(-50%) scale(${scale})`; iframe.style.position = 'absolute'; iframe.style.top = '0'; iframe.style.left = '50%'; 
+                    }
+                }
+            });
         }
-        
-        window.exitCSSFullScreen = function(wrapperId) {
-            const wrapper = document.getElementById(wrapperId);
-            wrapper.classList.remove('css-fullscreen');
-            document.body.style.overflow = '';
-        }
+        window.addEventListener('resize', applyScaling); document.addEventListener('fullscreenchange', applyScaling); document.addEventListener('webkitfullscreenchange', applyScaling);
 
         function updateClassesDropdown() {
             const select = document.getElementById('content-classes'); if(!select) return; const currentVal = select.value; select.innerHTML = `<option value="admin">🔒 خاص بالإدارة فقط</option><option value="all">🌍 للكل</option>`;
@@ -712,55 +684,26 @@
                     const wrapperId = `wrapper-${item.id}`; 
                     let contentData = item.data;
                     
-                    // الكود الذكي لتفعيل التكبير الطبيعي من المتصفح وحماية تصميم الدرس
-                    let safeHTML = contentData;
-                    // البحث عن أي كود يمنع الزوم وحذفه
-                    safeHTML = safeHTML.replace(/user-scalable=0/gi, 'user-scalable=yes');
-                    safeHTML = safeHTML.replace(/user-scalable=no/gi, 'user-scalable=yes');
-                    safeHTML = safeHTML.replace(/maximum-scale=1\.0/gi, 'maximum-scale=5.0');
-                    safeHTML = safeHTML.replace(/maximum-scale=1(["'])/gi, 'maximum-scale=5.0$1');
-                    
-                    // حقن الميتا تاج الصحيحة وخصائص الـ CSS
-                    const properMeta = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-                    <style>
-                        html, body {
-                            margin: 0 !important;
-                            padding: 0 !important;
-                            width: 100% !important;
-                            height: 100% !important;
-                            touch-action: auto !important; /* سر التفعيل للزوم الطبيعي */
-                        }
-                        iframe {
-                            width: 100% !important;
-                            height: 100vh !important;
-                            border: none !important;
-                        }
-                    </style>`;
-                    
-                    if (!safeHTML.toLowerCase().includes('touch-action: auto')) {
-                        if (safeHTML.toLowerCase().includes('</head>')) {
-                            safeHTML = safeHTML.replace(/<\/head>/i, properMeta + '</head>');
-                        } else if (safeHTML.toLowerCase().includes('<html')) {
-                            safeHTML = safeHTML.replace(/<html[^>]*>/i, '$&<head>' + properMeta + '</head>');
-                        } else {
-                            safeHTML = properMeta + safeHTML;
-                        }
+                    const zoomMeta = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">`;
+                    if (contentData.toLowerCase().includes('<head>')) {
+                        contentData = contentData.replace(/<head>/i, '<head>' + zoomMeta);
+                    } else if (contentData.toLowerCase().includes('<html>')) {
+                        contentData = contentData.replace(/<html>/i, '<html><head>' + zoomMeta + '</head>');
+                    } else {
+                        contentData = zoomMeta + contentData;
                     }
                     
-                    safeHTML = safeHTML.replace(/"/g, '&quot;');
+                    let safeHTML = contentData.replace(/"/g, '&quot;');
                     
-                    // تم إزالة الأزرار الخاصة بالزوم بالكامل، واستخدام زر الخروج من ملء الشاشة فقط
-                    const exitBtn = `<button type="button" class="exit-fullscreen-btn" onclick="exitCSSFullScreen('${wrapperId}')">❌ إغلاق وتصغير</button>`;
-                    
-                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper"><iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="yes"></iframe>${exitBtn}</div>`;
-                    
-                    // تغيير وظيفة زر التكبير ليستخدم نظام CSS المتوافق مع الزوم
-                    fullScreenBtnHTML = `<button type="button" onclick="toggleCSSFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
-                } else { innerMedia = `<a href="${item.data}" target="_blank" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`; }
+                    const isSquare = item.ratio === '4:3'; const cssRatio = isSquare ? '4/3' : '16/9'; const vWidth = isSquare ? 1024 : 1280; const vHeight = isSquare ? 768 : 720;
+                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper" style="aspect-ratio: ${cssRatio};"><iframe class="html-sandbox" srcdoc="${safeHTML}" data-vwidth="${vWidth}" data-vheight="${vHeight}" allowfullscreen scrolling="yes" style="touch-action: auto;"></iframe></div>`;
+                    fullScreenBtnHTML = `<button type="button" onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
+                } else { innerMedia = `<a href="${item.data}" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`; }
                 
                 contentDiv.innerHTML = `<div class="content-header"><h3 class="content-title">${item.title}</h3><div class="header-actions">${fullScreenBtnHTML} ${folderBadge}</div></div>${innerMedia}`;
                 displayArea.appendChild(contentDiv);
             });
+            setTimeout(applyScaling, 50);
         }
     </script>
 </body>
