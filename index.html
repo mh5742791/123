@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="منصتي التعليمية">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%231e3a8a' rx='115'/%3E%3Cpath fill='%23fff' d='M256 90c-44 0-86 16-121 44-7 5-11 13-11 22v223c0 14 11 25 25 25 6 0 12-2 17-6 26-19 57-29 89-29s64 10 90 29c5 3 11 6 17 6 13 0 25-11 25-25V156c0-8-4-16-11-22-35-28-76-44-120-44zm0 263c-24 0-48 5-70 14v-166c21-12 45-19 70-19s49 7 70 19v166c-22-9-46-14-70-14z'/%3E%3C/svg%3E">
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22%D8%A7%D9%84%D9%85%D9%86%D8%B5%D8%A9%20%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85%D9%8A%D8%A9%22%2C%22short_name%22%3A%22%D9%85%D9%86%D8%B5%D8%AA%D9%8A%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f0f4f8%22%2C%22theme_color%22%3A%22%231e3a8a%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bcharset%3Dutf-8%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20512%20512'%253E%253Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%25231e3a8a'%20rx%3D'115'%2F%253E%253Cpath%20fill%3D'%2523fff'%20d%3D'M256%2090c-44%200-86%2016-121%2044-7%205-11%2013-11%2022v223c0%2014%2011%2025%2025%2025%206%200%2012-2%2017-6%2026-19%2057-29%2089-29s64%2010%2090%2029c5%203%2011%206%2017%206%2013%200%2025-11%2025-25V156c0-8-4-16-11-22-35-28-76-44-120-44zm0%20263c-24%200-48%205-70%2014v-166c21-12%2045-19%2070-19s49%207%2070%2019v166c-22-9-46-14-70-14z'%2F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+    
     <title>المنصة التعليمية</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -44,7 +52,7 @@
 
         /* --- الإشعارات الاحترافية (Toast) --- */
         #toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
-        .toast { padding: 12px 20px; border-radius: 8px; color: white; font-weight: bold; animation: slideIn 0.3s, fadeOut 0.3s 2.7s forwards; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; }
+        .toast { padding: 12px 20px; border-radius: 8px; color: white; font-weight: bold; animation: slideIn 0.3s, fadeOut 0.3s 3.2s forwards; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; max-width: 90vw; }
         .toast.success { background: var(--success); }
         .toast.error { background: var(--danger); }
         .toast.warning { background: var(--warning); color: #000; }
@@ -72,10 +80,10 @@
         .remember-container input { width: 18px; height: 18px; margin: 0; accent-color: var(--primary); cursor: pointer; }
 
         /* --- الهيدر والتبويبات --- */
-        header { background: var(--card-bg); color: var(--text-main); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); width: 100%; }
+        header { background: var(--card-bg); color: var(--text-main); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); width: 100%; gap: 10px; flex-wrap: wrap;}
         .header-right { display: flex; align-items: center; gap: 15px; }
         header h3 { margin: 0; color: var(--primary); font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .header-left { display: flex; align-items: center; gap: 15px; }
+        .header-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;}
         .menu-toggle-btn { background: transparent; color: var(--primary); border: 1px solid var(--border); padding: 8px 12px; font-size: 20px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
         
         .tabs-container { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; margin-top: 30px; border: 1px solid var(--border); }
@@ -132,7 +140,7 @@
         .category-badge { font-size: 13px; font-weight: bold; background: var(--bg-color); color: var(--primary); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); }
         .fullscreen-btn { padding: 6px 12px; font-size: 13px; background-color: var(--primary); }
         
-        /* --- حاوية العرض المتجاوبة --- */
+        /* --- حاوية العرض المتجاوبة السليمة --- */
         .iframe-responsive-wrapper { 
             position: relative; 
             width: 100%; 
@@ -154,7 +162,6 @@
         }
 
         /* --- سر التكبير الأصلي (CSS Fake Fullscreen) --- */
-        /* هذا النظام يغطي الشاشة بالكامل برمجياً ويحافظ على قدرة الهاتف الأصلية للتكبير والتصغير بإصبعين بدون أي أكواد معقدة */
         .iframe-responsive-wrapper.css-fullscreen { 
             position: fixed !important;
             top: 0 !important;
@@ -163,18 +170,17 @@
             bottom: 0 !important;
             width: 100vw !important; 
             height: 100vh !important; 
-            height: 100dvh !important; /* يدعم متصفحات الهواتف بشكل مثالي */
+            height: 100dvh !important; 
             background: #ffffff; 
             border-radius: 0 !important; 
             border: none !important; 
             z-index: 999999 !important;
-            overflow: auto !important; /* يسمح بالتمرير إذا تم تكبير الشاشة */
+            overflow: auto !important; 
         }
         
-        /* زر إغلاق ملء الشاشة */
         .exit-fullscreen-btn {
             display: none;
-            position: fixed; /* يبقى ثابتاً في مكانه حتى لو كبرت الشاشة */
+            position: fixed;
             top: 15px;
             left: 15px;
             z-index: 9999999;
@@ -189,7 +195,6 @@
             cursor: pointer;
         }
         
-        /* إظهار زر الإغلاق فقط في وضع ملء الشاشة */
         .iframe-responsive-wrapper.css-fullscreen .exit-fullscreen-btn {
             display: block;
         }
@@ -249,11 +254,12 @@
             <h3>📚 منصتي التعليمية</h3>
         </div>
         <div class="header-left">
+            <button type="button" id="install-pwa-btn" class="btn-info hidden" onclick="installPWA()">📱 تثبيت التطبيق</button>
             <span id="welcome-msg" style="font-weight: 600; color: var(--text-muted); font-size: 14px; display: none;"></span>
             <button type="button" onclick="toggleDarkMode()" title="الوضع الليلي / النهاري" style="background: transparent; font-size: 20px; padding: 5px;">🌓</button>
             <button type="button" id="preview-btn" class="btn-warning hidden" onclick="showPreview()">👁️ معاينة</button>
             <button type="button" id="back-admin-btn" class="btn-success hidden" onclick="backToAdmin()">⚙️ الإدارة</button>
-            <button type="button" class="btn-danger" onclick="logout()">خروج</button>
+            <button type="button" class="btn-danger" onclick="logout(true)">خروج</button>
         </div>
     </header>
 
@@ -353,14 +359,39 @@
     </div>
 
     <div class="version-footer">
-        الإصدار 48
+        الإصدار 52
     </div>
 
     <script>
+        // --- دوال تطبيق الويب التقدمي (PWA) ---
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const installBtn = document.getElementById('install-pwa-btn');
+            if(installBtn && !currentUser || (currentUser && currentUser.role !== 'admin')) {
+                installBtn.classList.remove('hidden');
+            }
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById('install-pwa-btn').classList.add('hidden');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        // --- الإشعارات والوضع الليلي ---
         function showToast(message, type = 'success') { const c = document.getElementById('toast-container'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = (type === 'success' ? '✅ ' : (type === 'error' ? '❌ ' : '⚠️ ')) + message; c.appendChild(t); setTimeout(() => { t.remove(); }, 3000); }
         function toggleDarkMode() { document.body.classList.toggle('dark-mode'); localStorage.setItem('eduDarkMode', document.body.classList.contains('dark-mode')); }
         if (localStorage.getItem('eduDarkMode') === 'true') { document.body.classList.add('dark-mode'); }
 
+        // --- تهيئة Firebase ---
         const firebaseConfig = { 
             apiKey: "AIzaSyAYfUWjixDK7MsaLNm9VudD0EIN-QeEDCw", 
             authDomain: "tech-53a3b.firebaseapp.com", 
@@ -387,7 +418,20 @@
             if (isFirstLoad) { document.getElementById('loading-overlay').classList.add('hidden'); checkSession(); isFirstLoad = false; } 
             else if (currentUser) {
                 const verifyUser = db.users.find(u => u.username === currentUser.username && u.password === currentUser.password);
-                if (verifyUser) { currentUser = verifyUser; refreshDashboard(); } else { logout(); }
+                if (verifyUser) { 
+                    // نظام الحماية من تعدد الجلسات (Anti Multi-Login)
+                    const localSessionId = localStorage.getItem('eduSessionId');
+                    // تطبيق الحماية على الطلاب فقط
+                    if (verifyUser.role === 'student' && verifyUser.sessionId && verifyUser.sessionId !== localSessionId) {
+                        showToast('⚠️ تم تسجيل الدخول من جهاز آخر. سيتم الخروج لحماية الحساب.', 'error');
+                        setTimeout(() => logout(false), 3000); // خروج إجباري
+                        return;
+                    }
+                    currentUser = verifyUser; 
+                    refreshDashboard(); 
+                } else { 
+                    logout(false); 
+                }
             }
         });
 
@@ -398,7 +442,11 @@
             try { savedSession = sessionStorage.getItem('eduPlatformActiveSession') || localStorage.getItem('eduPlatformSession'); } catch(e) {}
             if (savedSession) {
                 const sessionUser = JSON.parse(savedSession); const verifyUser = db.users.find(u => u.username === sessionUser.username && u.password === sessionUser.password);
-                if (verifyUser) { currentUser = verifyUser; initDashboard(); return; }
+                if (verifyUser) { 
+                    currentUser = verifyUser; 
+                    initDashboard(); 
+                    return; 
+                }
             }
             document.getElementById('login-section').classList.remove('hidden'); checkRememberMe();
         }
@@ -413,14 +461,25 @@
             const user = db.users.find(x => x.username === u && x.password === p); 
             if (user) { 
                 const rememberMe = document.getElementById('remember-me').checked;
+                // توليد معرف جلسة جديد لمنع تعدد الأجهزة
+                const newSessionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
+                user.sessionId = newSessionId;
+                
                 try { 
                     localStorage.setItem('eduPlatformSession', JSON.stringify(user));
+                    localStorage.setItem('eduSessionId', newSessionId); // حفظ الجلسة محلياً
                     if(rememberMe) { localStorage.setItem('eduRememberMe', JSON.stringify({username: u, password: p})); } 
                     else { localStorage.removeItem('eduRememberMe'); } 
                 } catch(e) {}
                 
-                currentUser = user; 
+                // تحديث الجلسة في قاعدة البيانات
+                const dbUserIndex = db.users.findIndex(x => x.username === user.username);
+                if(dbUserIndex > -1) {
+                    db.users[dbUserIndex].sessionId = newSessionId;
+                    saveDB();
+                }
                 
+                currentUser = user; 
                 document.getElementById('loading-overlay').classList.remove('hidden');
                 document.getElementById('loading-text').innerText = 'جاري تحضير المنصة...';
                 
@@ -433,7 +492,14 @@
             }
         }
         
-        function logout() { try { localStorage.removeItem('eduPlatformSession'); sessionStorage.removeItem('eduPlatformActiveSession'); } catch(e) {} location.reload(); }
+        function logout(clearSession = true) { 
+            try { 
+                localStorage.removeItem('eduPlatformSession'); 
+                sessionStorage.removeItem('eduPlatformActiveSession'); 
+                if(clearSession) localStorage.removeItem('eduSessionId');
+            } catch(e) {} 
+            location.reload(); 
+        }
 
         function showRegisterForm() { document.getElementById('login-section').classList.add('hidden'); document.getElementById('register-section').classList.remove('hidden'); }
         function showLoginForm() { document.getElementById('register-section').classList.add('hidden'); document.getElementById('login-section').classList.remove('hidden'); }
@@ -463,7 +529,11 @@
             document.getElementById('welcome-msg').style.display = 'block'; 
             document.getElementById('student-search-input').value = '';
 
+            // إخفاء زر التثبيت للأدمن للحفاظ على الواجهة
             if (currentUser.role === 'admin') { 
+                const installBtn = document.getElementById('install-pwa-btn');
+                if(installBtn) installBtn.classList.add('hidden');
+                
                 const isPreviewSaved = localStorage.getItem('adminPreviewMode_' + currentUser.username) === 'true';
                 if (isPreviewSaved) {
                     showPreview(true); 
@@ -520,13 +590,12 @@
 
         function toggleSidebar() { document.getElementById('student-sidebar').classList.toggle('collapsed'); }
         
-        // --- النظام الجديد السحري لملء الشاشة ---
-        // بدلاً من أمر المتصفح الذي يقتل التكبير، نستخدم CSS ليغطي العنصر الشاشة!
+        // --- نظام التكبير الأصلي (CSS Fake Fullscreen) ---
         window.toggleCSSFullScreen = function(wrapperId) {
             const wrapper = document.getElementById(wrapperId);
             wrapper.classList.add('css-fullscreen');
-            document.body.style.overflow = 'hidden'; // منع تمرير خلفية الموقع
-            showToast('وضع ملء الشاشة: استخدم إصبعين للتكبير بكل سلاسة', 'success');
+            document.body.style.overflow = 'hidden'; 
+            showToast('وضع ملء الشاشة: استخدم إصبعين للتكبير بحرية', 'success');
         }
         
         window.exitCSSFullScreen = function(wrapperId) {
@@ -712,15 +781,13 @@
                     const wrapperId = `wrapper-${item.id}`; 
                     let contentData = item.data;
                     
-                    // الكود الذكي لتفعيل التكبير الطبيعي من المتصفح وحماية تصميم الدرس
+                    // إزالة أي موانع للزوم من داخل الكود الأصلي للدرس
                     let safeHTML = contentData;
-                    // البحث عن أي كود يمنع الزوم وحذفه
                     safeHTML = safeHTML.replace(/user-scalable=0/gi, 'user-scalable=yes');
                     safeHTML = safeHTML.replace(/user-scalable=no/gi, 'user-scalable=yes');
                     safeHTML = safeHTML.replace(/maximum-scale=1\.0/gi, 'maximum-scale=5.0');
                     safeHTML = safeHTML.replace(/maximum-scale=1(["'])/gi, 'maximum-scale=5.0$1');
                     
-                    // حقن الميتا تاج الصحيحة وخصائص الـ CSS
                     const properMeta = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
                     <style>
                         html, body {
@@ -728,7 +795,7 @@
                             padding: 0 !important;
                             width: 100% !important;
                             height: 100% !important;
-                            touch-action: auto !important; /* سر التفعيل للزوم الطبيعي */
+                            touch-action: auto !important; 
                         }
                         iframe {
                             width: 100% !important;
@@ -749,12 +816,10 @@
                     
                     safeHTML = safeHTML.replace(/"/g, '&quot;');
                     
-                    // تم إزالة الأزرار الخاصة بالزوم بالكامل، واستخدام زر الخروج من ملء الشاشة فقط
                     const exitBtn = `<button type="button" class="exit-fullscreen-btn" onclick="exitCSSFullScreen('${wrapperId}')">❌ إغلاق وتصغير</button>`;
                     
                     innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper"><iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="yes"></iframe>${exitBtn}</div>`;
                     
-                    // تغيير وظيفة زر التكبير ليستخدم نظام CSS المتوافق مع الزوم
                     fullScreenBtnHTML = `<button type="button" onclick="toggleCSSFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
                 } else { innerMedia = `<a href="${item.data}" target="_blank" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`; }
                 
