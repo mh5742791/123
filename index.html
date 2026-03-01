@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>المنصة التعليمية</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -142,7 +142,7 @@
             position: absolute;
             bottom: 20px;
             left: 20px;
-            z-index: 10000;
+            z-index: 2147483647 !important; /* ضمان بقائه في أعلى طبقة ممكنة */
             background-color: var(--primary);
             color: white;
             border: none;
@@ -150,7 +150,7 @@
             padding: 12px 20px;
             font-size: 15px;
             font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -163,14 +163,13 @@
         .iframe-responsive-wrapper:fullscreen, .iframe-responsive-wrapper:-webkit-full-screen { 
             aspect-ratio: auto !important; width: 100vw; height: 100vh; background: #ffffff; 
             border-radius: 0; border: none; overflow: auto !important; 
-            touch-action: auto !important; /* هام جداً لدعم الزووم والسحب */
+            touch-action: pan-x pan-y pinch-zoom !important; /* السماح المطلق بالزووم */
             -webkit-overflow-scrolling: touch !important; 
         }
         .iframe-responsive-wrapper:fullscreen .html-sandbox, .iframe-responsive-wrapper:-webkit-full-screen .html-sandbox { 
             position: static !important; transform: none !important; 
             width: 100% !important; height: 100% !important; 
             min-width: 100vw; min-height: 100vh;
-            touch-action: auto !important; 
         }
         .iframe-responsive-wrapper:fullscreen .zoom-floating-btn, .iframe-responsive-wrapper:-webkit-full-screen .zoom-floating-btn {
             display: flex; align-items: center; gap: 8px;
@@ -343,7 +342,7 @@
     </div>
 
     <div class="version-footer">
-        الإصدار 37
+        الإصدار 38
     </div>
 
     <script>
@@ -517,18 +516,23 @@
         
         function toggleFullScreen(wrapperId) { let w = document.getElementById(wrapperId); if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (w.requestFullscreen) w.requestFullscreen(); else if (w.webkitRequestFullscreen) w.webkitRequestFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); } }
 
-        // --- دالة التحكم في وضع الزووم ---
+        // --- دالة التحكم القوية في وضع الزووم ---
         window.toggleZoomMode = function(btn) {
             const wrapper = btn.closest('.iframe-responsive-wrapper');
             const iframe = wrapper.querySelector('iframe');
             btn.classList.toggle('active');
             
             if (btn.classList.contains('active')) {
-                iframe.style.pointerEvents = 'none'; // السماح للغلاف باستقبال اللمس للزووم
+                // فرض إيقاف التفاعل على الـ iframe واستعادة قدرة الشاشة على الزووم
+                iframe.style.setProperty('pointer-events', 'none', 'important');
+                wrapper.style.setProperty('touch-action', 'pan-x pan-y pinch-zoom', 'important');
+                wrapper.style.setProperty('overflow', 'auto', 'important');
                 btn.innerHTML = '🖐️ إيقاف التكبير والتفاعل';
                 showToast('تم تفعيل التكبير. استخدم إصبعين للتقريب.', 'success');
             } else {
-                iframe.style.pointerEvents = 'auto'; // إعادة التفاعل مع الدرس
+                // إعادة التفاعل مع الـ iframe وإيقاف الزووم العشوائي
+                iframe.style.setProperty('pointer-events', 'auto', 'important');
+                wrapper.style.setProperty('touch-action', 'auto', 'important');
                 btn.innerHTML = '🔍 تفعيل التكبير';
                 showToast('يمكنك الآن التفاعل مع الدرس.', 'success');
             }
@@ -546,11 +550,12 @@
                         const vW = parseFloat(iframe.getAttribute('data-vwidth')) || 1280; const vH = parseFloat(iframe.getAttribute('data-vheight')) || 720; 
                         const scale = wrapper.clientWidth / vW; iframe.style.width = vW + 'px'; iframe.style.height = vH + 'px'; iframe.style.transform = `translateX(-50%) scale(${scale})`; iframe.style.position = 'absolute'; iframe.style.top = '0'; iframe.style.left = '50%'; 
                         
-                        // إعادة تهيئة الزر عند الخروج من ملء الشاشة
+                        // إعادة تهيئة الزر والـ iframe عند الخروج من ملء الشاشة
                         if(zoomBtn && zoomBtn.classList.contains('active')) {
                             zoomBtn.classList.remove('active');
                             zoomBtn.innerHTML = '🔍 تفعيل التكبير';
-                            iframe.style.pointerEvents = 'auto';
+                            iframe.style.setProperty('pointer-events', 'auto', 'important');
+                            wrapper.style.setProperty('touch-action', 'auto', 'important');
                         }
                     }
                 }
@@ -748,8 +753,8 @@
                     
                     const isSquare = item.ratio === '4:3'; const cssRatio = isSquare ? '4/3' : '16/9'; const vWidth = isSquare ? 1024 : 1280; const vHeight = isSquare ? 768 : 720;
                     
-                    // زر وضع التكبير العائم يضاف داخل غلاف الفيديو/الدرس
-                    const zoomBtnHTML = `<button type="button" class="zoom-floating-btn" onclick="toggleZoomMode(this)">🔍 تفعيل التكبير</button>`;
+                    // تمت إضافة إيقاف انتشار الحدث (stopPropagation) للزر لمنع التعارض
+                    const zoomBtnHTML = `<button type="button" class="zoom-floating-btn" onclick="window.toggleZoomMode(this); event.stopPropagation();">🔍 تفعيل التكبير</button>`;
                     
                     innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper" style="aspect-ratio: ${cssRatio};"><iframe class="html-sandbox" srcdoc="${safeHTML}" data-vwidth="${vWidth}" data-vheight="${vHeight}" allowfullscreen scrolling="yes" style="touch-action: auto;"></iframe>${zoomBtnHTML}</div>`;
                     fullScreenBtnHTML = `<button type="button" onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
