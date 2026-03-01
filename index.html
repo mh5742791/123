@@ -34,9 +34,9 @@
         }
 
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; transition: background-color 0.3s, color 0.3s; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; transition: background-color 0.3s, color 0.3s; display: flex; flex-direction: column; min-height: 100vh; }
         .hidden { display: none !important; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; }
         
         #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.3s; }
         .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
@@ -65,14 +65,14 @@
         .btn-group { display: flex; gap: 10px; align-items: flex-start; }
 
         /* --- واجهات الدخول والتسجيل --- */
-        .auth-section { display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        .auth-section { display: flex; justify-content: center; align-items: center; height: 100vh; width: 100%; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
         .login-box { background: var(--card-bg); padding: 50px 40px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); width: 100%; max-width: 420px; text-align: center; }
         .login-box h2 { margin-top: 0; color: var(--primary); font-size: 28px; margin-bottom: 30px; }
         .remember-container { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; cursor: pointer; color: var(--text-main); font-weight: bold; justify-content: flex-start; }
         .remember-container input { width: 18px; height: 18px; margin: 0; accent-color: var(--primary); cursor: pointer; }
 
         /* --- الهيدر والتبويبات --- */
-        header { background: var(--card-bg); color: var(--text-main); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
+        header { background: var(--card-bg); color: var(--text-main); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); width: 100%; }
         .header-right { display: flex; align-items: center; gap: 15px; }
         header h3 { margin: 0; color: var(--primary); font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         .header-left { display: flex; align-items: center; gap: 15px; }
@@ -101,7 +101,7 @@
         input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
 
         /* --- واجهة الطالب والفهرس --- */
-        #user-layout { display: flex; min-height: calc(100vh - 76px); max-width: 1500px; margin: 0 auto; padding: 20px; gap: 25px; transition: all 0.3s ease; }
+        #user-layout { display: flex; min-height: calc(100vh - 76px); max-width: 1500px; margin: 0 auto; padding: 20px; gap: 25px; transition: all 0.3s ease; flex: 1; width: 100%; }
         .sidebar { width: 300px; background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); transition: all 0.3s ease; flex-shrink: 0; height: fit-content; max-height: 85vh; overflow-y: auto; display: flex; flex-direction: column;}
         .sidebar.collapsed { width: 0; padding: 0; border: none; margin: 0; opacity: 0; overflow: hidden; }
         .sidebar h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 15px; }
@@ -154,6 +154,17 @@
             #user-layout { flex-direction: column; } .sidebar { width: 100%; max-height: none; } .sidebar.collapsed { height: 0; width: 100%; display: none; }
             .admin-list-item { flex-direction: column; align-items: flex-start; gap: 15px; }
             .bulk-action-bar { flex-direction: column; align-items: flex-start; gap: 15px; }
+        }
+
+        /* --- تنسيق رقم الإصدار في الأسفل --- */
+        .version-footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: auto;
         }
     </style>
 </head>
@@ -291,7 +302,7 @@
         </div>
     </div>
 
-    <div id="user-section" class="hidden">
+    <div id="user-section" class="hidden" style="flex: 1; display: flex;">
         <div id="user-layout">
             <aside id="student-sidebar" class="sidebar">
                 <h3>📑 فهرس المحتوى</h3>
@@ -305,6 +316,10 @@
         </div>
     </div>
 
+    <div class="version-footer">
+        الإصدار 36
+    </div>
+
     <script>
         // --- الإشعارات والوضع الليلي ---
         function showToast(message, type = 'success') { const c = document.getElementById('toast-container'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = (type === 'success' ? '✅ ' : (type === 'error' ? '❌ ' : '⚠️ ')) + message; c.appendChild(t); setTimeout(() => { t.remove(); }, 3000); }
@@ -312,7 +327,16 @@
         if (localStorage.getItem('eduDarkMode') === 'true') { document.body.classList.add('dark-mode'); }
 
         // --- تهيئة Firebase ---
-        const firebaseConfig = { apiKey: "AIzaSyDBf1WRxgtd7oFuQKbdLC9EO78KQzrh1bM", authDomain: "tech-53a3b.firebaseapp.com", databaseURL: "https://tech-53a3b-default-rtdb.firebaseio.com", projectId: "tech-53a3b", storageBucket: "tech-53a3b.firebasestorage.app", messagingSenderId: "800965684824", appId: "1:800965684824:web:c2bea26af815f15aac642d" };
+        // تم تحديث مفتاح API
+        const firebaseConfig = { 
+            apiKey: "AIzaSyAYfUWjixDK7MsaLNm9VudD0EIN-QeEDCw", 
+            authDomain: "tech-53a3b.firebaseapp.com", 
+            databaseURL: "https://tech-53a3b-default-rtdb.firebaseio.com", 
+            projectId: "tech-53a3b", 
+            storageBucket: "tech-53a3b.firebasestorage.app", 
+            messagingSenderId: "800965684824", 
+            appId: "1:800965684824:web:c2bea26af815f15aac642d" 
+        };
         firebase.initializeApp(firebaseConfig); const database = firebase.database();
 
         let db = { users: [], contents: [], folders: [], pendingUsers: [] };
@@ -412,7 +436,7 @@
             if (currentUser.role === 'admin') { 
                 const isPreviewSaved = localStorage.getItem('adminPreviewMode_' + currentUser.username) === 'true';
                 if (isPreviewSaved) {
-                    showPreview(true); // تشغيل المعاينة بدون إظهار الإشعار المزعج عند التحميل
+                    showPreview(true); 
                 } else {
                     document.getElementById('admin-section').classList.remove('hidden'); 
                     document.getElementById('preview-btn').classList.remove('hidden'); 
@@ -434,13 +458,12 @@
                 updateClassesDropdown(); 
                 renderPendingUsers(); 
 
-                // استعادة آخر تبويب للإدارة
                 if(currentUser) {
                     const savedTabId = localStorage.getItem('lastActiveAdminTab_' + currentUser.username);
                     if (savedTabId && document.getElementById(savedTabId)) {
                         openTab(null, savedTabId);
                     } else {
-                        openTab(null, 'tab-content-add'); // التبويب الافتراضي
+                        openTab(null, 'tab-content-add'); 
                     }
                 }
             } else { 
@@ -460,7 +483,6 @@
                 if(btn) btn.classList.add('active');
             }
 
-            // حفظ التبويب الحالي للإدارة
             if (currentUser && currentUser.role === 'admin') {
                 localStorage.setItem('lastActiveAdminTab_' + currentUser.username, tabId);
             }
@@ -557,7 +579,7 @@
             document.getElementById('back-admin-btn').classList.add('hidden'); 
             document.getElementById('sidebar-toggle').classList.add('hidden'); 
             document.getElementById('student-search-input').value = ''; 
-            refreshDashboard(); // استدعاء التحديث لإعادة تحميل تبويبات الإدارة
+            refreshDashboard(); 
             showToast('عدت للإدارة'); 
         }
 
@@ -607,7 +629,6 @@
             
             sidebarDiv.innerHTML = sidebarHTML;
 
-            // --- استعادة آخر درس تم فتحه ---
             const savedContentId = localStorage.getItem('lastViewedContentId_' + currentUser.username);
             let contentToLoad = null;
 
@@ -645,7 +666,6 @@
             const item = db.contents.find(c => c.id === id); 
             if (item) {
                 renderContentItems([item]); 
-                // حفظ معرّف الدرس المفتوح حالياً ليعود إليه لاحقاً
                 if (currentUser) {
                     localStorage.setItem('lastViewedContentId_' + currentUser.username, id);
                 }
@@ -664,7 +684,6 @@
                     const wrapperId = `wrapper-${item.id}`; 
                     let contentData = item.data;
                     
-                    // حقن كود الميتا الخاص بالسماح بالزووم داخل الـ iframe
                     const zoomMeta = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">`;
                     if (contentData.toLowerCase().includes('<head>')) {
                         contentData = contentData.replace(/<head>/i, '<head>' + zoomMeta);
