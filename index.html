@@ -1,564 +1,66 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المنصة التعليمية</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-    <style>
-        /* --- التصميم الأساسي والوضع الليلي --- */
-        :root {
-            --primary: #1e3a8a;
-            --secondary: #3b82f6;
-            --bg-color: #f0f4f8;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-        }
-
-        body.dark-mode {
-            --primary: #60a5fa;
-            --secondary: #3b82f6;
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-        }
-
-        * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; transition: background-color 0.3s, color 0.3s; }
-        .hidden { display: none !important; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        
-        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.3s; }
-        .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* --- الإشعارات الاحترافية (Toast) --- */
-        #toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
-        .toast { padding: 12px 20px; border-radius: 8px; color: white; font-weight: bold; animation: slideIn 0.3s, fadeOut 0.3s 2.7s forwards; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; }
-        .toast.success { background: var(--success); }
-        .toast.error { background: var(--danger); }
-        .toast.warning { background: var(--warning); color: #000; }
-        @keyframes slideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; display: none; } }
-
-        input[type="text"], input[type="password"], select, textarea { width: 100%; padding: 12px 15px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; transition: all 0.3s; font-family: inherit; background-color: var(--bg-color); color: var(--text-main); }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
-        
-        button { background: var(--secondary); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 600; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        button:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
-        .btn-danger { background: var(--danger); }
-        .btn-success { background: var(--success); }
-        .btn-warning { background: var(--warning); color: #000; }
-        .btn-info { background: #0ea5e9; }
-        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-        .btn-outline:hover { background: var(--primary); color: white; }
-        .btn-group { display: flex; gap: 10px; align-items: flex-start; }
-
-        /* --- واجهات الدخول والتسجيل --- */
-        .auth-section { display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
-        .login-box { background: var(--card-bg); padding: 50px 40px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); width: 100%; max-width: 420px; text-align: center; }
-        .login-box h2 { margin-top: 0; color: var(--primary); font-size: 28px; margin-bottom: 30px; }
-        .remember-container { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; cursor: pointer; color: var(--text-main); font-weight: bold; justify-content: flex-start; }
-        .remember-container input { width: 18px; height: 18px; margin: 0; accent-color: var(--primary); cursor: pointer; }
-
-        /* --- الهيدر والتبويبات --- */
-        header { background: var(--card-bg); color: var(--text-main); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); }
-        .header-right { display: flex; align-items: center; gap: 15px; }
-        header h3 { margin: 0; color: var(--primary); font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        .menu-toggle-btn { background: transparent; color: var(--primary); border: 1px solid var(--border); padding: 8px 12px; font-size: 20px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
-        
-        .tabs-container { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; margin-top: 30px; border: 1px solid var(--border); }
-        .tabs-header { display: flex; background: var(--bg-color); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-        .tab-btn { flex: 1; background: transparent; color: var(--text-muted); padding: 15px; border-radius: 0; font-size: 14px; border-bottom: 3px solid transparent; font-weight: bold; transition: 0.3s; min-width: 120px; }
-        .tab-btn:hover { color: var(--primary); background: var(--card-bg); opacity: 0.8; }
-        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: var(--card-bg); }
-        .tab-content { padding: 30px; display: none; animation: fadeIn 0.4s ease; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- قوائم الإدارة --- */
-        .admin-list-item { background: var(--bg-color); border: 1px solid var(--border); padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-        .admin-list-item:hover { border-color: var(--secondary); background: var(--card-bg); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .admin-item-info h4 { margin: 0; color: var(--primary); font-size: 18px; display: flex; align-items: center; gap: 8px; }
-        .admin-item-meta { font-size: 13px; color: var(--text-muted); display: flex; gap: 15px; flex-wrap: wrap; margin-top: 8px; margin-right: 32px; }
-        .admin-item-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-        .search-box { position: relative; max-width: 600px; margin-bottom: 15px; }
-        .search-box input { padding-right: 40px; margin-bottom: 0; }
-        .search-icon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-        .bulk-action-bar { background: var(--bg-color); border: 1px solid var(--border); padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .bulk-action-bar label { font-weight: bold; color: var(--primary); display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
-
-        /* --- واجهة الطالب والفهرس --- */
-        #user-layout { display: flex; min-height: calc(100vh - 76px); max-width: 1500px; margin: 0 auto; padding: 20px; gap: 25px; transition: all 0.3s ease; }
-        .sidebar { width: 300px; background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border); transition: all 0.3s ease; flex-shrink: 0; height: fit-content; max-height: 85vh; overflow-y: auto; display: flex; flex-direction: column;}
-        .sidebar.collapsed { width: 0; padding: 0; border: none; margin: 0; opacity: 0; overflow: hidden; }
-        .sidebar h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 15px; }
-        
-        .sidebar-search-box { display: flex; gap: 5px; margin-bottom: 15px; }
-        .sidebar-search-box input { margin-bottom: 0; border-radius: 6px; padding: 10px; font-size: 14px; }
-        .sidebar-search-box button { padding: 10px; border-radius: 6px; }
-
-        .sidebar details { margin-bottom: 8px; background: var(--bg-color); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; transition: all 0.3s ease; }
-        .sidebar summary { padding: 14px 15px; font-weight: bold; cursor: pointer; color: var(--primary); outline: none; display: flex; align-items: center; gap: 8px; list-style: none; user-select: none; }
-        .sidebar summary::-webkit-details-marker { display: none; }
-        .sidebar summary::after { content: '▼'; margin-right: auto; font-size: 12px; transition: transform 0.3s ease; color: var(--text-muted); }
-        .sidebar details[open] summary::after { transform: rotate(180deg); color: var(--primary); }
-        .sidebar details[open] summary { border-bottom: 1px solid var(--border); color: var(--primary); }
-        .sidebar details ul { list-style: none; padding: 0; margin: 0; background: var(--card-bg); }
-        
-        .sidebar-item { padding: 12px 25px 12px 15px; border-bottom: 1px solid var(--bg-color); cursor: pointer; color: var(--text-muted); font-weight: 600; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
-        .sidebar-item:hover, .independent-item:hover { color: var(--secondary); background: var(--bg-color); padding-right: 30px; border-right: 4px solid var(--secondary); }
-        .sidebar-item.active, .independent-item.active { background: var(--primary); color: white; border-color: var(--primary); border-right: 4px solid var(--warning); }
-        .independent-item { background: var(--bg-color); border-radius: 8px; margin-bottom: 8px; padding: 12px 15px; border: 1px solid var(--border); cursor: pointer; font-weight: bold; color: var(--text-muted); transition: 0.2s; border-right: 4px solid transparent; display: flex; align-items: center; gap: 8px;}
-
-        .main-content { flex: 1; min-width: 0; transition: all 0.3s ease; }
-        .content-grid { display: grid; grid-template-columns: 1fr; gap: 25px; } 
-        .content-item { background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .content-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--bg-color); padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        .content-title { margin: 0; color: var(--primary); font-size: 20px; }
-        .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .category-badge { font-size: 13px; font-weight: bold; background: var(--bg-color); color: var(--primary); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); }
-        .fullscreen-btn { padding: 6px 12px; font-size: 13px; background-color: var(--primary); }
-        
-        /* حاوية العرض المتجاوبة مع ملء الشاشة والزووم */
-        .iframe-responsive-wrapper { position: relative; width: 100%; background: #ffffff; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; display: flex; justify-content: center; align-items: center; }
-        .html-sandbox { border: none; background: #fff; transform-origin: top center; position: absolute; top: 0; left: 50%; }
-        
-        /* التعديلات الخاصة بدعم الزووم في وضع ملء الشاشة للأجهزة اللمسية */
-        .iframe-responsive-wrapper:fullscreen, .iframe-responsive-wrapper:-webkit-full-screen { 
-            aspect-ratio: auto !important; width: 100vw; height: 100vh; background: #ffffff; 
-            border-radius: 0; border: none; overflow: auto !important; 
-            touch-action: auto !important; /* هام جداً لدعم الزووم والسحب */
-            -webkit-overflow-scrolling: touch !important; 
-        }
-        .iframe-responsive-wrapper:fullscreen .html-sandbox, .iframe-responsive-wrapper:-webkit-full-screen .html-sandbox { 
-            position: static !important; transform: none !important; 
-            width: 100% !important; height: 100% !important; 
-            min-width: 100vw; min-height: 100vh;
-            touch-action: auto !important; /* هام جداً لدعم الزووم والسحب */
-        }
-        
-        @media (max-width: 768px) {
-            #user-layout { flex-direction: column; } .sidebar { width: 100%; max-height: none; } .sidebar.collapsed { height: 0; width: 100%; display: none; }
-            .admin-list-item { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .bulk-action-bar { flex-direction: column; align-items: flex-start; gap: 15px; }
-        }
-    </style>
-</head>
-<body>
-
-    <div id="toast-container"></div>
-
-    <div id="loading-overlay">
-        <div class="spinner"></div>
-        <h2 id="loading-text" style="margin: 0;">جاري الاتصال بالمنصة...</h2>
-    </div>
-
-    <div id="login-section" class="hidden auth-section">
-        <div class="login-box">
-            <h2>تسجيل الدخول</h2>
-            <input type="text" id="login-username" placeholder="اسم المستخدم">
-            <input type="password" id="login-password" placeholder="كلمة المرور" onkeypress="if(event.key === 'Enter') login()">
-            
-            <label class="remember-container">
-                <input type="checkbox" id="remember-me"> تذكر بياناتي
-            </label>
-
-            <button type="button" onclick="login()" style="width: 100%; padding: 15px; font-size: 16px;">دخول للمنصة</button>
-            <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px;">
-                <p style="margin-top: 0; font-size: 14px; color: var(--text-muted);">ليس لديك حساب؟</p>
-                <button type="button" onclick="showRegisterForm()" class="btn-outline" style="width: 100%;">طلب تسجيل كطالب جديد</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="register-section" class="hidden auth-section">
-        <div class="login-box">
-            <h2>طلب تسجيل جديد</h2>
-            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">سيتم إرسال بياناتك للإدارة للموافقة عليها.</p>
-            <input type="text" id="reg-username" placeholder="اسم المستخدم المطلوب">
-            <input type="password" id="reg-password" placeholder="كلمة المرور المطلوبة">
-            <input type="text" id="reg-class" placeholder="الصف الدراسي (مثال: الصف الأول)" onkeypress="if(event.key === 'Enter') submitRegistration()">
-            <button type="button" onclick="submitRegistration()" class="btn-success" style="width: 100%; padding: 15px; margin-bottom: 10px;">إرسال طلب التسجيل</button>
-            <button type="button" onclick="showLoginForm()" class="btn-outline" style="width: 100%; border: none;">العودة لتسجيل الدخول</button>
-        </div>
-    </div>
-
-    <header id="main-header" class="hidden">
-        <div class="header-right">
-            <button type="button" id="sidebar-toggle" class="menu-toggle-btn hidden" onclick="toggleSidebar()">☰</button>
-            <h3>📚 منصتي التعليمية</h3>
-        </div>
-        <div class="header-left">
-            <span id="welcome-msg" style="font-weight: 600; color: var(--text-muted); font-size: 14px; display: none;"></span>
-            <button type="button" onclick="toggleDarkMode()" title="الوضع الليلي / النهاري" style="background: transparent; font-size: 20px; padding: 5px;">🌓</button>
-            <button type="button" id="preview-btn" class="btn-warning hidden" onclick="showPreview()">👁️ معاينة</button>
-            <button type="button" id="back-admin-btn" class="btn-success hidden" onclick="backToAdmin()">⚙️ الإدارة</button>
-            <button type="button" class="btn-danger" onclick="logout()">خروج</button>
-        </div>
-    </header>
-
-    <div id="admin-section" class="container hidden">
-        <div class="tabs-container">
-            <div class="tabs-header">
-                <button type="button" class="tab-btn active" id="tab-btn-add" onclick="openTab(event, 'tab-content-add')">📝 نشر محتوى</button>
-                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-content-manage')">📋 إدارة المحتوى</button>
-                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-menus')">📂 القوائم الجانبية</button>
-                <button type="button" class="tab-btn" id="tab-btn-user-add" onclick="openTab(event, 'tab-users-add')">👤 إضافة طالب</button>
-                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-users-manage')">👥 إدارة الطلاب</button>
-                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-pending-users'); renderPendingUsers();">⏳ طلبات التسجيل</button>
-                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-settings')">⚙️ الإعدادات</button>
-            </div>
-
-            <div id="tab-content-add" class="tab-content active">
-                <h2 id="add-edit-title" style="margin-top:0; color:var(--primary);">نشر محتوى جديد</h2>
-                <div style="max-width: 700px;">
-                    <label>عنوان المحتوى</label>
-                    <input type="text" id="content-title" placeholder="اكتب عنوان الدرس...">
-                    <label>نوع المحتوى</label>
-                    <select id="content-type"><option value="html">كود HTML (تفاعلي مرن)</option><option value="link">رابط خارجي</option></select>
-                    <label style="color: var(--primary); font-weight: bold;">أبعاد عرض الدرس التفاعلي</label>
-                    <select id="content-ratio"><option value="16:9">عريض (16:9)</option><option value="4:3">مربع (4:3)</option></select>
-                    <label style="color: var(--secondary); font-weight: bold;">مكان العرض في القائمة الجانبية</label>
-                    <select id="content-folder"><option value="none">-- عرض مستقل --</option></select>
-                    <label style="color: var(--primary); font-weight: bold;">الصفوف المستهدفة</label>
-                    <select id="content-classes" style="background-color: var(--bg-color); border-color: var(--primary);">
-                        <option value="admin">🔒 خاص بالإدارة فقط</option><option value="all">🌍 للكل</option>
-                    </select>
-                    <label>البيانات (الكود أو الرابط)</label>
-                    <textarea id="content-data" rows="8" placeholder="قم بلصق الكود هنا..."></textarea>
-                    <div style="display:flex; gap:10px;">
-                        <button type="button" id="save-content-btn" onclick="saveContent()" style="flex:1; padding: 15px;">💾 حفظ ونشر المحتوى</button>
-                        <button type="button" id="cancel-edit-btn" onclick="cancelEditContent()" class="btn-warning hidden" style="padding: 15px;">❌ إلغاء</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-content-manage" class="tab-content">
-                <h2 style="margin-top:0; color:var(--primary);">إدارة المحتوى المضاف</h2>
-                <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="admin-search-content" placeholder="بحث..." onkeyup="filterAdminContent()"></div>
-                <div class="bulk-action-bar"><label><input type="checkbox" id="select-all-content" onclick="toggleAllContent(this)"> تحديد كل الدروس</label><button type="button" class="btn-danger" onclick="deleteSelectedContent()">🗑️ حذف المحدد</button></div>
-                <div id="admin-content-list"></div>
-            </div>
-
-            <div id="tab-menus" class="tab-content">
-                <h2 style="margin-top:0; color:var(--primary);">إدارة القوائم المنسدلة</h2>
-                <div style="max-width: 600px; display: flex; gap: 10px; margin-bottom: 30px;"><input type="text" id="new-folder-name" placeholder="اسم القائمة..." style="margin-bottom:0;"><button type="button" onclick="addFolder()" class="btn-success" style="white-space:nowrap;">➕ إضافة قائمة</button></div>
-                <div style="max-width: 600px;"><ul id="admin-folders-list" style="list-style: none; padding: 0;"></ul></div>
-            </div>
-
-            <div id="tab-users-add" class="tab-content">
-                <h2 id="add-edit-user-title" style="margin-top:0; color:var(--primary);">إضافة طالب يدوياً</h2>
-                <div style="max-width: 600px;">
-                    <input type="text" id="new-user-name" placeholder="اسم المستخدم">
-                    <div class="btn-group"><input type="text" id="new-user-pass" placeholder="كلمة المرور" style="margin-bottom:0;"><button type="button" onclick="generatePassword()" class="btn-warning">توليد</button></div><br>
-                    <input type="text" id="new-user-class" placeholder="الصف الدراسي">
-                    <label style="display:flex; align-items:center; gap:10px; background:var(--bg-color); padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid var(--border);"><input type="checkbox" id="new-user-star" style="margin:0;"><strong>طالب مميز ⭐</strong></label>
-                    <div style="display:flex; gap:10px;"><button type="button" id="save-user-btn" class="btn-success" onclick="saveUser()" style="flex:1; padding: 15px;">➕ إضافة الطالب</button><button type="button" id="cancel-edit-user-btn" onclick="cancelEditUser()" class="btn-danger hidden" style="padding: 15px;">❌ إلغاء</button></div>
-                </div>
-            </div>
-
-            <div id="tab-users-manage" class="tab-content">
-                <h2 style="margin-top:0; color:var(--primary);">إدارة الطلاب المسجلين</h2>
-                <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="admin-search-users" placeholder="بحث..." onkeyup="filterAdminUsers()"></div>
-                <div class="bulk-action-bar"><label><input type="checkbox" id="select-all-users" onclick="toggleAllUsers(this)"> تحديد كل الطلاب</label><button type="button" class="btn-danger" onclick="deleteSelectedUsers()">🗑️ حذف المحدد</button></div>
-                <div id="admin-users-list"></div>
-            </div>
-
-            <div id="tab-pending-users" class="tab-content">
-                <h2 style="margin-top:0; color:var(--primary);">طلبات التسجيل المعلقة</h2>
-                <div id="admin-pending-list"></div>
-            </div>
-            
-            <div id="tab-settings" class="tab-content">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-                    <div style="background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border);"><h3 style="margin-top:0; color:var(--primary);">تغيير بيانات الأدمن</h3><input type="text" id="admin-new-user" placeholder="اسم المستخدم الجديد"><input type="password" id="admin-new-pass" placeholder="كلمة المرور الجديدة"><button type="button" onclick="updateAdminCredentials()" class="btn-danger" style="width:100%;">🔄 تحديث</button></div>
-                    <div style="background: var(--bg-color); padding: 25px; border-radius: 12px; border: 1px solid var(--border);"><h3 style="margin-top:0; color:var(--success);">النسخ الاحتياطي السحابي 🛡️</h3><button type="button" onclick="exportDB()" class="btn-success" style="width:100%; margin-bottom: 15px;">📥 تحميل نسخة احتياطية</button><hr style="border: 0; border-top: 1px solid var(--border); margin: 15px 0;"><label style="font-size: 13px; font-weight: bold; display: block; margin-bottom: 5px;">استعادة السحابة من ملف:</label><input type="file" id="import-file" accept=".json" style="padding: 5px; background: var(--card-bg); width: 100%;"><button type="button" onclick="importDB()" class="btn-warning" style="width:100%; color: black; margin-top: 10px;">📤 استعادة</button></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="user-section" class="hidden">
-        <div id="user-layout">
-            <aside id="student-sidebar" class="sidebar">
-                <h3>📑 فهرس المحتوى</h3>
-                <div class="sidebar-search-box">
-                    <input type="text" id="student-search-input" placeholder="ابحث هنا..." onkeyup="filterSidebar()" onkeypress="if(event.key === 'Enter') searchAllContent()">
-                    <button type="button" onclick="searchAllContent()" title="بحث" class="btn-secondary">🔍</button>
-                </div>
-                <div id="sidebar-content-list" style="flex: 1; overflow-y: auto;"></div>
-            </aside>
-            <main class="main-content"><div id="content-display" class="content-grid"></div></main>
-        </div>
-    </div>
-
-    <script>
-        // --- الإشعارات والوضع الليلي ---
-        function showToast(message, type = 'success') { const c = document.getElementById('toast-container'); const t = document.createElement('div'); t.className = `toast ${type}`; t.innerHTML = (type === 'success' ? '✅ ' : (type === 'error' ? '❌ ' : '⚠️ ')) + message; c.appendChild(t); setTimeout(() => { t.remove(); }, 3000); }
-        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); localStorage.setItem('eduDarkMode', document.body.classList.contains('dark-mode')); }
-        if (localStorage.getItem('eduDarkMode') === 'true') { document.body.classList.add('dark-mode'); }
-
-        // --- تهيئة Firebase ---
-        const firebaseConfig = { apiKey: "AIzaSyDBf1WRxgtd7oFuQKbdLC9EO78KQzrh1bM", authDomain: "tech-53a3b.firebaseapp.com", databaseURL: "https://tech-53a3b-default-rtdb.firebaseio.com", projectId: "tech-53a3b", storageBucket: "tech-53a3b.firebasestorage.app", messagingSenderId: "800965684824", appId: "1:800965684824:web:c2bea26af815f15aac642d" };
-        firebase.initializeApp(firebaseConfig); const database = firebase.database();
-
-        let db = { users: [], contents: [], folders: [], pendingUsers: [] };
-        let currentUser = null; let isPreviewMode = false; let currentEditContentId = null; let currentEditUserOldName = null; let isFirstLoad = true;
-
-        function sanitizeArray(arr) { if (!arr) return []; return Object.values(arr).filter(item => item !== null && item !== undefined); }
-
-        database.ref('/').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                db.users = sanitizeArray(data.users); db.contents = sanitizeArray(data.contents); db.folders = sanitizeArray(data.folders); db.pendingUsers = sanitizeArray(data.pendingUsers); 
-                db.contents.forEach(item => { if (!item.classes) item.classes = []; if(!item.ratio) item.ratio = '16:9'; });
-            } else { db = { users: [{ username: '228820', password: '228820', role: 'admin' }], contents: [], folders: [], pendingUsers: [] }; saveDB(); }
-            
-            if (isFirstLoad) { document.getElementById('loading-overlay').classList.add('hidden'); checkSession(); isFirstLoad = false; } 
-            else if (currentUser) {
-                const verifyUser = db.users.find(u => u.username === currentUser.username && u.password === currentUser.password);
-                if (verifyUser) { currentUser = verifyUser; refreshDashboard(); } else { logout(); }
-            }
-        });
-
-        function saveDB() { database.ref('/').set(db).catch(error => { showToast('فشل الاتصال بقاعدة البيانات!', 'error'); }); }
-
-        // --- الجلسة والدخول المحسن للـ APK ---
-        function checkSession() {
-            let savedSession = null;
-            try { savedSession = sessionStorage.getItem('eduPlatformActiveSession') || localStorage.getItem('eduPlatformSession'); } catch(e) {}
-            if (savedSession) {
-                const sessionUser = JSON.parse(savedSession); const verifyUser = db.users.find(u => u.username === sessionUser.username && u.password === sessionUser.password);
-                if (verifyUser) { currentUser = verifyUser; initDashboard(); return; }
-            }
-            document.getElementById('login-section').classList.remove('hidden'); checkRememberMe();
-        }
-        
-        function checkRememberMe() { try { const rememberedData = localStorage.getItem('eduRememberMe'); if (rememberedData) { const data = JSON.parse(rememberedData); document.getElementById('login-username').value = data.username; document.getElementById('login-password').value = data.password; document.getElementById('remember-me').checked = true; } } catch(e) {} }
-        
-        function login() {
-            if(db.users.length === 0) return showToast('جاري تحميل البيانات...', 'warning');
-            const u = document.getElementById('login-username').value.trim(); const p = document.getElementById('login-password').value.trim(); 
-            if (db.pendingUsers.find(x => x.username === u && x.password === p)) return showToast('طلبك قيد المراجعة.', 'warning');
-            
-            const user = db.users.find(x => x.username === u && x.password === p); 
-            if (user) { 
-                const rememberMe = document.getElementById('remember-me').checked;
-                try { 
-                    localStorage.setItem('eduPlatformSession', JSON.stringify(user));
-                    if(rememberMe) { localStorage.setItem('eduRememberMe', JSON.stringify({username: u, password: p})); } 
-                    else { localStorage.removeItem('eduRememberMe'); } 
-                } catch(e) {}
-                
-                currentUser = user; 
-                
-                document.getElementById('loading-overlay').classList.remove('hidden');
-                document.getElementById('loading-text').innerText = 'جاري تحضير المنصة...';
-                
-                setTimeout(() => { 
-                    document.getElementById('loading-overlay').classList.add('hidden');
-                    initDashboard(); 
-                }, 400); 
-            } else { 
-                showToast('بيانات الدخول غير صحيحة', 'error'); 
-            }
-        }
-        
-        function logout() { try { localStorage.removeItem('eduPlatformSession'); sessionStorage.removeItem('eduPlatformActiveSession'); } catch(e) {} location.reload(); }
-
-        // --- التسجيل والطلبات المعلقة ---
-        function showRegisterForm() { document.getElementById('login-section').classList.add('hidden'); document.getElementById('register-section').classList.remove('hidden'); }
-        function showLoginForm() { document.getElementById('register-section').classList.add('hidden'); document.getElementById('login-section').classList.remove('hidden'); }
-        function submitRegistration() {
-            const u = document.getElementById('reg-username').value.trim(); const p = document.getElementById('reg-password').value.trim(); const c = document.getElementById('reg-class').value.trim();
-            if(!u || !p || !c) return showToast('البيانات مطلوبة!', 'error');
-            if(db.users.find(x => x.username === u) || db.pendingUsers.find(x => x.username === u)) return showToast('اسم المستخدم محجوز!', 'error');
-            db.pendingUsers.push({ username: u, password: p, class: c, role: 'student', isStar: false }); saveDB();
-            document.getElementById('reg-username').value = ''; document.getElementById('reg-password').value = ''; document.getElementById('reg-class').value = ''; showToast('تم إرسال طلبك للإدارة'); showLoginForm();
-        }
-
-        function renderPendingUsers() {
-            const listDiv = document.getElementById('admin-pending-list'); listDiv.innerHTML = '';
-            if(!db.pendingUsers || db.pendingUsers.length === 0) { listDiv.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding: 30px;">لا توجد طلبات.</p>'; return; }
-            [...db.pendingUsers].reverse().forEach(u => {
-                listDiv.innerHTML += `<div class="admin-list-item"><div class="admin-item-info"><h4>👤 ${u.username}</h4><div class="admin-item-meta"><span>📁 الصف: ${u.class}</span><span>🔑 المرور: ${u.password}</span></div></div><div class="admin-item-actions"><button type="button" class="btn-success" onclick="approveUser('${u.username}')">✅ موافقة</button><button type="button" class="btn-danger" onclick="rejectUser('${u.username}')">❌ رفض</button></div></div>`;
-            });
-        }
-        function approveUser(username) { const idx = db.pendingUsers.findIndex(u => u.username === username); if(idx > -1) { db.users.push(db.pendingUsers[idx]); db.pendingUsers.splice(idx, 1); saveDB(); showToast(`تمت الموافقة`); renderPendingUsers(); updateClassesDropdown(); } }
-        function rejectUser(username) { if(confirm(`تأكيد الرفض؟`)) { db.pendingUsers = db.pendingUsers.filter(u => u.username !== username); saveDB(); showToast(`تم الرفض`, 'warning'); renderPendingUsers(); } }
-
-        // --- الواجهة الإدارية والتطبيقات ---
-        function initDashboard() {
-            document.getElementById('login-section').classList.add('hidden'); document.getElementById('register-section').classList.add('hidden'); document.getElementById('main-header').classList.remove('hidden'); document.getElementById('welcome-msg').innerText = `أهلاً ${currentUser.username}`; document.getElementById('welcome-msg').style.display = 'block'; document.getElementById('student-search-input').value = '';
-            if (currentUser.role === 'admin') { document.getElementById('admin-section').classList.remove('hidden'); document.getElementById('preview-btn').classList.remove('hidden'); refreshDashboard(); } 
-            else { document.getElementById('sidebar-toggle').classList.remove('hidden'); showUserDashboard(); }
-        }
-        function refreshDashboard() { if (currentUser.role === 'admin' && !isPreviewMode) { renderAdminFolders(); updateFolderDropdowns(); filterAdminContent(); filterAdminUsers(); updateClassesDropdown(); renderPendingUsers(); } else { showUserDashboard(); } }
-        function openTab(evt, tabId) { document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); document.getElementById(tabId).classList.add('active'); if(evt) evt.currentTarget.classList.add('active'); else document.querySelector(`[onclick*="${tabId}"]`).classList.add('active'); }
-        function toggleSidebar() { document.getElementById('student-sidebar').classList.toggle('collapsed'); }
-        
-        function toggleFullScreen(wrapperId) { let w = document.getElementById(wrapperId); if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (w.requestFullscreen) w.requestFullscreen(); else if (w.webkitRequestFullscreen) w.webkitRequestFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); } }
-
-        function applyScaling() {
-            document.querySelectorAll('.iframe-responsive-wrapper').forEach(wrapper => {
-                const iframe = wrapper.querySelector('iframe');
-                if (iframe) {
-                    if (document.fullscreenElement === wrapper || document.webkitFullscreenElement === wrapper) { 
-                        iframe.style.width = '100%'; iframe.style.height = '100%'; iframe.style.transform = 'none'; iframe.style.position = 'static'; 
-                    } else { 
-                        const vW = parseFloat(iframe.getAttribute('data-vwidth')) || 1280; const vH = parseFloat(iframe.getAttribute('data-vheight')) || 720; 
-                        const scale = wrapper.clientWidth / vW; iframe.style.width = vW + 'px'; iframe.style.height = vH + 'px'; iframe.style.transform = `translateX(-50%) scale(${scale})`; iframe.style.position = 'absolute'; iframe.style.top = '0'; iframe.style.left = '50%'; 
-                    }
-                }
-            });
-        }
-        window.addEventListener('resize', applyScaling); document.addEventListener('fullscreenchange', applyScaling); document.addEventListener('webkitfullscreenchange', applyScaling);
-
-        function updateClassesDropdown() {
-            const select = document.getElementById('content-classes'); if(!select) return; const currentVal = select.value; select.innerHTML = `<option value="admin">🔒 خاص بالإدارة فقط</option><option value="all">🌍 للكل</option>`;
-            const uniqueClasses = new Set(); db.users.forEach(u => { if (u.role === 'student' && u.class && u.class.trim() !== '') uniqueClasses.add(u.class.trim()); }); db.contents.forEach(c => { if(c.classes) { c.classes.forEach(cls => { if(cls !== 'admin_only') uniqueClasses.add(cls); }); } });
-            uniqueClasses.forEach(cls => { select.innerHTML += `<option value="${cls}">📁 ${cls}</option>`; }); if(currentVal && Array.from(select.options).some(opt => opt.value === currentVal)) select.value = currentVal;
-        }
-
-        function addFolder() { const f = document.getElementById('new-folder-name').value.trim(); if(!f || db.folders.includes(f)) return showToast('موجود مسبقاً!', 'error'); db.folders.push(f); saveDB(); document.getElementById('new-folder-name').value = ''; showToast('تم الإضافة!'); }
-        function editFolder(old) { const n = prompt(`تغيير "${old}" إلى:`, old); if (n && n.trim()!=="" && n!==old) { const t = n.trim(); if (db.folders.includes(t)) return showToast('موجود!', 'error'); const idx = db.folders.indexOf(old); if (idx !== -1) db.folders[idx] = t; db.contents.forEach(c => { if (c.folder === old) c.folder = t; }); saveDB(); showToast('تم التغيير!'); } }
-        function deleteFolder(f) { if(confirm(`حذف القائمة "${f}"؟`)) { db.folders = db.folders.filter(x => x !== f); db.contents.forEach(c => { if(c.folder === f) c.folder = 'none'; }); saveDB(); showToast('تم الحذف!'); } }
-        function renderAdminFolders() { const l = document.getElementById('admin-folders-list'); l.innerHTML = ''; db.folders.forEach(f => { l.innerHTML += `<li style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-color); padding:10px 15px; margin-bottom:10px; border-radius:5px; border:1px solid var(--border);"><strong>📁 ${f}</strong><div><button type="button" onclick="editFolder('${f}')" style="background:var(--warning); color:#000; padding:5px 10px; font-size:12px; margin-left:5px;">✏️</button><button type="button" onclick="deleteFolder('${f}')" style="background:var(--danger); padding:5px 10px; font-size:12px;">🗑️</button></div></li>`; }); }
-        function updateFolderDropdowns() { const s = document.getElementById('content-folder'); s.innerHTML = '<option value="none">-- عرض مستقل --</option>'; db.folders.forEach(f => { s.innerHTML += `<option value="${f}">${f}</option>`; }); }
-        
-        function saveContent() {
-            const title = document.getElementById('content-title').value.trim(); const type = document.getElementById('content-type').value; const folder = document.getElementById('content-folder').value; const data = document.getElementById('content-data').value.trim(); const classesVal = document.getElementById('content-classes').value; const ratio = document.getElementById('content-ratio').value;
-            let classesArray = classesVal === 'admin' ? ['admin_only'] : (classesVal === 'all' ? [] : [classesVal]);
-            if (!title || !data) return showToast('بيانات ناقصة!', 'error');
-            if (currentEditContentId) { const idx = db.contents.findIndex(c => c.id === currentEditContentId); db.contents[idx] = { id: currentEditContentId, title, type, data, classes: classesArray, folder, ratio }; cancelEditContent(); showToast('تم التحديث!'); } else { db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, folder, ratio }); document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; showToast('تم النشر!'); } saveDB();
-        }
-        function renderAdminContentList(searchTerm = '') {
-            const listDiv = document.getElementById('admin-content-list'); listDiv.innerHTML = ''; document.getElementById('select-all-content').checked = false;
-            const filtered = db.contents.filter(item => { const term = searchTerm.toLowerCase(); return item.title.toLowerCase().includes(term) || (item.folder || '').toLowerCase().includes(term) || (item.classes && item.classes.join(' ').toLowerCase().includes(term)); });
-            [...filtered].reverse().forEach(item => {
-                const folderText = item.folder === 'none' ? 'مستقل' : item.folder; let classesText = 'الكل'; if(item.classes) { if (item.classes.includes('admin_only')) classesText = '<span style="color:var(--danger)">إدارة</span>'; else if (item.classes.length > 0) classesText = item.classes.join(', '); }
-                listDiv.innerHTML += `<div class="admin-list-item"><div class="admin-item-info"><h4 style="display:flex; align-items:center; gap:10px;"><input type="checkbox" class="content-checkbox" value="${item.id}"> ${item.title}</h4><div class="admin-item-meta"><span>📁 ${folderText}</span><span>👥 ${classesText}</span></div></div><div class="admin-item-actions"><button type="button" class="btn-warning" onclick="editContent(${item.id})">✏️</button><button type="button" class="btn-danger" onclick="deleteContent(${item.id})">🗑️</button></div></div>`;
-            });
-        }
-        function filterAdminContent() { renderAdminContentList(document.getElementById('admin-search-content').value); }
-        function deleteContent(id) { if(confirm('متأكد؟')) { db.contents = db.contents.filter(c => c.id !== id); saveDB(); showToast('تم الحذف'); } }
-        function toggleAllContent(source) { document.querySelectorAll('.content-checkbox').forEach(cb => cb.checked = source.checked); }
-        function deleteSelectedContent() { const selected = Array.from(document.querySelectorAll('.content-checkbox:checked')).map(cb => parseInt(cb.value)); if(selected.length === 0) return showToast('تحديد درس أولاً.', 'error'); if(confirm(`حذف ${selected.length} درس؟`)) { db.contents = db.contents.filter(c => !selected.includes(c.id)); saveDB(); showToast(`تم الحذف`); } }
-        function editContent(id) { const item = db.contents.find(c => c.id === id); if(!item) return; document.getElementById('content-title').value = item.title; document.getElementById('content-type').value = item.type; document.getElementById('content-folder').value = item.folder || 'none'; document.getElementById('content-data').value = item.data; document.getElementById('content-ratio').value = item.ratio || '16:9'; document.getElementById('content-classes').value = (item.classes && item.classes.includes('admin_only')) ? 'admin' : ((!item.classes || item.classes.length === 0) ? 'all' : item.classes[0]); currentEditContentId = id; document.getElementById('add-edit-title').innerText = `✏️ تعديل: ${item.title}`; document.getElementById('save-content-btn').innerHTML = '🔄 تحديث'; document.getElementById('cancel-edit-btn').classList.remove('hidden'); openTab(null, 'tab-content-add'); document.getElementById('tab-btn-add').classList.add('active'); }
-        function cancelEditContent() { currentEditContentId = null; document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; document.getElementById('content-classes').value = 'admin'; document.getElementById('content-ratio').value = '16:9'; document.getElementById('add-edit-title').innerText = 'نشر محتوى جديد'; document.getElementById('save-content-btn').innerHTML = '💾 حفظ'; document.getElementById('cancel-edit-btn').classList.add('hidden'); }
-        
-        function generatePassword() { document.getElementById('new-user-pass').value = Math.random().toString(36).slice(-6); }
-        function saveUser() { const name = document.getElementById('new-user-name').value.trim(); const pass = document.getElementById('new-user-pass').value.trim(); const userClass = document.getElementById('new-user-class').value.trim(); const isStar = document.getElementById('new-user-star').checked; if (!name || !pass) return showToast('مطلوب!', 'error'); if (currentEditUserOldName) { if (name !== currentEditUserOldName && db.users.find(u => u.username === name)) return showToast('مستخدم بالفعل!', 'error'); const idx = db.users.findIndex(u => u.username === currentEditUserOldName); db.users[idx] = { username: name, password: pass, role: 'student', class: userClass, isStar: isStar }; cancelEditUser(); showToast('تم التحديث'); } else { if (db.users.find(u => u.username === name)) return showToast('مستخدم بالفعل!', 'error'); db.users.push({ username: name, password: pass, role: 'student', class: userClass, isStar: isStar }); document.getElementById('new-user-name').value=''; document.getElementById('new-user-pass').value=''; document.getElementById('new-user-class').value=''; showToast('تم الإضافة'); } saveDB(); }
-        function renderAdminUsersList(searchTerm = '') { const listDiv = document.getElementById('admin-users-list'); listDiv.innerHTML = ''; document.getElementById('select-all-users').checked = false; const filtered = db.users.filter(u => u.role === 'student').filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()) || (u.class || '').toLowerCase().includes(searchTerm.toLowerCase())); [...filtered].reverse().forEach(u => { listDiv.innerHTML += `<div class="admin-list-item"><div class="admin-item-info"><h4 style="display:flex; align-items:center; gap:10px;"><input type="checkbox" class="user-checkbox" value="${u.username}"> 👤 ${u.username}</h4><div class="admin-item-meta"><span>📁 ${u.class ? u.class : 'بدون'}</span><span>${u.isStar ? '⭐' : 'عادي'}</span></div></div><div class="admin-item-actions"><button type="button" class="btn-info" onclick="copyCredentials('${u.username}', '${u.password}')">📋</button><button type="button" class="btn-warning" onclick="editUser('${u.username}')">✏️</button><button type="button" class="btn-danger" onclick="deleteUser('${u.username}')">🗑️</button></div></div>`; }); }
-        function filterAdminUsers() { renderAdminUsersList(document.getElementById('admin-search-users').value); }
-        function deleteUser(username) { if(confirm('حذف؟')) { db.users = db.users.filter(u => u.username !== username); saveDB(); showToast('تم الحذف'); } }
-        function toggleAllUsers(source) { document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = source.checked); }
-        function deleteSelectedUsers() { const selected = Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => cb.value); if(selected.length === 0) return showToast('تحديد طالب أولاً.', 'error'); if(confirm(`حذف ${selected.length} طالب؟`)) { db.users = db.users.filter(u => !selected.includes(u.username)); saveDB(); showToast(`تم الحذف`); } }
-        function editUser(username) { const user = db.users.find(u => u.username === username); if(!user) return; document.getElementById('new-user-name').value = user.username; document.getElementById('new-user-pass').value = user.password; document.getElementById('new-user-class').value = user.class || ''; document.getElementById('new-user-star').checked = user.isStar; currentEditUserOldName = username; document.getElementById('add-edit-user-title').innerText = `✏️ تعديل`; document.getElementById('save-user-btn').innerHTML = '🔄 تحديث'; document.getElementById('cancel-edit-user-btn').classList.remove('hidden'); openTab(null, 'tab-users-add'); document.getElementById('tab-btn-user-add').classList.add('active'); }
-        function cancelEditUser() { currentEditUserOldName = null; document.getElementById('new-user-name').value = ''; document.getElementById('new-user-pass').value = ''; document.getElementById('new-user-class').value = ''; document.getElementById('new-user-star').checked = false; document.getElementById('add-edit-user-title').innerText = 'إضافة طالب يدوياً'; document.getElementById('save-user-btn').innerHTML = '➕ إضافة'; document.getElementById('cancel-edit-user-btn').classList.add('hidden'); }
-        function copyCredentials(u, p) { navigator.clipboard.writeText(`الاسم: ${u}\nالمرور: ${p}`).then(() => showToast('تم النسخ!')); }
-        function updateAdminCredentials() { const u = document.getElementById('admin-new-user').value.trim(); const p = document.getElementById('admin-new-pass').value; if(u && p) { db.users[0].username = u; db.users[0].password = p; saveDB(); alert('تم! سجل دخول مجدداً.'); logout(); } }
-        function exportDB() { const d = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db)); const a = document.createElement('a'); a.setAttribute("href", d); a.setAttribute("download", "edu_backup.json"); document.body.appendChild(a); a.click(); a.remove(); }
-        function importDB() { const f = document.getElementById('import-file'); if(!f.files.length) return showToast('اختر ملف!', 'error'); const r = new FileReader(); r.onload = function(e) { try { const d = JSON.parse(e.target.result); if(d.users && d.contents) { db = d; saveDB(); showToast('تم الاستعادة!'); } } catch(err) { showToast('خطأ بالملف', 'error'); } }; r.readAsText(f.files[0]); }
-        function showPreview() { isPreviewMode = true; document.getElementById('admin-section').classList.add('hidden'); document.getElementById('preview-btn').classList.add('hidden'); document.getElementById('back-admin-btn').classList.remove('hidden'); document.getElementById('sidebar-toggle').classList.remove('hidden'); document.getElementById('student-sidebar').classList.remove('collapsed'); showUserDashboard(); showToast('أنت في وضع المعاينة'); }
-        function backToAdmin() { isPreviewMode = false; document.getElementById('user-section').classList.add('hidden'); document.getElementById('admin-section').classList.remove('hidden'); document.getElementById('preview-btn').classList.remove('hidden'); document.getElementById('back-admin-btn').classList.add('hidden'); document.getElementById('sidebar-toggle').classList.add('hidden'); document.getElementById('student-search-input').value = ''; showToast('عدت للإدارة'); }
-
-        function canViewContent(item) { if (!item.classes) return true; if (item.classes.includes('admin_only')) return currentUser.role === 'admin' && !isPreviewMode; if (item.classes.length === 0) return true; if (currentUser.role === 'admin' && !isPreviewMode) return true; if (currentUser.isStar) return true; if (item.classes.includes(currentUser.class)) return true; return false; }
-
-        function filterSidebar() {
-            const term = document.getElementById('student-search-input').value.toLowerCase();
-            document.querySelectorAll('#sidebar-content-list details').forEach(details => {
-                let hasVisibleChild = false;
-                details.querySelectorAll('li').forEach(li => { if (li.innerText.toLowerCase().includes(term)) { li.style.display = 'flex'; hasVisibleChild = true; } else { li.style.display = 'none'; } });
-                if (hasVisibleChild) { details.style.display = 'block'; if (term !== '') details.open = true; } else { details.style.display = 'none'; }
-            });
-            document.querySelectorAll('#sidebar-content-list .independent-item').forEach(item => {
-                if (item.id === 'sidebar-home-btn') return; 
-                if (item.innerText.toLowerCase().includes(term)) { item.style.display = 'flex'; } else { item.style.display = 'none'; }
-            });
-        }
-
-        function searchAllContent() {
-            const term = document.getElementById('student-search-input').value.toLowerCase();
-            let visibleContents = db.contents.filter(canViewContent);
-            if (term) {
-                visibleContents = visibleContents.filter(item => { return item.title.toLowerCase().includes(term) || (item.folder && item.folder.toLowerCase().includes(term)) || (item.data && item.data.toLowerCase().includes(term)); });
-                showToast(`نتائج البحث عن: ${term}`, 'success');
-            }
-            renderContentItems(visibleContents.reverse());
-            document.querySelectorAll('.sidebar-item, .independent-item').forEach(el => el.classList.remove('active'));
-            if(window.innerWidth <= 768) toggleSidebar();
+function showSingleContent(id, element) { 
+            setActiveSidebarItem(element); 
+            const item = db.contents.find(c => c.id === id); 
+            if(item) { 
+                // حفظ معرف (ID) الدرس الحالي في ذاكرة المتصفح
+                localStorage.setItem('eduLastContentId', id); 
+                renderContentItems([item]); 
+            } 
         }
 
         function showUserDashboard() {
             document.getElementById('user-section').classList.remove('hidden');
             const sidebarDiv = document.getElementById('sidebar-content-list');
-            sidebarDiv.innerHTML = `<div id="sidebar-home-btn" class="independent-item active" onclick="showAllContent(this)">🏠 الرئيسية (عرض الكل)</div>`;
+            
+            // 1. إزالة زر الرئيسية بتفريغ الحاوية أولاً
+            sidebarDiv.innerHTML = '';
             
             let visibleContents = db.contents.filter(canViewContent);
             let groupedContent = {}; let independentContent = [];
-            visibleContents.forEach(item => { if(item.folder && item.folder !== 'none') { if(!groupedContent[item.folder]) groupedContent[item.folder] = []; groupedContent[item.folder].push(item); } else independentContent.push(item); });
+            visibleContents.forEach(item => { 
+                if(item.folder && item.folder !== 'none') { 
+                    if(!groupedContent[item.folder]) groupedContent[item.folder] = []; 
+                    groupedContent[item.folder].push(item); 
+                } else independentContent.push(item); 
+            });
 
+            // 2. بناء القائمة مع إضافة ID لكل عنصر ليسهل استدعاؤه لاحقاً
             for(let folderName in groupedContent) {
                 let detailsHTML = `<details><summary>📁 ${folderName}</summary><ul>`;
-                groupedContent[folderName].forEach(item => { detailsHTML += `<li class="sidebar-item" onclick="showSingleContent(${item.id}, this)">📄 ${item.title}</li>`; });
+                groupedContent[folderName].forEach(item => { 
+                    detailsHTML += `<li id="sidebar-item-${item.id}" class="sidebar-item" onclick="showSingleContent(${item.id}, this)">📄 ${item.title}</li>`; 
+                });
                 detailsHTML += `</ul></details>`; sidebarDiv.innerHTML += detailsHTML;
             }
-            independentContent.forEach(item => { sidebarDiv.innerHTML += `<div class="independent-item" onclick="showSingleContent(${item.id}, this)">📌 ${item.title}</div>`; });
-            document.getElementById('content-display').innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-muted); background: var(--card-bg); border-radius: 12px;">👈 يرجى اختيار درس من الفهرس الجانبي لعرضه.</div>';
-        }
-
-        function setActiveSidebarItem(element) { document.querySelectorAll('.sidebar-item, .independent-item').forEach(el => el.classList.remove('active')); element.classList.add('active'); if(window.innerWidth <= 768) toggleSidebar(); }
-        function showAllContent(element) { setActiveSidebarItem(element); document.getElementById('student-search-input').value = ''; filterSidebar(); renderContentItems(db.contents.filter(canViewContent).reverse()); }
-        function showSingleContent(id, element) { setActiveSidebarItem(element); const item = db.contents.find(c => c.id === id); if(item) renderContentItems([item]); }
-
-        function renderContentItems(itemsArray) {
-            const displayArea = document.getElementById('content-display'); displayArea.innerHTML = '';
-            if(itemsArray.length === 0) return displayArea.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px; color:var(--text-muted);">لا توجد نتائج.</div>';
-            
-            itemsArray.forEach(item => {
-                const contentDiv = document.createElement('div'); contentDiv.className = 'content-item';
-                let innerMedia = ''; let fullScreenBtnHTML = ''; let folderBadge = (item.folder && item.folder !== 'none') ? `<span class="category-badge">${item.folder}</span>` : '';
-                
-                if (item.type === 'html') {
-                    const wrapperId = `wrapper-${item.id}`; 
-                    let contentData = item.data;
-                    
-                    // حقن كود الميتا الخاص بالسماح بالزووم داخل الـ iframe
-                    const zoomMeta = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">`;
-                    if (contentData.toLowerCase().includes('<head>')) {
-                        contentData = contentData.replace(/<head>/i, '<head>' + zoomMeta);
-                    } else if (contentData.toLowerCase().includes('<html>')) {
-                        contentData = contentData.replace(/<html>/i, '<html><head>' + zoomMeta + '</head>');
-                    } else {
-                        contentData = zoomMeta + contentData;
-                    }
-                    
-                    let safeHTML = contentData.replace(/"/g, '&quot;');
-                    
-                    const isSquare = item.ratio === '4:3'; const cssRatio = isSquare ? '4/3' : '16/9'; const vWidth = isSquare ? 1024 : 1280; const vHeight = isSquare ? 768 : 720;
-                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper" style="aspect-ratio: ${cssRatio};"><iframe class="html-sandbox" srcdoc="${safeHTML}" data-vwidth="${vWidth}" data-vheight="${vHeight}" allowfullscreen scrolling="yes" style="touch-action: auto;"></iframe></div>`;
-                    fullScreenBtnHTML = `<button type="button" onclick="toggleFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
-                } else { innerMedia = `<a href="${item.data}" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`; }
-                
-                contentDiv.innerHTML = `<div class="content-header"><h3 class="content-title">${item.title}</h3><div class="header-actions">${fullScreenBtnHTML} ${folderBadge}</div></div>${innerMedia}`;
-                displayArea.appendChild(contentDiv);
+            independentContent.forEach(item => { 
+                sidebarDiv.innerHTML += `<div id="sidebar-item-${item.id}" class="independent-item" onclick="showSingleContent(${item.id}, this)">📌 ${item.title}</div>`; 
             });
-            setTimeout(applyScaling, 50);
+
+            // 3. كود استرجاع وفتح آخر درس تم الوقوف عليه
+            const lastContentId = localStorage.getItem('eduLastContentId');
+            let itemToOpen = null;
+            let elementToActivate = null;
+
+            if (lastContentId) {
+                itemToOpen = visibleContents.find(c => c.id == lastContentId);
+                elementToActivate = document.getElementById(`sidebar-item-${lastContentId}`);
+            }
+
+            // إذا لم يكن هناك درس محفوظ أو تم حذفه، نفتح أول درس في القائمة كبديل
+            if (!itemToOpen && visibleContents.length > 0) {
+                itemToOpen = visibleContents[0];
+                elementToActivate = document.getElementById(`sidebar-item-${itemToOpen.id}`);
+            }
+
+            // تنفيذ العرض إذا وجدنا درساً
+            if (itemToOpen && elementToActivate) {
+                // فتح المجلد (القائمة المنسدلة) برمجياً إذا كان الدرس بداخله
+                const parentDetails = elementToActivate.closest('details');
+                if (parentDetails) parentDetails.open = true;
+
+                // استدعاء دالة العرض وتمرير العنصر لتفعيله بصرياً
+                showSingleContent(itemToOpen.id, elementToActivate);
+            } else {
+                document.getElementById('content-display').innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-muted); background: var(--card-bg); border-radius: 12px;">لا توجد دروس متاحة حالياً.</div>';
+            }
         }
-    </script>
-</body>
-</html>
