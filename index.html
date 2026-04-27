@@ -259,7 +259,7 @@
             <button type="button" onclick="toggleDarkMode()" title="الوضع الليلي / النهاري" style="background: transparent; font-size: 20px; padding: 5px;">🌓</button>
             <button type="button" id="preview-btn" class="btn-warning hidden" onclick="showPreview()">👁️ معاينة</button>
             <button type="button" id="back-admin-btn" class="btn-success hidden" onclick="backToAdmin()">⚙️ الإدارة</button>
-            <button type="button" class="btn-danger" onclick="logout(true)">خروج</button>
+            <button type="button" id="logout-btn" class="btn-danger" onclick="logout(true)">خروج</button>
         </div>
     </header>
 
@@ -359,11 +359,14 @@
     </div>
 
     <div class="version-footer">
-        الإصدار 53
+        الإصدار 54
     </div>
 
     <script>
-        // --- دالة نسخ الروابط المباشرة المضافة حديثاً ---
+        // --- متغير لتحديد وضع الضيف ---
+        let isGuestMode = false;
+
+        // --- دالة نسخ الروابط المباشرة ---
         function copyShareLink(type, value) {
             const baseUrl = window.location.origin + window.location.pathname;
             const shareUrl = `${baseUrl}?view_${type}=${encodeURIComponent(value)}`;
@@ -380,7 +383,7 @@
             e.preventDefault();
             deferredPrompt = e;
             const installBtn = document.getElementById('install-pwa-btn');
-            if(installBtn && !currentUser || (currentUser && currentUser.role !== 'admin')) {
+            if(installBtn && (!currentUser || (currentUser && currentUser.role !== 'admin'))) {
                 installBtn.classList.remove('hidden');
             }
         });
@@ -426,15 +429,18 @@
                 db.contents.forEach(item => { if (!item.classes) item.classes = []; if(!item.ratio) item.ratio = '16:9'; });
             } else { db = { users: [{ username: '228820', password: '228820', role: 'admin' }], contents: [], folders: [], pendingUsers: [] }; saveDB(); }
             
-            if (isFirstLoad) { document.getElementById('loading-overlay').classList.add('hidden'); checkSession(); isFirstLoad = false; } 
-            else if (currentUser) {
+            if (isFirstLoad) { 
+                document.getElementById('loading-overlay').classList.add('hidden'); 
+                checkSession(); 
+                isFirstLoad = false; 
+            } 
+            else if (currentUser && !isGuestMode) {
                 const verifyUser = db.users.find(u => u.username === currentUser.username && u.password === currentUser.password);
                 if (verifyUser) { 
-                    // نظام الحماية من تعدد الجلسات
                     const localSessionId = localStorage.getItem('eduSessionId');
                     if (verifyUser.role === 'student' && verifyUser.sessionId && verifyUser.sessionId !== localSessionId) {
                         showToast('⚠️ تم تسجيل الدخول من جهاز آخر. سيتم الخروج لحماية الحساب.', 'error');
-                        setTimeout(() => logout(false), 3000); // خروج إجباري
+                        setTimeout(() => logout(false), 3000); 
                         return;
                     }
                     currentUser = verifyUser; 
@@ -450,6 +456,11 @@
         function checkSession() {
             let savedSession = null;
             try { savedSession = sessionStorage.getItem('eduPlatformActiveSession') || localStorage.getItem('eduPlatformSession'); } catch(e) {}
+            
+            // قراءة الرابط المباشر
+            const urlParams = new URLSearchParams(window.location.search);
+            const hasSharedLink = urlParams.has('view_content') || urlParams.has('view_folder');
+
             if (savedSession) {
                 const sessionUser = JSON.parse(savedSession); const verifyUser = db.users.find(u => u.username === sessionUser.username && u.password === sessionUser.password);
                 if (verifyUser) { 
@@ -458,6 +469,15 @@
                     return; 
                 }
             }
+            
+            // الدخول المباشر للضيوف إذا كان هناك رابط مشاركة ولم يتم تسجيل الدخول
+            if (hasSharedLink) {
+                isGuestMode = true;
+                currentUser = { username: 'زائر', role: 'guest', isStar: false };
+                initDashboard();
+                return;
+            }
+
             document.getElementById('login-section').classList.remove('hidden'); checkRememberMe();
         }
         
@@ -488,6 +508,7 @@
                 }
                 
                 currentUser = user; 
+                isGuestMode = false;
                 document.getElementById('loading-overlay').classList.remove('hidden');
                 document.getElementById('loading-text').innerText = 'جاري تحضير المنصة...';
                 
@@ -506,7 +527,8 @@
                 sessionStorage.removeItem('eduPlatformActiveSession'); 
                 if(clearSession) localStorage.removeItem('eduSessionId');
             } catch(e) {} 
-            location.reload(); 
+            // مسح أي روابط مشتركة من العنوان لتجنب الدخول التلقائي كضيف
+            window.location.href = window.location.pathname; 
         }
 
         function showRegisterForm() { document.getElementById('login-section').classList.add('hidden'); document.getElementById('register-section').classList.remove('hidden'); }
@@ -533,9 +555,22 @@
             document.getElementById('login-section').classList.add('hidden'); 
             document.getElementById('register-section').classList.add('hidden'); 
             document.getElementById('main-header').classList.remove('hidden'); 
+            document.getElementById('student-search-input').value = '';
+
+            if (isGuestMode) {
+                // إعدادات واجهة الضيف
+                document.getElementById('welcome-msg').innerText = '👁️ عرض مباشر'; 
+                document.getElementById('welcome-msg').style.display = 'block'; 
+                document.getElementById('logout-btn').innerText = 'تسجيل الدخول / خروج';
+                document.getElementById('sidebar-toggle').classList.add('hidden');
+                document.getElementById('student-sidebar').style.display = 'none'; // إخفاء القائمة الجانبية تماماً للضيف
+                showUserDashboard();
+                return;
+            }
+
             document.getElementById('welcome-msg').innerText = `أهلاً ${currentUser.username}`; 
             document.getElementById('welcome-msg').style.display = 'block'; 
-            document.getElementById('student-search-input').value = '';
+            document.getElementById('logout-btn').innerText = 'خروج';
 
             if (currentUser.role === 'admin') { 
                 const installBtn = document.getElementById('install-pwa-btn');
@@ -552,12 +587,13 @@
             } 
             else { 
                 document.getElementById('sidebar-toggle').classList.remove('hidden'); 
+                document.getElementById('student-sidebar').style.display = 'flex'; // إظهار القائمة للمستخدم العادي
                 showUserDashboard(); 
             }
         }
 
         function refreshDashboard() { 
-            if (currentUser.role === 'admin' && !isPreviewMode) { 
+            if (currentUser && currentUser.role === 'admin' && !isPreviewMode) { 
                 renderAdminFolders(); 
                 updateFolderDropdowns(); 
                 filterAdminContent(); 
@@ -565,13 +601,11 @@
                 updateClassesDropdown(); 
                 renderPendingUsers(); 
 
-                if(currentUser) {
-                    const savedTabId = localStorage.getItem('lastActiveAdminTab_' + currentUser.username);
-                    if (savedTabId && document.getElementById(savedTabId)) {
-                        openTab(null, savedTabId);
-                    } else {
-                        openTab(null, 'tab-content-add'); 
-                    }
+                const savedTabId = localStorage.getItem('lastActiveAdminTab_' + currentUser.username);
+                if (savedTabId && document.getElementById(savedTabId)) {
+                    openTab(null, savedTabId);
+                } else {
+                    openTab(null, 'tab-content-add'); 
                 }
             } else { 
                 showUserDashboard(); 
@@ -597,7 +631,6 @@
 
         function toggleSidebar() { document.getElementById('student-sidebar').classList.toggle('collapsed'); }
         
-        // --- نظام التكبير الأصلي (CSS Fake Fullscreen) ---
         window.toggleCSSFullScreen = function(wrapperId) {
             const wrapper = document.getElementById(wrapperId);
             wrapper.classList.add('css-fullscreen');
@@ -621,7 +654,6 @@
         function editFolder(old) { const n = prompt(`تغيير "${old}" إلى:`, old); if (n && n.trim()!=="" && n!==old) { const t = n.trim(); if (db.folders.includes(t)) return showToast('موجود!', 'error'); const idx = db.folders.indexOf(old); if (idx !== -1) db.folders[idx] = t; db.contents.forEach(c => { if (c.folder === old) c.folder = t; }); saveDB(); showToast('تم التغيير!'); } }
         function deleteFolder(f) { if(confirm(`حذف القائمة "${f}"؟`)) { db.folders = db.folders.filter(x => x !== f); db.contents.forEach(c => { if(c.folder === f) c.folder = 'none'; }); saveDB(); showToast('تم الحذف!'); } }
         
-        // ** إضافة زر النسخ في تبويب القوائم الجانبية **
         function renderAdminFolders() { const l = document.getElementById('admin-folders-list'); l.innerHTML = ''; db.folders.forEach(f => { l.innerHTML += `<li style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-color); padding:10px 15px; margin-bottom:10px; border-radius:5px; border:1px solid var(--border);"><strong>📁 ${f}</strong><div style="display:flex; gap:5px;"><button type="button" class="btn-info" onclick="copyShareLink('folder', '${f}')" style="padding:5px 10px; font-size:12px; border-radius:5px;" title="نسخ رابط المجموعة">🔗</button><button type="button" onclick="editFolder('${f}')" style="background:var(--warning); color:#000; padding:5px 10px; font-size:12px; border-radius:5px; border:none; cursor:pointer;" title="تعديل">✏️</button><button type="button" onclick="deleteFolder('${f}')" style="background:var(--danger); color:white; padding:5px 10px; font-size:12px; border-radius:5px; border:none; cursor:pointer;" title="حذف">🗑️</button></div></li>`; }); }
         
         function updateFolderDropdowns() { const s = document.getElementById('content-folder'); s.innerHTML = '<option value="none">-- عرض مستقل --</option>'; db.folders.forEach(f => { s.innerHTML += `<option value="${f}">${f}</option>`; }); }
@@ -633,7 +665,6 @@
             if (currentEditContentId) { const idx = db.contents.findIndex(c => c.id === currentEditContentId); db.contents[idx] = { id: currentEditContentId, title, type, data, classes: classesArray, folder, ratio }; cancelEditContent(); showToast('تم التحديث!'); } else { db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, folder, ratio }); document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; showToast('تم النشر!'); } saveDB();
         }
         
-        // ** إضافة زر النسخ في تبويب إدارة المحتوى **
         function renderAdminContentList(searchTerm = '') {
             const listDiv = document.getElementById('admin-content-list'); listDiv.innerHTML = ''; document.getElementById('select-all-content').checked = false;
             const filtered = db.contents.filter(item => { const term = searchTerm.toLowerCase(); return item.title.toLowerCase().includes(term) || (item.folder || '').toLowerCase().includes(term) || (item.classes && item.classes.join(' ').toLowerCase().includes(term)); });
@@ -672,6 +703,7 @@
             document.getElementById('preview-btn').classList.add('hidden'); 
             document.getElementById('back-admin-btn').classList.remove('hidden'); 
             document.getElementById('sidebar-toggle').classList.remove('hidden'); 
+            document.getElementById('student-sidebar').style.display = 'flex';
             document.getElementById('student-sidebar').classList.remove('collapsed'); 
             showUserDashboard(); 
             if (!isInit) showToast('أنت في وضع المعاينة'); 
@@ -692,7 +724,17 @@
             showToast('عدت للإدارة'); 
         }
 
-        function canViewContent(item) { if (!item.classes) return true; if (item.classes.includes('admin_only')) return currentUser.role === 'admin' && !isPreviewMode; if (item.classes.length === 0) return true; if (currentUser.role === 'admin' && !isPreviewMode) return true; if (currentUser.isStar) return true; if (item.classes.includes(currentUser.class)) return true; return false; }
+        // للزوار، نسمح برؤية المحتوى المرسل إليهم مباشرة، لغيرهم تُطبق الصلاحيات
+        function canViewContent(item) { 
+            if (isGuestMode) return true; // الضيف يرى فقط ما طلب في الرابط، وقد تم فلترته مسبقاً
+            if (!item.classes) return true; 
+            if (item.classes.includes('admin_only')) return currentUser.role === 'admin' && !isPreviewMode; 
+            if (item.classes.length === 0) return true; 
+            if (currentUser.role === 'admin' && !isPreviewMode) return true; 
+            if (currentUser.isStar) return true; 
+            if (item.classes.includes(currentUser.class)) return true; 
+            return false; 
+        }
 
         function filterSidebar() {
             const term = document.getElementById('student-search-input').value.toLowerCase();
@@ -720,8 +762,35 @@
 
         function showUserDashboard() {
             document.getElementById('user-section').classList.remove('hidden');
-            const sidebarDiv = document.getElementById('sidebar-content-list');
             
+            // قراءة الروابط المباشرة (Deep Linking)
+            const urlParams = new URLSearchParams(window.location.search);
+            const viewContent = urlParams.get('view_content');
+            const viewFolder = urlParams.get('view_folder');
+
+            // إذا كان المستخدم ضيفاً أو حتى مسجل وضغط على رابط مشاركة
+            if (viewContent || viewFolder) {
+                let itemsToShow = [];
+                if (viewContent) {
+                    const c = db.contents.find(x => x.id == viewContent);
+                    if(c) itemsToShow = [c];
+                } else if (viewFolder) {
+                    itemsToShow = db.contents.filter(x => x.folder === viewFolder).reverse();
+                }
+                
+                if (isGuestMode) {
+                    // وضع الضيف التام (إخفاء القائمة الجانبية تماماً وعرض المحتوى فقط)
+                    if (itemsToShow.length > 0) {
+                        renderContentItems(itemsToShow);
+                    } else {
+                        document.getElementById('content-display').innerHTML = '<div style="text-align:center; padding:50px; background:var(--card-bg); border-radius:12px; margin:20px;">المحتوى غير متوفر أو تم حذفه.</div>';
+                    }
+                    return; // إيقاف تنفيذ بناء القائمة الجانبية للضيوف
+                }
+            }
+
+            // --- الكود الأصلي للمستخدمين المسجلين ---
+            const sidebarDiv = document.getElementById('sidebar-content-list');
             sidebarDiv.innerHTML = ''; 
             
             let visibleContents = db.contents.filter(canViewContent);
@@ -730,7 +799,6 @@
 
             let sidebarHTML = '';
             for(let folderName in groupedContent) {
-                // ** إضافة زر النسخ بجانب اسم المجلد في الشريط الجانبي **
                 sidebarHTML += `<details><summary>
                     <span>📁 ${folderName}</span>
                     <button onclick="event.stopPropagation(); event.preventDefault(); copyShareLink('folder', '${folderName}');" style="background:#0ea5e9; color:white; border:none; border-radius:4px; padding:2px 8px; cursor:pointer; font-size:12px; margin-right:5px;" title="نسخ رابط المجلد بالكامل">🔗</button>
@@ -741,11 +809,6 @@
             independentContent.forEach(item => { sidebarHTML += `<div class="independent-item" onclick="showSingleContent(${item.id}, this)">📌 ${item.title}</div>`; });
             
             sidebarDiv.innerHTML = sidebarHTML;
-
-            // ** قراءة الروابط المباشرة (Deep Linking) من الـ URL **
-            const urlParams = new URLSearchParams(window.location.search);
-            const viewContent = urlParams.get('view_content');
-            const viewFolder = urlParams.get('view_folder');
             
             const savedContentId = localStorage.getItem('lastViewedContentId_' + currentUser.username);
             let contentToLoad = null;
@@ -768,17 +831,12 @@
                             foundElement = el;
                         }
                     });
-                    
                     showSingleContent(contentToLoad.id, foundElement);
-                    
-                    if(foundElement && foundElement.closest('details')) {
-                        foundElement.closest('details').open = true;
-                    }
+                    if(foundElement && foundElement.closest('details')) foundElement.closest('details').open = true;
                 }, 50);
             } else if (folderToLoad && folderToLoad.length > 0) {
                 setTimeout(() => {
                     renderContentItems(folderToLoad.reverse());
-                    // فتح المجلد في الفهرس
                     document.querySelectorAll('.sidebar summary').forEach(s => {
                         if(s.innerText.includes(viewFolder)) s.closest('details').open = true;
                     });
@@ -797,7 +855,7 @@
             const item = db.contents.find(c => c.id === id); 
             if (item) {
                 renderContentItems([item]); 
-                if (currentUser) {
+                if (currentUser && !isGuestMode) {
                     localStorage.setItem('lastViewedContentId_' + currentUser.username, id);
                 }
             }
@@ -815,7 +873,6 @@
                     const wrapperId = `wrapper-${item.id}`; 
                     let contentData = item.data;
                     
-                    // إزالة أي موانع للزوم من داخل الكود الأصلي للدرس
                     let safeHTML = contentData;
                     safeHTML = safeHTML.replace(/user-scalable=0/gi, 'user-scalable=yes');
                     safeHTML = safeHTML.replace(/user-scalable=no/gi, 'user-scalable=yes');
@@ -857,7 +914,6 @@
                     fullScreenBtnHTML = `<button type="button" onclick="toggleCSSFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير الدرس">🔲 ملء الشاشة</button>`;
                 } else { innerMedia = `<a href="${item.data}" target="_blank" style="display:block; background:var(--secondary); color:white; text-align:center; padding:15px; text-decoration:none; border-radius:8px; margin-top:10px; font-weight:bold;">🔗 فتح الرابط</a>`; }
                 
-                // ** إضافة زر النسخ في أعلى المحتوى المعروض (للمعاينة والمستخدم) **
                 let copyLinkBtn = `<button type="button" onclick="copyShareLink('content', ${item.id})" class="category-badge btn-info" style="cursor:pointer; border:none; background:#0ea5e9; color:white; display:flex; align-items:center; gap:5px;" title="نسخ الرابط المباشر لهذا الدرس">🔗 نسخ الرابط</button>`;
 
                 contentDiv.innerHTML = `<div class="content-header"><h3 class="content-title">${item.title}</h3><div class="header-actions">${copyLinkBtn} ${fullScreenBtnHTML} ${folderBadge}</div></div>${innerMedia}`;
