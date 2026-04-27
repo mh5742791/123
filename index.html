@@ -359,7 +359,7 @@
     </div>
 
     <div class="version-footer">
-        الإصدار 54
+        الإصدار 55
     </div>
 
     <script>
@@ -562,8 +562,12 @@
                 document.getElementById('welcome-msg').innerText = '👁️ عرض مباشر'; 
                 document.getElementById('welcome-msg').style.display = 'block'; 
                 document.getElementById('logout-btn').innerText = 'تسجيل الدخول / خروج';
-                document.getElementById('sidebar-toggle').classList.add('hidden');
-                document.getElementById('student-sidebar').style.display = 'none'; // إخفاء القائمة الجانبية تماماً للضيف
+                
+                // إظهار الفهرس للزائر ولكن سيتم فلترته لاحقاً، مع إخفاء شريط البحث لمنع التشتت
+                document.getElementById('sidebar-toggle').classList.remove('hidden');
+                document.getElementById('student-sidebar').style.display = 'flex';
+                document.querySelector('.sidebar-search-box').style.display = 'none';
+
                 showUserDashboard();
                 return;
             }
@@ -587,7 +591,8 @@
             } 
             else { 
                 document.getElementById('sidebar-toggle').classList.remove('hidden'); 
-                document.getElementById('student-sidebar').style.display = 'flex'; // إظهار القائمة للمستخدم العادي
+                document.getElementById('student-sidebar').style.display = 'flex'; 
+                document.querySelector('.sidebar-search-box').style.display = 'flex';
                 showUserDashboard(); 
             }
         }
@@ -726,7 +731,7 @@
 
         // للزوار، نسمح برؤية المحتوى المرسل إليهم مباشرة، لغيرهم تُطبق الصلاحيات
         function canViewContent(item) { 
-            if (isGuestMode) return true; // الضيف يرى فقط ما طلب في الرابط، وقد تم فلترته مسبقاً
+            if (isGuestMode) return true; // الضيف يرى فقط ما تم فلترته له في showUserDashboard
             if (!item.classes) return true; 
             if (item.classes.includes('admin_only')) return currentUser.role === 'admin' && !isPreviewMode; 
             if (item.classes.length === 0) return true; 
@@ -768,38 +773,37 @@
             const viewContent = urlParams.get('view_content');
             const viewFolder = urlParams.get('view_folder');
 
-            // إذا كان المستخدم ضيفاً أو حتى مسجل وضغط على رابط مشاركة
-            if (viewContent || viewFolder) {
-                let itemsToShow = [];
-                if (viewContent) {
-                    const c = db.contents.find(x => x.id == viewContent);
-                    if(c) itemsToShow = [c];
-                } else if (viewFolder) {
-                    itemsToShow = db.contents.filter(x => x.folder === viewFolder).reverse();
-                }
-                
-                if (isGuestMode) {
-                    // وضع الضيف التام (إخفاء القائمة الجانبية تماماً وعرض المحتوى فقط)
-                    if (itemsToShow.length > 0) {
-                        renderContentItems(itemsToShow);
+            let visibleContents = db.contents.filter(canViewContent);
+
+            // --- فلترة القائمة الجانبية في حالة الضيف ---
+            if (isGuestMode) {
+                if (viewFolder) {
+                    // إذا كان الرابط للمجلد، نظهر فقط دروس هذا المجلد
+                    visibleContents = visibleContents.filter(c => c.folder === viewFolder);
+                } else if (viewContent) {
+                    // إذا كان الرابط لدرس، نظهر المجلد الذي يحتويه ليكون ظاهرا في القائمة الجانبية
+                    const singleContent = visibleContents.find(c => c.id == viewContent);
+                    if (singleContent && singleContent.folder && singleContent.folder !== 'none') {
+                        visibleContents = visibleContents.filter(c => c.folder === singleContent.folder);
+                    } else if (singleContent) {
+                        visibleContents = [singleContent];
                     } else {
-                        document.getElementById('content-display').innerHTML = '<div style="text-align:center; padding:50px; background:var(--card-bg); border-radius:12px; margin:20px;">المحتوى غير متوفر أو تم حذفه.</div>';
+                        visibleContents = [];
                     }
-                    return; // إيقاف تنفيذ بناء القائمة الجانبية للضيوف
                 }
             }
 
-            // --- الكود الأصلي للمستخدمين المسجلين ---
             const sidebarDiv = document.getElementById('sidebar-content-list');
             sidebarDiv.innerHTML = ''; 
             
-            let visibleContents = db.contents.filter(canViewContent);
             let groupedContent = {}; let independentContent = [];
             visibleContents.forEach(item => { if(item.folder && item.folder !== 'none') { if(!groupedContent[item.folder]) groupedContent[item.folder] = []; groupedContent[item.folder].push(item); } else independentContent.push(item); });
 
             let sidebarHTML = '';
             for(let folderName in groupedContent) {
-                sidebarHTML += `<details><summary>
+                // فتح المجلد تلقائياً للضيوف ليكون المحتوى واضحاً أمامهم
+                const isOpen = isGuestMode ? 'open' : '';
+                sidebarHTML += `<details ${isOpen}><summary>
                     <span>📁 ${folderName}</span>
                     <button onclick="event.stopPropagation(); event.preventDefault(); copyShareLink('folder', '${folderName}');" style="background:#0ea5e9; color:white; border:none; border-radius:4px; padding:2px 8px; cursor:pointer; font-size:12px; margin-right:5px;" title="نسخ رابط المجلد بالكامل">🔗</button>
                 </summary><ul>`;
@@ -818,7 +822,7 @@
                 contentToLoad = visibleContents.find(c => c.id == viewContent);
             } else if (viewFolder) {
                 folderToLoad = visibleContents.filter(c => c.folder === viewFolder);
-            } else if (savedContentId) {
+            } else if (savedContentId && !isGuestMode) { // لا نستخدم الدرس المحفوظ للزوار
                 contentToLoad = visibleContents.find(c => c.id == savedContentId);
             }
 
@@ -842,7 +846,11 @@
                     });
                 }, 50);
             } else {
-                document.getElementById('content-display').innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-muted); background: var(--card-bg); border-radius: 12px;">👈 يرجى اختيار درس من الفهرس الجانبي لعرضه.</div>';
+                if (isGuestMode) {
+                    document.getElementById('content-display').innerHTML = '<div style="text-align:center; padding:50px; background:var(--card-bg); border-radius:12px; margin:20px;">المحتوى غير متوفر أو تم حذفه.</div>';
+                } else {
+                    document.getElementById('content-display').innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-muted); background: var(--card-bg); border-radius: 12px;">👈 يرجى اختيار درس من الفهرس الجانبي لعرضه.</div>';
+                }
             }
         }
 
