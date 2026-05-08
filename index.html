@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <!-- إجبار عرض سطح المكتب 1366 بكسل لجميع الأجهزة -->
+    <!-- إجبار عرض سطح المكتب 1366 بكسل لجميع الأجهزة للحفاظ على تماسك التصميم -->
     <meta name="viewport" content="width=1366, user-scalable=yes">
     
     <meta name="theme-color" content="#1e3a8a">
@@ -15,7 +15,7 @@
     <!-- خط القاهرة الاحترافي من جوجل -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     
-    <title>المنصة التعليمية | الإصدار الاحترافي</title>
+    <title>المنصة التعليمية | الإصدار الاحترافي V58</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -63,7 +63,7 @@
         }
 
         body { 
-            font-family: 'Cairo', system-ui, -apple-system, sans-serif; /* تفعيل الخط الاحترافي */
+            font-family: 'Cairo', system-ui, -apple-system, sans-serif;
             margin: 0; 
             background-color: var(--bg-color); 
             color: var(--text-main); 
@@ -280,7 +280,7 @@
             align-items: center;
             justify-content: flex-end; /* وضع الأيقونة في أقصى اليسار بالنسبة لـ RTL */
             padding: 0 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.08);
         }
         
         .iframe-responsive-wrapper.css-fullscreen .fullscreen-top-bar {
@@ -303,7 +303,7 @@
         }
 
         .fullscreen-close-icon:hover {
-            background: var(--bg-color);
+            background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
             transform: scale(1.1);
         }
@@ -521,7 +521,7 @@
     </div>
 
     <div class="version-footer">
-        تم التطوير بواسطة نظام الإدارة الاحترافي | الإصدار الشامل (Enterprise Edition V57)
+        تم التطوير بواسطة نظام الإدارة الاحترافي | الإصدار الشامل المستقر (Enterprise Edition V59)
     </div>
 
     <script>
@@ -630,7 +630,12 @@
             messagingSenderId: "800965684824", 
             appId: "1:800965684824:web:c2bea26af815f15aac642d" 
         };
-        firebase.initializeApp(firebaseConfig); const database = firebase.database();
+        try {
+            firebase.initializeApp(firebaseConfig); 
+        } catch(e) {
+            // تجاهل أخطاء إعادة التهيئة
+        }
+        const database = firebase.database();
 
         let db = { users: [], contents: [], folders: [], pendingUsers: [] };
         let currentUser = null; let isPreviewMode = false; let currentEditContentId = null; let currentEditUserOldName = null; let isFirstLoad = true;
@@ -673,8 +678,14 @@
             let savedSession = null;
             try { savedSession = sessionStorage.getItem('eduPlatformActiveSession') || localStorage.getItem('eduPlatformSession'); } catch(e) {}
             
-            const urlParams = new URLSearchParams(window.location.search);
-            const hasSharedLink = urlParams.has('view_content') || urlParams.has('view_folder');
+            // إصلاح دالة جلب البيانات من الرابط لحل مشكلة اختفاء القوائم
+            let hasSharedLink = false;
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                hasSharedLink = urlParams.has('view_content') || urlParams.has('view_folder');
+            } catch(e) {
+                console.error('URL parsing error', e);
+            }
 
             if (savedSession) {
                 const sessionUser = JSON.parse(savedSession); const verifyUser = db.users.find(u => u.username === sessionUser.username && u.password === sessionUser.password);
@@ -853,15 +864,19 @@
         
         window.toggleCSSFullScreen = function(wrapperId) {
             const wrapper = document.getElementById(wrapperId);
-            wrapper.classList.add('css-fullscreen');
-            document.body.style.overflow = 'hidden'; 
-            showToast('تم التكبير.. الشريط العلوي متاح للإغلاق.', 'success');
+            if(wrapper) {
+                wrapper.classList.add('css-fullscreen');
+                document.body.style.overflow = 'hidden'; 
+                showToast('تم التكبير.. استخدم الشريط العلوي للإغلاق متى شئت.', 'success');
+            }
         }
         
         window.exitCSSFullScreen = function(wrapperId) {
             const wrapper = document.getElementById(wrapperId);
-            wrapper.classList.remove('css-fullscreen');
-            document.body.style.overflow = '';
+            if(wrapper) {
+                wrapper.classList.remove('css-fullscreen');
+                document.body.style.overflow = '';
+            }
         }
 
         function updateClassesDropdown() {
@@ -960,15 +975,19 @@
         }
 
         function filterSidebar() {
-            const term = document.getElementById('student-search-input').value.toLowerCase();
-            document.querySelectorAll('#sidebar-content-list details').forEach(details => {
-                let hasVisibleChild = false;
-                details.querySelectorAll('li').forEach(li => { if (li.innerText.toLowerCase().includes(term)) { li.style.display = 'flex'; hasVisibleChild = true; } else { li.style.display = 'none'; } });
-                if (hasVisibleChild) { details.style.display = 'block'; if (term !== '') details.open = true; } else { details.style.display = 'none'; }
-            });
-            document.querySelectorAll('#sidebar-content-list .independent-item').forEach(item => {
-                if (item.innerText.toLowerCase().includes(term)) { item.style.display = 'flex'; } else { item.style.display = 'none'; }
-            });
+            try {
+                const term = document.getElementById('student-search-input').value.toLowerCase();
+                document.querySelectorAll('#sidebar-content-list details').forEach(details => {
+                    let hasVisibleChild = false;
+                    details.querySelectorAll('li').forEach(li => { if (li.innerText.toLowerCase().includes(term)) { li.style.display = 'flex'; hasVisibleChild = true; } else { li.style.display = 'none'; } });
+                    if (hasVisibleChild) { details.style.display = 'block'; if (term !== '') details.open = true; } else { details.style.display = 'none'; }
+                });
+                document.querySelectorAll('#sidebar-content-list .independent-item').forEach(item => {
+                    if (item.innerText.toLowerCase().includes(term)) { item.style.display = 'flex'; } else { item.style.display = 'none'; }
+                });
+            } catch(e) {
+                console.warn("Search UI warning", e);
+            }
         }
 
         function searchAllContent() {
@@ -983,90 +1002,99 @@
         }
 
         function showUserDashboard() {
-            document.getElementById('user-section').classList.remove('hidden');
-            
-            const urlParams = newSearchParams(window.location.search);
-            const viewContent = urlParams.get('view_content');
-            const viewFolder = urlParams.get('view_folder');
+            try {
+                document.getElementById('user-section').classList.remove('hidden');
+                
+                let viewContent = null;
+                let viewFolder = null;
+                try {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    viewContent = urlParams.get('view_content');
+                    viewFolder = urlParams.get('view_folder');
+                } catch(e) { console.warn(e); }
 
-            let visibleContents = db.contents.filter(canViewContent);
+                let visibleContents = db.contents.filter(canViewContent);
 
-            if (isGuestMode) {
-                if (viewFolder) {
-                    visibleContents = visibleContents.filter(c => c.folder === viewFolder);
-                } else if (viewContent) {
-                    const singleContent = visibleContents.find(c => c.id == viewContent);
-                    if (singleContent && singleContent.folder && singleContent.folder !== 'none') {
-                        visibleContents = visibleContents.filter(c => c.folder === singleContent.folder);
-                    } else if (singleContent) {
-                        visibleContents = [singleContent];
-                    } else {
-                        visibleContents = [];
+                if (isGuestMode) {
+                    if (viewFolder) {
+                        visibleContents = visibleContents.filter(c => c.folder === viewFolder);
+                    } else if (viewContent) {
+                        const singleContent = visibleContents.find(c => c.id == viewContent);
+                        if (singleContent && singleContent.folder && singleContent.folder !== 'none') {
+                            visibleContents = visibleContents.filter(c => c.folder === singleContent.folder);
+                        } else if (singleContent) {
+                            visibleContents = [singleContent];
+                        } else {
+                            visibleContents = [];
+                        }
                     }
                 }
-            }
 
-            const sidebarDiv = document.getElementById('sidebar-content-list');
-            sidebarDiv.innerHTML = ''; 
-            
-            let groupedContent = {}; let independentContent = [];
-            visibleContents.forEach(item => { if(item.folder && item.folder !== 'none') { if(!groupedContent[item.folder]) groupedContent[item.folder] = []; groupedContent[item.folder].push(item); } else independentContent.push(item); });
+                const sidebarDiv = document.getElementById('sidebar-content-list');
+                sidebarDiv.innerHTML = ''; 
+                
+                let groupedContent = {}; let independentContent = [];
+                visibleContents.forEach(item => { if(item.folder && item.folder !== 'none') { if(!groupedContent[item.folder]) groupedContent[item.folder] = []; groupedContent[item.folder].push(item); } else independentContent.push(item); });
 
-            let sidebarHTML = '';
-            for(let folderName in groupedContent) {
-                const isOpen = isGuestMode ? 'open' : '';
-                sidebarHTML += `<details ${isOpen}><summary>
-                    <span>📁 ${folderName}</span>
-                    <button onclick="event.stopPropagation(); event.preventDefault(); copyShareLink('folder', '${folderName}', this);" style="background:var(--bg-color); color:var(--text-muted); border:1px solid var(--border); border-radius:6px; padding:4px 8px; cursor:pointer; font-size:12px; font-weight: bold;" title="نسخ الرابط لإرسال الوحدة بالكامل">🔗 نسخ</button>
-                </summary><ul>`;
-                groupedContent[folderName].forEach(item => { sidebarHTML += `<li class="sidebar-item" onclick="showSingleContent(${item.id}, this)">📄 ${item.title}</li>`; });
-                sidebarHTML += `</ul></details>`; 
-            }
-            independentContent.forEach(item => { sidebarHTML += `<div class="independent-item" onclick="showSingleContent(${item.id}, this)">📌 ${item.title}</div>`; });
-            
-            if(sidebarHTML === '') {
-                 sidebarDiv.innerHTML = '<div style="text-align:center; padding:30px 10px; color:var(--text-muted); font-size: 14px; font-weight: bold; line-height: 1.8;">لا يوجد محتوى متاح لك حالياً.<br>سيتم تحديث الفهرس قريباً.</div>';
-            } else {
-                 sidebarDiv.innerHTML = sidebarHTML;
-            }
-            
-            const savedContentId = localStorage.getItem('lastViewedContentId_' + (currentUser ? currentUser.username : 'guest'));
-            let contentToLoad = null;
-            let folderToLoad = null;
-
-            if (viewContent) {
-                contentToLoad = visibleContents.find(c => c.id == viewContent);
-            } else if (viewFolder) {
-                folderToLoad = visibleContents.filter(c => c.folder === viewFolder);
-            } else if (savedContentId && !isGuestMode) { 
-                contentToLoad = visibleContents.find(c => c.id == savedContentId);
-            }
-
-            if (contentToLoad) {
-                setTimeout(() => {
-                    const sidebarItems = document.querySelectorAll('.sidebar-item, .independent-item');
-                    let foundElement = null;
-                    sidebarItems.forEach(el => {
-                        if(el.getAttribute('onclick') && el.getAttribute('onclick').includes(`showSingleContent(${contentToLoad.id}`)) {
-                            foundElement = el;
-                        }
-                    });
-                    showSingleContent(contentToLoad.id, foundElement);
-                    if(foundElement && foundElement.closest('details')) foundElement.closest('details').open = true;
-                }, 50);
-            } else if (folderToLoad && folderToLoad.length > 0) {
-                setTimeout(() => {
-                    renderContentItems(folderToLoad.reverse());
-                    document.querySelectorAll('.sidebar summary').forEach(s => {
-                        if(s.innerText.includes(viewFolder)) s.closest('details').open = true;
-                    });
-                }, 50);
-            } else {
-                if (isGuestMode) {
-                    document.getElementById('content-display').innerHTML = '<div class="empty-state" style="margin-top:40px;"><span class="empty-state-icon">🚫</span>هذا المحتوى غير متوفر أو تم مسحه من الإدارة.</div>';
-                } else {
-                    document.getElementById('content-display').innerHTML = '<div class="empty-state" style="margin-top:40px; padding: 100px 20px;"><span class="empty-state-icon">👈</span>اختر درساً من الفهرس الجانبي ليبدأ العرض فوراً.</div>';
+                let sidebarHTML = '';
+                for(let folderName in groupedContent) {
+                    const isOpen = isGuestMode ? 'open' : '';
+                    sidebarHTML += `<details ${isOpen}><summary>
+                        <span>📁 ${folderName}</span>
+                        <button onclick="event.stopPropagation(); event.preventDefault(); copyShareLink('folder', '${folderName}', this);" style="background:var(--bg-color); color:var(--text-muted); border:1px solid var(--border); border-radius:6px; padding:4px 8px; cursor:pointer; font-size:12px; font-weight: bold;" title="نسخ الرابط لإرسال الوحدة بالكامل">🔗 نسخ</button>
+                    </summary><ul>`;
+                    groupedContent[folderName].forEach(item => { sidebarHTML += `<li class="sidebar-item" onclick="showSingleContent(${item.id}, this)">📄 ${item.title}</li>`; });
+                    sidebarHTML += `</ul></details>`; 
                 }
+                independentContent.forEach(item => { sidebarHTML += `<div class="independent-item" onclick="showSingleContent(${item.id}, this)">📌 ${item.title}</div>`; });
+                
+                if(sidebarHTML === '') {
+                     sidebarDiv.innerHTML = '<div style="text-align:center; padding:30px 10px; color:var(--text-muted); font-size: 14px; font-weight: bold; line-height: 1.8;">لا يوجد محتوى متاح لك حالياً.<br>سيتم تحديث الفهرس قريباً.</div>';
+                } else {
+                     sidebarDiv.innerHTML = sidebarHTML;
+                }
+                
+                const savedContentId = localStorage.getItem('lastViewedContentId_' + (currentUser ? currentUser.username : 'guest'));
+                let contentToLoad = null;
+                let folderToLoad = null;
+
+                if (viewContent) {
+                    contentToLoad = visibleContents.find(c => c.id == viewContent);
+                } else if (viewFolder) {
+                    folderToLoad = visibleContents.filter(c => c.folder === viewFolder);
+                } else if (savedContentId && !isGuestMode) { 
+                    contentToLoad = visibleContents.find(c => c.id == savedContentId);
+                }
+
+                if (contentToLoad) {
+                    setTimeout(() => {
+                        const sidebarItems = document.querySelectorAll('.sidebar-item, .independent-item');
+                        let foundElement = null;
+                        sidebarItems.forEach(el => {
+                            if(el.getAttribute('onclick') && el.getAttribute('onclick').includes(`showSingleContent(${contentToLoad.id}`)) {
+                                foundElement = el;
+                            }
+                        });
+                        showSingleContent(contentToLoad.id, foundElement);
+                        if(foundElement && foundElement.closest('details')) foundElement.closest('details').open = true;
+                    }, 50);
+                } else if (folderToLoad && folderToLoad.length > 0) {
+                    setTimeout(() => {
+                        renderContentItems(folderToLoad.reverse());
+                        document.querySelectorAll('.sidebar summary').forEach(s => {
+                            if(s.innerText.includes(viewFolder)) s.closest('details').open = true;
+                        });
+                    }, 50);
+                } else {
+                    if (isGuestMode) {
+                        document.getElementById('content-display').innerHTML = '<div class="empty-state" style="margin-top:40px;"><span class="empty-state-icon">🚫</span>هذا المحتوى غير متوفر أو تم مسحه من الإدارة.</div>';
+                    } else {
+                        document.getElementById('content-display').innerHTML = '<div class="empty-state" style="margin-top:40px; padding: 100px 20px;"><span class="empty-state-icon">👈</span>اختر درساً من الفهرس الجانبي ليبدأ العرض فوراً.</div>';
+                    }
+                }
+            } catch(e) {
+                console.error("Dashboard error:", e);
+                showToast("حدث خطأ أثناء تحميل الفهرس، جاري المحاولة...", "warning");
             }
         }
 
@@ -1086,73 +1114,77 @@
         }
 
         function renderContentItems(itemsArray) {
-            const displayArea = document.getElementById('content-display'); displayArea.innerHTML = '';
-            if(itemsArray.length === 0) return displayArea.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><span class="empty-state-icon">🔍</span>لا توجد أي نتائج مطابقة هنا.</div>';
-            
-            itemsArray.forEach(item => {
-                const contentDiv = document.createElement('div'); contentDiv.className = 'content-item';
-                let innerMedia = ''; let fullScreenBtnHTML = ''; let folderBadge = (item.folder && item.folder !== 'none') ? `<span class="category-badge">📂 ${item.folder}</span>` : '';
+            try {
+                const displayArea = document.getElementById('content-display'); displayArea.innerHTML = '';
+                if(itemsArray.length === 0) return displayArea.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><span class="empty-state-icon">🔍</span>لا توجد أي نتائج مطابقة هنا.</div>';
                 
-                if (item.type === 'html') {
-                    const wrapperId = `wrapper-${item.id}`; 
-                    let contentData = item.data;
+                itemsArray.forEach(item => {
+                    const contentDiv = document.createElement('div'); contentDiv.className = 'content-item';
+                    let innerMedia = ''; let fullScreenBtnHTML = ''; let folderBadge = (item.folder && item.folder !== 'none') ? `<span class="category-badge">📂 ${item.folder}</span>` : '';
                     
-                    let safeHTML = contentData;
-                    safeHTML = safeHTML.replace(/user-scalable=0/gi, 'user-scalable=yes');
-                    safeHTML = safeHTML.replace(/user-scalable=no/gi, 'user-scalable=yes');
-                    safeHTML = safeHTML.replace(/maximum-scale=1\.0/gi, 'maximum-scale=5.0');
-                    safeHTML = safeHTML.replace(/maximum-scale=1(["'])/gi, 'maximum-scale=5.0$1');
-                    
-                    const properMeta = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-                    <style>
-                        html, body {
-                            margin: 0 !important;
-                            padding: 0 !important;
-                            width: 100% !important;
-                            min-height: 100vh !important;
-                            touch-action: pan-x pan-y pinch-zoom !important;
-                            overflow-x: hidden;
+                    if (item.type === 'html') {
+                        const wrapperId = `wrapper-${item.id}`; 
+                        let contentData = item.data;
+                        
+                        let safeHTML = contentData;
+                        safeHTML = safeHTML.replace(/user-scalable=0/gi, 'user-scalable=yes');
+                        safeHTML = safeHTML.replace(/user-scalable=no/gi, 'user-scalable=yes');
+                        safeHTML = safeHTML.replace(/maximum-scale=1\.0/gi, 'maximum-scale=5.0');
+                        safeHTML = safeHTML.replace(/maximum-scale=1(["'])/gi, 'maximum-scale=5.0$1');
+                        
+                        const properMeta = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+                        <style>
+                            html, body {
+                                margin: 0 !important;
+                                padding: 0 !important;
+                                width: 100% !important;
+                                min-height: 100vh !important;
+                                touch-action: pan-x pan-y pinch-zoom !important;
+                                overflow-x: hidden;
+                            }
+                            iframe {
+                                width: 100% !important;
+                                height: 100vh !important;
+                                border: none !important;
+                            }
+                        </style>`;
+                        
+                        if (!safeHTML.toLowerCase().includes('touch-action: pan-x pan-y pinch-zoom')) {
+                            if (safeHTML.toLowerCase().includes('</head>')) {
+                                safeHTML = safeHTML.replace(/<\/head>/i, properMeta + '</head>');
+                            } else if (safeHTML.toLowerCase().includes('<html')) {
+                                safeHTML = safeHTML.replace(/<html[^>]*>/i, '$&<head>' + properMeta + '</head>');
+                            } else {
+                                safeHTML = properMeta + safeHTML;
+                            }
                         }
-                        iframe {
-                            width: 100% !important;
-                            height: 100vh !important;
-                            border: none !important;
-                        }
-                    </style>`;
+                        
+                        safeHTML = safeHTML.replace(/"/g, '&quot;');
+                        
+                        // -- الشريط العلوي المطابق للصورة المطلوبة (به علامة X فقط) -- //
+                        const topBarHTML = `
+                        <div class="fullscreen-top-bar">
+                            <button type="button" class="fullscreen-close-icon" onclick="exitCSSFullScreen('${wrapperId}')" title="إغلاق العرض والرجوع">
+                                <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>`;
+                        
+                        innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper">${topBarHTML}<iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="yes"></iframe></div>`;
+                        
+                        fullScreenBtnHTML = `<button type="button" onclick="toggleCSSFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير للتركيز الأقصى" style="background: var(--bg-color); color: var(--text-main); border: 2px solid var(--border); box-shadow: none;">🔲 وضع ملء الشاشة</button>`;
+                    } else { innerMedia = `<a href="${item.data}" target="_blank" style="display:flex; justify-content:center; align-items:center; gap:10px; background:var(--primary); color:white; padding:20px; text-decoration:none; border-radius:12px; margin-top:15px; font-weight:800; font-size: 18px; box-shadow: var(--shadow-md); transition: 0.3s; transform: scale(1);">🔗 اضغط هنا لفتح الرابط الخارجي</a>`; }
                     
-                    if (!safeHTML.toLowerCase().includes('touch-action: pan-x pan-y pinch-zoom')) {
-                        if (safeHTML.toLowerCase().includes('</head>')) {
-                            safeHTML = safeHTML.replace(/<\/head>/i, properMeta + '</head>');
-                        } else if (safeHTML.toLowerCase().includes('<html')) {
-                            safeHTML = safeHTML.replace(/<html[^>]*>/i, '$&<head>' + properMeta + '</head>');
-                        } else {
-                            safeHTML = properMeta + safeHTML;
-                        }
-                    }
-                    
-                    safeHTML = safeHTML.replace(/"/g, '&quot;');
-                    
-                    // -- الشريط العلوي المطابق للصورة (به علامة X فقط) -- //
-                    const topBarHTML = `
-                    <div class="fullscreen-top-bar">
-                        <button type="button" class="fullscreen-close-icon" onclick="exitCSSFullScreen('${wrapperId}')" title="إغلاق وضع ملء الشاشة">
-                            <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
-                    </div>`;
-                    
-                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper">${topBarHTML}<iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="yes"></iframe></div>`;
-                    
-                    fullScreenBtnHTML = `<button type="button" onclick="toggleCSSFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير للتركيز الأقصى" style="background: var(--bg-color); color: var(--text-main); border: 2px solid var(--border); box-shadow: none;">🔲 وضع ملء الشاشة</button>`;
-                } else { innerMedia = `<a href="${item.data}" target="_blank" style="display:flex; justify-content:center; align-items:center; gap:10px; background:var(--primary); color:white; padding:20px; text-decoration:none; border-radius:12px; margin-top:15px; font-weight:800; font-size: 18px; box-shadow: var(--shadow-md); transition: 0.3s; transform: scale(1);">🔗 اضغط هنا لفتح الرابط الخارجي</a>`; }
-                
-                let copyLinkBtn = `<button type="button" onclick="copyShareLink('content', ${item.id}, this)" class="category-badge btn-info" style="cursor:pointer; border:none; box-shadow: none; display:flex; align-items:center; gap:8px;" title="انسخ هذا الرابط وأرسله كمرجع مباشر للدرس">🔗 نسخ الرابط للدرس</button>`;
+                    let copyLinkBtn = `<button type="button" onclick="copyShareLink('content', ${item.id}, this)" class="category-badge btn-info" style="cursor:pointer; border:none; box-shadow: none; display:flex; align-items:center; gap:8px;" title="انسخ هذا الرابط وأرسله كمرجع مباشر للدرس">🔗 نسخ الرابط للدرس</button>`;
 
-                contentDiv.innerHTML = `<div class="content-header"><h3 class="content-title">${item.title}</h3><div class="header-actions">${copyLinkBtn} ${fullScreenBtnHTML} ${folderBadge}</div></div>${innerMedia}`;
-                displayArea.appendChild(contentDiv);
-            });
+                    contentDiv.innerHTML = `<div class="content-header"><h3 class="content-title">${item.title}</h3><div class="header-actions">${copyLinkBtn} ${fullScreenBtnHTML} ${folderBadge}</div></div>${innerMedia}`;
+                    displayArea.appendChild(contentDiv);
+                });
+            } catch (e) {
+                console.error("Render Error:", e);
+            }
         }
     </script>
 </body>
