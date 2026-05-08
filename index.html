@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <script>
-        (function() {
-            var meta = document.createElement('meta');
-            meta.name = 'viewport';
-            if (window.screen.width < 768) {
-                meta.content = 'width=1280, initial-scale=0, maximum-scale=5.0, user-scalable=yes';
-            } else {
-                meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
-            }
-            document.head.appendChild(meta);
-        })();
+        // ضبط العرض: الموبايل يعمل كسطح مكتب (1280px)، والتابلت/الكمبيوتر بحجمه الطبيعي
+        if (window.screen.width < 768) {
+            document.write('<meta name="viewport" content="width=1280, initial-scale=0, maximum-scale=5.0, user-scalable=yes">');
+        } else {
+            document.write('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">');
+        }
     </script>
     
     <meta name="theme-color" content="#0f172a">
@@ -24,7 +20,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <title>المنصة التعليمية | الإصدار الماسي</title>
+    <title>المنصة التعليمية | واجهة احترافية متقدمة</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -34,9 +30,7 @@
             --primary: #2563eb;
             --primary-hover: #1d4ed8;
             --primary-light: #eff6ff;
-            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             --secondary: #0ea5e9;
-            --secondary-gradient: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
@@ -47,18 +41,15 @@
             --danger: #ef4444;
             --warning: #f59e0b;
             
-            --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
-            --focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.2);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             
             --radius-sm: 6px;
             --radius-md: 8px;
             --radius-lg: 12px;
-            --radius-xl: 16px;
             
-            --transition-fast: 0.15s ease;
+            --transition-fast: 0.15s ease-in-out;
             --transition-smooth: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -66,77 +57,77 @@
             --primary: #3b82f6;
             --primary-hover: #60a5fa;
             --primary-light: #1e3a8a;
-            --primary-gradient: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
             --bg-color: #0f172a;
             --card-bg: #1e293b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border: #334155;
             --border-hover: #475569;
-            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; }
         body { 
             font-family: 'Cairo', system-ui, sans-serif;
             background-color: var(--bg-color); color: var(--text-main); 
             line-height: 1.6; overflow-x: hidden; transition: var(--transition-smooth); 
             display: flex; flex-direction: column; min-height: 100vh; font-size: 14px;
+            text-align: right;
         }
 
         .academic-text { font-family: 'Amiri', serif; font-size: 16px; line-height: 1.8; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
         .hidden { display: none !important; }
         .container, #user-layout { max-width: 1400px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; }
 
+        /* شاشة التحميل */
         #loading-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(248, 250, 252, 0.9); backdrop-filter: blur(8px);
+            background: rgba(248, 250, 252, 0.9); backdrop-filter: blur(5px);
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            z-index: 999999; transition: opacity 0.4s ease, visibility 0.4s; 
+            z-index: 999999; transition: opacity 0.3s; 
         }
         body.dark-mode #loading-overlay { background: rgba(15, 23, 42, 0.9); }
-        .loader-core { width: 50px; height: 50px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 15px; }
-        #loading-text { color: var(--text-main); font-weight: 700; font-size: 16px; }
+        .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 15px; }
+        #loading-text { color: var(--text-main); font-weight: 700; font-size: 14px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* الإشعارات */
         #toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 100000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { 
-            padding: 12px 18px; border-radius: var(--radius-md); color: white; font-weight: 600; 
-            animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), fadeOut 0.3s 4s forwards; 
-            box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 12px; max-width: 400px; font-size: 14px;
+            padding: 10px 16px; border-radius: var(--radius-sm); color: white; font-weight: 600; 
+            animation: slideIn 0.3s ease-out, fadeOut 0.3s 3s forwards; 
+            box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 10px; font-size: 13px;
         }
         .toast.success { background: var(--success); }
         .toast.error { background: var(--danger); }
         .toast.warning { background: var(--warning); color: #fff; }
-        .toast svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .toast svg { width: 16px; height: 16px; flex-shrink: 0; }
         @keyframes slideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(10px); display: none; } }
 
-        .input-group { margin-bottom: 16px; width: 100%; }
-        .input-label { display: block; font-weight: 700; margin-bottom: 6px; color: var(--text-main); font-size: 13px; }
+        /* العناصر التفاعلية والأزرار بحجم احترافي */
+        .input-group { margin-bottom: 12px; width: 100%; }
+        .input-label { display: block; font-weight: 700; margin-bottom: 4px; color: var(--text-main); font-size: 12px; }
         input[type="text"], input[type="password"], select, textarea { 
-            width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); 
-            font-size: 14px; font-family: 'Cairo', sans-serif; background-color: var(--card-bg); 
-            color: var(--text-main); transition: var(--transition-fast); box-shadow: var(--shadow-xs);
+            width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); 
+            font-size: 13px; font-family: 'Cairo', sans-serif; background-color: var(--card-bg); 
+            color: var(--text-main); transition: var(--transition-fast);
         }
         input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: var(--focus-ring); }
         
         button { 
-            background: var(--primary); color: white; border: none; padding: 10px 18px; 
-            border-radius: var(--radius-sm); cursor: pointer; font-size: 14px; font-weight: 700; 
+            background: var(--primary); color: white; border: none; padding: 8px 16px; 
+            border-radius: var(--radius-sm); cursor: pointer; font-size: 13px; font-weight: 700; 
             font-family: 'Cairo', sans-serif; transition: var(--transition-fast); display: inline-flex; 
-            align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+            align-items: center; justify-content: center; gap: 6px; box-shadow: var(--shadow-sm);
         }
-        button:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
-        button:active { transform: scale(0.98); }
+        button:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        button:active { transform: translateY(0); box-shadow: none; }
         
         .btn-danger { background: var(--danger); } .btn-danger:hover { background: #dc2626; }
         .btn-success { background: var(--success); } .btn-success:hover { background: #059669; }
@@ -145,208 +136,200 @@
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); box-shadow: none; }
         .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
         .btn-secondary { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border); }
-        .btn-secondary:hover { background: var(--border); }
-        .btn-group { display: flex; gap: 10px; width: 100%;} .btn-group input { margin-bottom: 0; flex: 1; }
+        .btn-secondary:hover { background: var(--border-hover); }
+        .btn-icon-only { padding: 4px; background: transparent; color: var(--text-muted); box-shadow: none; }
+        .btn-icon-only:hover { background: var(--border); color: var(--primary); }
+        .btn-group { display: flex; gap: 8px; width: 100%;} .btn-group input { margin-bottom: 0; flex: 1; }
 
+        svg.icon { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0;}
+
+        /* تسجيل الدخول */
         .auth-section { display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--bg-color); }
-        .login-box { background: var(--card-bg); padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width: 100%; max-width: 400px; text-align: center; border: 1px solid var(--border); }
-        .login-icon-wrapper { background: var(--primary-light); color: var(--primary); width: 60px; height: 60px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; }
-        .login-box h2 { color: var(--text-main); font-size: 22px; margin-bottom: 25px; font-weight: 800; }
-        .remember-container { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; cursor: pointer; color: var(--text-muted); font-size: 13px; font-weight: 600; justify-content: flex-start; }
-        .remember-container input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); }
+        .login-box { background: var(--card-bg); padding: 30px; border-radius: var(--radius-md); box-shadow: var(--shadow-md); width: 100%; max-width: 380px; text-align: center; border: 1px solid var(--border); }
+        .login-box h2 { color: var(--text-main); font-size: 18px; margin-bottom: 20px; font-weight: 800; }
+        .remember-container { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; cursor: pointer; color: var(--text-muted); font-size: 12px; font-weight: 600; }
+        .remember-container input { width: 14px; height: 14px; cursor: pointer; accent-color: var(--primary); }
 
+        /* الهيدر العلوي */
         header { 
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
-            padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; 
+            background: var(--card-bg); padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; 
             position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-sm);
         }
-        body.dark-mode header { background: rgba(30, 41, 59, 0.95); }
-        .header-right { display: flex; align-items: center; gap: 15px; }
-        header h3 { margin: 0; color: var(--text-main); font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
-        .logo-box { background: var(--primary); padding: 6px; border-radius: 8px; color: white; display: flex; }
-        .header-left { display: flex; align-items: center; gap: 10px; }
-        .icon-btn { background: transparent; color: var(--text-muted); border: 1px solid transparent; padding: 8px; border-radius: var(--radius-sm); cursor: pointer; display: flex; }
-        .icon-btn:hover { background: var(--bg-color); color: var(--primary); border-color: var(--border); }
-        .user-badge { font-weight: 700; color: var(--text-muted); font-size: 13px; background: var(--bg-color); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        header h3 { margin: 0; color: var(--primary); font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .header-left { display: flex; align-items: center; gap: 8px; }
+        .user-badge { font-weight: 700; color: var(--text-muted); font-size: 12px; background: var(--bg-color); padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
 
+        /* نظام التبويبات */
         .tabs-container { background: transparent; margin-top: 10px; }
-        .tabs-header { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .tab-btn { background: transparent; color: var(--text-muted); padding: 10px 15px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; box-shadow: none; border: 1px solid transparent; }
+        .tabs-header { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .tab-btn { background: transparent; color: var(--text-muted); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700; box-shadow: none; border: 1px solid transparent; }
         .tab-btn:hover { background: var(--card-bg); border-color: var(--border); color: var(--text-main); }
         .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .tab-content { padding: 0; display: none; animation: fadeIn 0.3s ease; }
+        .tab-content { padding: 0; display: none; animation: fadeIn 0.2s ease; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .admin-card { background: var(--card-bg); padding: 25px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-bottom: 20px; }
-        .admin-title { font-size: 18px; font-weight: 800; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        /* كروت الإدارة */
+        .admin-card { background: var(--card-bg); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-bottom: 15px; }
+        .admin-title { font-size: 15px; font-weight: 800; margin-top: 0; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         
-        .admin-list-item { background: var(--card-bg); border: 1px solid var(--border); padding: 15px 20px; border-radius: var(--radius-md); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition-fast); }
-        .admin-list-item:hover { border-color: var(--primary); box-shadow: var(--shadow-md); transform: translateY(-1px); }
-        .admin-item-info h4 { margin: 0 0 5px 0; font-size: 15px; display: flex; align-items: center; gap: 10px; font-weight: 700;}
-        .admin-item-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 15px; margin-right: 28px; }
-        .admin-item-actions { display: flex; gap: 8px; }
+        .admin-list-item { background: var(--card-bg); border: 1px solid var(--border); padding: 12px 15px; border-radius: var(--radius-sm); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition-fast); }
+        .admin-list-item:hover { border-color: var(--primary); box-shadow: var(--shadow-sm); }
+        .admin-item-info h4 { margin: 0 0 4px 0; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 700;}
+        .admin-item-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 15px; }
+        .admin-item-actions { display: flex; gap: 6px; }
         
-        .search-container { position: relative; width: 100%; max-width: 350px; margin-bottom: 15px; }
-        .search-container input { padding: 10px 35px 10px 15px; margin-bottom: 0; border-radius: var(--radius-sm); }
-        .search-icon-svg { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 16px; height: 16px; }
+        .search-container { position: relative; width: 100%; max-width: 300px; margin-bottom: 15px; }
+        .search-container input { padding: 8px 30px 8px 12px; margin-bottom: 0; }
+        .search-icon-svg { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 14px; height: 14px; }
         
-        .bulk-action-bar { background: var(--bg-color); border: 1px solid var(--border); padding: 12px 18px; border-radius: var(--radius-md); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .bulk-action-bar label { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); border-radius: 4px; border: 1px solid var(--border); }
+        .bulk-action-bar { background: var(--bg-color); border: 1px solid var(--border); padding: 8px 12px; border-radius: var(--radius-sm); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .bulk-action-bar label { font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        input[type="checkbox"] { width: 14px; height: 14px; cursor: pointer; accent-color: var(--primary); border-radius: 3px; border: 1px solid var(--border); }
 
-        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); background: var(--bg-color); border-radius: var(--radius-lg); border: 1px dashed var(--border); margin: 20px 0; font-weight: 600; font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .empty-state svg { color: var(--border-hover); width: 40px; height: 40px; }
-
-        /* =======================================================
-           واجهة الطالب والتخطيط الثابت (Desktop Layout)
-           ======================================================= */
-        #user-layout { display: flex; gap: 25px; align-items: flex-start; padding: 0;}
+        .empty-state { text-align: center; padding: 30px 20px; color: var(--text-muted); background: var(--bg-color); border-radius: var(--radius-md); border: 1px dashed var(--border); margin: 15px 0; font-weight: 600; font-size: 13px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        
+        /* واجهة الطالب وتخطيطها */
+        #user-layout { display: flex; gap: 20px; align-items: flex-start; padding: 0;}
         
         .sidebar { 
-            width: 280px; background: var(--card-bg); padding: 20px; 
-            border-radius: var(--radius-lg); border: 1px solid var(--border); 
+            width: 260px; background: var(--card-bg); padding: 15px; 
+            border-radius: var(--radius-md); border: 1px solid var(--border); 
             box-shadow: var(--shadow-sm); flex-shrink: 0; height: fit-content; max-height: 85vh; 
-            overflow-y: auto; display: flex; flex-direction: column; position: sticky; top: 85px;
+            overflow-y: auto; display: flex; flex-direction: column; position: sticky; top: 75px;
         }
-        .sidebar.collapsed { width: 0; padding: 0; border: none; margin: 0; opacity: 0; overflow: hidden; transform: translateX(20px); }
-        .sidebar h3 { margin-top: 0; color: var(--text-main); font-weight: 800; font-size: 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .sidebar-search-box { display: flex; gap: 8px; margin-bottom: 20px; position: relative;}
-        .sidebar-search-box input { margin-bottom: 0; padding: 10px 10px 10px 35px; border-radius: var(--radius-sm); }
-        .sidebar-search-box button { position: absolute; left: 4px; top: 4px; bottom: 4px; padding: 0 10px; background: transparent; color: var(--primary); box-shadow: none; }
-        .sidebar-search-box button:hover { background: var(--primary-light); }
+        .sidebar.collapsed { width: 0; padding: 0; border: none; margin: 0; opacity: 0; overflow: hidden; transform: translateX(10px); }
+        .sidebar h3 { margin-top: 0; color: var(--text-main); font-weight: 800; font-size: 14px; display: flex; align-items: center; gap: 8px; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px;}
+        .sidebar-search-box { display: flex; gap: 6px; margin-bottom: 15px; position: relative;}
+        .sidebar-search-box input { margin-bottom: 0; padding: 8px 8px 8px 30px; font-size: 12px; }
+        .sidebar-search-box button { position: absolute; left: 2px; top: 2px; bottom: 2px; padding: 0 8px; background: transparent; color: var(--primary); box-shadow: none; }
 
-        /* القوائم المنسدلة الاحترافية - SaaS Style Accordion */
+        /* القائمة المنسدلة للفهرس باحترافية */
         .sidebar details { 
-            margin-bottom: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border); 
+            margin-bottom: 6px; border-radius: var(--radius-sm); border: 1px solid var(--border); 
             overflow: hidden; transition: var(--transition-fast); background: var(--card-bg);
         }
         .sidebar summary { 
-            padding: 12px 15px; font-weight: 700; cursor: pointer; color: var(--text-main); 
-            display: flex; align-items: center; gap: 10px; list-style: none; user-select: none; font-size: 14px;
-            background: var(--bg-color); transition: background 0.2s;
+            padding: 10px 12px; font-weight: 700; cursor: pointer; color: var(--text-main); 
+            display: flex; align-items: center; justify-content: space-between; 
+            list-style: none; user-select: none; font-size: 13px; background: var(--bg-color);
         }
         .sidebar summary:hover { background: var(--border-light); }
         .sidebar summary::-webkit-details-marker { display: none; }
-        .sidebar summary .arrow-icon { margin-right: auto; color: var(--text-muted); width: 16px; height: 16px; transition: transform 0.3s; }
+        .summary-content { display: flex; align-items: center; gap: 8px; }
+        .sidebar summary .arrow-icon { transition: transform 0.2s; color: var(--text-muted); width: 14px; height: 14px;}
         .sidebar details[open] summary .arrow-icon { transform: rotate(180deg); color: var(--primary); }
-        .sidebar details[open] summary { border-bottom: 1px solid var(--border); background: var(--card-bg); color: var(--primary); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-        .sidebar details ul { list-style: none; padding: 6px 0; margin: 0; background: var(--card-bg); }
+        .sidebar details[open] summary { border-bottom: 1px solid var(--border); color: var(--primary); background: var(--card-bg); }
+        .sidebar details ul { list-style: none; padding: 4px 0; margin: 0; }
         
         .sidebar-item { 
-            padding: 8px 30px 8px 15px; cursor: pointer; color: var(--text-muted); 
+            padding: 8px 25px 8px 12px; cursor: pointer; color: var(--text-muted); 
             font-weight: 600; transition: var(--transition-fast); display: flex; 
-            align-items: center; gap: 10px; position: relative; font-size: 13px; border-right: 3px solid transparent;
+            align-items: center; gap: 8px; font-size: 12px; border-right: 2px solid transparent;
         }
-        .sidebar-item:hover, .independent-item:hover { color: var(--primary); background: var(--bg-color); }
-        .sidebar-item.active, .independent-item.active { background: var(--primary-light); color: var(--primary); font-weight: 700; border-right-color: var(--primary); }
+        .sidebar-item:hover { color: var(--primary); background: var(--primary-light); border-right-color: var(--primary); }
+        .sidebar-item.active { background: var(--primary-light); color: var(--primary); font-weight: 700; border-right-color: var(--primary); }
         
         .independent-item { 
-            background: var(--card-bg); border-radius: var(--radius-sm); margin-bottom: 8px; 
-            padding: 12px 15px; border: 1px solid var(--border); cursor: pointer; font-weight: 700; 
-            color: var(--text-main); display: flex; align-items: center; gap: 10px; font-size: 14px; border-right: 3px solid transparent;
+            border-radius: var(--radius-sm); margin-bottom: 6px; padding: 10px 12px; 
+            border: 1px solid var(--border); cursor: pointer; font-weight: 700; 
+            color: var(--text-main); display: flex; align-items: center; gap: 8px; font-size: 13px;
         }
-        .independent-item:hover { border-color: var(--primary); }
+        .independent-item:hover { border-color: var(--primary); background: var(--primary-light); }
+        .independent-item.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
 
         .main-content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-        .content-grid { display: flex; flex-direction: column; gap: 20px; flex: 1;} 
-        .content-item { 
-            background: var(--card-bg); padding: 25px; border-radius: var(--radius-lg); 
-            border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow-sm); flex: 1; 
-        }
-        .content-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
-        .content-title { margin: 0; color: var(--text-main); font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 10px;}
-        .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .category-badge { font-size: 12px; font-weight: 700; background: var(--bg-color); color: var(--text-main); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 6px;}
+        .content-grid { display: flex; flex-direction: column; gap: 15px; flex: 1;} 
+        .content-item { background: var(--card-bg); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow-sm); flex: 1; }
+        .content-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .content-title { margin: 0; color: var(--text-main); font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px;}
+        .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .category-badge { font-size: 11px; font-weight: 700; background: var(--bg-color); color: var(--text-main); padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 4px;}
         
         .iframe-responsive-wrapper { 
-            position: relative; width: 100%; height: 75vh; min-height: 500px;
-            background: var(--bg-color); border-radius: var(--radius-md); 
+            position: relative; width: 100%; height: 75vh; min-height: 450px;
+            background: var(--bg-color); border-radius: var(--radius-sm); 
             border: 1px solid var(--border); overflow: auto; -webkit-overflow-scrolling: touch; 
         }
-        .html-sandbox { border: none; background: #fff; width: 100%; height: 100%; display: block; border-radius: calc(var(--radius-md) - 1px); }
+        .html-sandbox { border: none; background: #fff; width: 100%; height: 100%; display: block; border-radius: var(--radius-sm); }
 
-        /* =======================================================
-           وضع الشاشة الكاملة
-           ======================================================= */
+        /* الشاشة الكاملة */
         .iframe-responsive-wrapper.css-fullscreen { 
             position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
             width: 100vw !important; height: 100vh !important; height: 100dvh !important; 
             background: #ffffff !important; border-radius: 0 !important; border: none !important; 
-            z-index: 9999999 !important; overflow: hidden !important; padding-top: 55px !important; 
+            z-index: 9999999 !important; overflow: hidden !important; padding-top: 45px !important; 
         }
 
         .fullscreen-top-bar {
-            display: none; position: absolute; top: 0; left: 0; right: 0; height: 55px;
+            display: none; position: absolute; top: 0; left: 0; right: 0; height: 45px;
             background: #1e293b; border-bottom: 1px solid #0f172a; z-index: 99999999;
-            align-items: center; justify-content: flex-end; padding: 0 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            align-items: center; justify-content: flex-end; padding: 0 15px;
         }
         .iframe-responsive-wrapper.css-fullscreen .fullscreen-top-bar { display: flex; position: fixed; }
 
         .fullscreen-close-btn {
-            background: #ef4444; color: #ffffff; border: 2px solid #ffffff; cursor: pointer;
-            padding: 6px 16px; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;
-            font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            background: transparent; color: #cbd5e1; border: 1px solid #475569; cursor: pointer;
+            padding: 4px 12px; border-radius: 4px; display: flex; align-items: center; gap: 6px;
+            font-size: 12px; box-shadow: none; font-weight: normal;
         }
-        .fullscreen-close-btn:hover { background: #dc2626; transform: scale(1.02); }
-        .fullscreen-close-btn svg { width: 18px; height: 18px; stroke-width: 2.5; }
-        .iframe-responsive-wrapper.css-fullscreen .html-sandbox { height: calc(100vh - 55px) !important; height: calc(100dvh - 55px) !important; border-radius: 0; }
+        .fullscreen-close-btn:hover { background: #ef4444; color: white; border-color: #ef4444; }
+        
+        .iframe-responsive-wrapper.css-fullscreen .html-sandbox { height: calc(100vh - 45px) !important; height: calc(100dvh - 45px) !important; border-radius: 0; }
 
-        svg.icon { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0;}
-        .version-footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px; font-weight: 600; width: 100%; margin-top: auto; border-top: 1px solid var(--border); }
+        .version-footer { text-align: center; padding: 15px; color: var(--text-muted); font-size: 11px; font-weight: 600; width: 100%; margin-top: auto; border-top: 1px solid var(--border); }
     </style>
 </head>
 <body>
 
     <div id="toast-container"></div>
     <div id="loading-overlay">
-        <div class="loader-core"></div>
+        <div class="spinner"></div>
         <h2 id="loading-text">جاري الاتصال...</h2>
     </div>
 
+    <!-- واجهة تسجيل الدخول -->
     <div id="login-section" class="hidden auth-section">
         <div class="login-box">
-            <div class="login-icon-wrapper">
-                <svg class="icon" style="width:30px; height:30px;" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
-            </div>
-            <h2>بوابة الدخول</h2>
+            <h2 style="color:var(--primary); font-size:20px; font-weight:800; margin-bottom:20px;">المنصة التعليمية</h2>
             <div class="input-group">
-                <input type="text" id="login-username" placeholder="معرّف الدخول">
+                <input type="text" id="login-username" placeholder="اسم المستخدم">
             </div>
             <div class="input-group">
-                <input type="password" id="login-password" placeholder="الرقم السري" onkeypress="if(event.key === 'Enter') login()">
+                <input type="password" id="login-password" placeholder="كلمة المرور" onkeypress="if(event.key === 'Enter') login()">
             </div>
-            <label class="remember-container"><input type="checkbox" id="remember-me"> البقاء قيد تسجيل الدخول</label>
+            <label class="remember-container"><input type="checkbox" id="remember-me"> حفظ بيانات الدخول</label>
             <button type="button" onclick="login()" style="width: 100%;">دخول <svg class="icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
-            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
-                <button type="button" onclick="showRegisterForm()" class="btn-outline" style="width: 100%;">إنشاء حساب جديد</button>
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+                <button type="button" onclick="showRegisterForm()" class="btn-outline" style="width: 100%;">طالب جديد؟ سجل هنا</button>
             </div>
         </div>
     </div>
 
     <div id="register-section" class="hidden auth-section">
         <div class="login-box">
-            <h2>طلب حساب</h2>
+            <h2>إنشاء حساب</h2>
             <div class="input-group"><input type="text" id="reg-username" placeholder="اسم المستخدم"></div>
             <div class="input-group"><input type="password" id="reg-password" placeholder="كلمة المرور"></div>
-            <div class="input-group"><input type="text" id="reg-class" placeholder="الصف / المجموعة" onkeypress="if(event.key === 'Enter') submitRegistration()"></div>
-            <button type="button" onclick="submitRegistration()" class="btn-success" style="width: 100%; margin-bottom: 10px;">تأكيد الطلب</button>
-            <button type="button" onclick="showLoginForm()" class="btn-outline" style="width: 100%;">العودة للدخول</button>
+            <div class="input-group"><input type="text" id="reg-class" placeholder="الصف / الفئة" onkeypress="if(event.key === 'Enter') submitRegistration()"></div>
+            <button type="button" onclick="submitRegistration()" class="btn-success" style="width: 100%; margin-bottom: 10px;">تسجيل</button>
+            <button type="button" onclick="showLoginForm()" class="btn-outline" style="width: 100%;">إلغاء</button>
         </div>
     </div>
 
     <header id="main-header" class="hidden">
         <div class="header-right">
-            <button type="button" id="sidebar-toggle" class="icon-btn hidden" onclick="toggleSidebar()"><svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-            <h3><div class="logo-box"><svg class="icon" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg></div> المنصة التعليمية</h3>
+            <button type="button" id="sidebar-toggle" class="btn-icon-only hidden" onclick="toggleSidebar()"><svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+            <h3>المنصة التعليمية</h3>
         </div>
         <div class="header-left">
-            <button type="button" id="install-pwa-btn" class="btn-outline hidden" onclick="installPWA()" style="padding:6px 12px; font-size:12px;">تثبيت</button>
+            <button type="button" id="install-pwa-btn" class="btn-outline hidden" onclick="installPWA()" style="padding:4px 8px; font-size:11px;">تثبيت</button>
             <span id="welcome-msg" class="user-badge" style="display: none;"></span>
-            <button type="button" onclick="toggleDarkMode()" class="icon-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
-            <button type="button" id="preview-btn" class="btn-outline hidden" onclick="showPreview()" style="padding:6px 12px; font-size:12px;">معاينة</button>
-            <button type="button" id="back-admin-btn" class="btn-success hidden" onclick="backToAdmin()" style="padding:6px 12px; font-size:12px;">إدارة</button>
-            <button type="button" id="logout-btn" class="btn-secondary" onclick="logout(true)" style="padding:6px 12px; font-size:12px; color:var(--danger); border-color:var(--danger);">خروج</button>
+            <button type="button" onclick="toggleDarkMode()" class="btn-icon-only"><svg class="icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+            <button type="button" id="preview-btn" class="btn-outline hidden" onclick="showPreview()" style="padding:4px 8px; font-size:11px;">معاينة</button>
+            <button type="button" id="back-admin-btn" class="btn-success hidden" onclick="backToAdmin()" style="padding:4px 8px; font-size:11px;">العودة</button>
+            <button type="button" id="logout-btn" class="btn-outline" onclick="logout(true)" style="padding:4px 8px; font-size:11px; color:var(--danger); border-color:var(--border);">خروج</button>
         </div>
     </header>
 
@@ -354,63 +337,68 @@
         <div class="tabs-container">
             <div class="tabs-header">
                 <button type="button" class="tab-btn active" id="tab-btn-add" onclick="openTab(event, 'tab-content-add')">محتوى جديد</button>
-                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-content-manage')">الأرشيف</button>
-                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-menus')">المجلدات</button>
-                <button type="button" class="tab-btn" id="tab-btn-user-add" onclick="openTab(event, 'tab-users-add')">تسجيل طالب</button>
-                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-users-manage')">المستخدمين</button>
+                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-content-manage')">المكتبة</button>
+                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-menus')">الفهرس</button>
+                <button type="button" class="tab-btn" id="tab-btn-user-add" onclick="openTab(event, 'tab-users-add')">إضافة طالب</button>
+                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-users-manage')">إدارة الطلاب</button>
                 <button type="button" class="tab-btn" onclick="openTab(event, 'tab-pending-users'); renderPendingUsers();">الطلبات</button>
                 <button type="button" class="tab-btn" onclick="openTab(event, 'tab-settings')">إعدادات</button>
             </div>
 
+            <!-- إضافة محتوى -->
             <div id="tab-content-add" class="tab-content active">
                 <div class="admin-card">
-                    <h2 class="admin-title" id="add-edit-title">نشر محتوى جديد</h2>
-                    <div class="input-group"><label class="input-label">العنوان</label><input type="text" id="content-title" placeholder="عنوان الدرس"></div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                    <h2 class="admin-title" id="add-edit-title">نشر درس جديد</h2>
+                    <div class="input-group"><label class="input-label">عنوان الدرس</label><input type="text" id="content-title"></div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 12px;">
                         <div><label class="input-label">النوع</label><select id="content-type"><option value="html">كود HTML</option><option value="link">رابط</option></select></div>
                         <div><label class="input-label">المجلد</label><select id="content-folder"><option value="none">مستقل</option></select></div>
-                        <div><label class="input-label">الصلاحية</label><select id="content-classes"><option value="admin">مسودة</option><option value="all">عام</option></select></div>
-                        <div class="hidden"><label class="input-label">الأبعاد</label><select id="content-ratio"><option value="16:9">تلقائي</option></select></div>
+                        <div><label class="input-label">الصلاحية</label><select id="content-classes"><option value="admin">مسودة للإدارة</option><option value="all">عام</option></select></div>
+                        <div class="hidden"><select id="content-ratio"><option value="16:9"></option></select></div>
                     </div>
-                    <div class="input-group"><label class="input-label">المصدر</label><textarea id="content-data" rows="8" style="direction:ltr;"></textarea></div>
-                    <div style="display:flex; gap:10px;"><button type="button" id="save-content-btn" onclick="saveContent()">حفظ</button><button type="button" id="cancel-edit-btn" onclick="cancelEditContent()" class="btn-secondary hidden">إلغاء</button></div>
+                    <div class="input-group"><label class="input-label">المحتوى المصدر</label><textarea id="content-data" rows="6" style="direction:ltr;"></textarea></div>
+                    <div style="display:flex; gap:8px;"><button type="button" id="save-content-btn" onclick="saveContent()">حفظ</button><button type="button" id="cancel-edit-btn" onclick="cancelEditContent()" class="btn-secondary hidden">إلغاء</button></div>
                 </div>
             </div>
 
+            <!-- إدارة المكتبة -->
             <div id="tab-content-manage" class="tab-content">
                 <div class="admin-card" style="background:transparent; border:none; padding:0; box-shadow:none;">
-                    <div style="display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap;">
-                        <div class="search-container" style="margin:0;"><svg class="icon search-icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><input type="text" id="admin-search-content" placeholder="بحث..." onkeyup="processAdminContentSearch()"></div>
-                        <div class="bulk-action-bar" style="margin:0; padding:8px 15px;"><label><input type="checkbox" id="select-all-content" onclick="toggleAllContent(this)"> الكل</label><button type="button" class="btn-danger" onclick="deleteSelectedContent()" style="padding:6px 12px; font-size:12px;">حذف</button></div>
+                    <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+                        <div class="search-container" style="margin:0;"><svg class="icon search-icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><input type="text" id="admin-search-content" placeholder="بحث في الدروس..." onkeyup="processAdminContentSearch()"></div>
+                        <div class="bulk-action-bar" style="margin:0; padding:6px 10px;"><label><input type="checkbox" id="select-all-content" onclick="toggleAllContent(this)"> تحديد الكل</label><button type="button" class="btn-danger" onclick="deleteSelectedContent()" style="padding:4px 8px; font-size:12px;">حذف</button></div>
                     </div>
                     <div id="admin-content-list"></div>
                 </div>
             </div>
 
+            <!-- المجلدات -->
             <div id="tab-menus" class="tab-content">
-                <div class="admin-card">
-                    <h2 class="admin-title">إدارة المجلدات</h2>
-                    <div style="display:flex; gap:10px; margin-bottom:20px;"><input type="text" id="new-folder-name" placeholder="اسم المجلد" style="margin:0;"><button type="button" onclick="addFolder()">إضافة</button></div>
+                <div class="admin-card" style="max-width:500px;">
+                    <h2 class="admin-title">أقسام الفهرس</h2>
+                    <div style="display:flex; gap:8px; margin-bottom:15px;"><input type="text" id="new-folder-name" placeholder="اسم المجلد الجديد" style="margin:0;"><button type="button" onclick="addFolder()">إضافة</button></div>
                     <ul id="admin-folders-list" style="list-style:none; padding:0;"></ul>
                 </div>
             </div>
 
+            <!-- تسجيل طالب -->
             <div id="tab-users-add" class="tab-content">
-                <div class="admin-card" style="max-width:500px;">
-                    <h2 class="admin-title" id="add-edit-user-title">تسجيل طالب</h2>
-                    <div class="input-group"><label class="input-label">المعرف</label><input type="text" id="new-user-name"></div>
+                <div class="admin-card" style="max-width:400px;">
+                    <h2 class="admin-title" id="add-edit-user-title">بيانات الطالب</h2>
+                    <div class="input-group"><label class="input-label">الاسم</label><input type="text" id="new-user-name"></div>
                     <div class="input-group"><label class="input-label">المرور</label><div class="btn-group"><input type="text" id="new-user-pass"><button type="button" onclick="generatePassword()" class="btn-secondary">توليد</button></div></div>
                     <div class="input-group"><label class="input-label">الفئة</label><input type="text" id="new-user-class"></div>
-                    <label style="display:flex; align-items:center; gap:10px; margin-bottom:20px; cursor:pointer;"><input type="checkbox" id="new-user-star" style="width:18px;height:18px;"> <strong>عضوية VIP ⭐</strong></label>
-                    <div style="display:flex; gap:10px;"><button type="button" id="save-user-btn" onclick="saveUser()">حفظ</button><button type="button" id="cancel-edit-user-btn" onclick="cancelEditUser()" class="btn-secondary hidden">إلغاء</button></div>
+                    <label style="display:flex; align-items:center; gap:8px; margin-bottom:15px; cursor:pointer; font-size:13px;"><input type="checkbox" id="new-user-star"> حساب VIP</label>
+                    <div style="display:flex; gap:8px;"><button type="button" id="save-user-btn" onclick="saveUser()">حفظ</button><button type="button" id="cancel-edit-user-btn" onclick="cancelEditUser()" class="btn-secondary hidden">إلغاء</button></div>
                 </div>
             </div>
 
+            <!-- إدارة الطلاب -->
             <div id="tab-users-manage" class="tab-content">
                 <div class="admin-card" style="background:transparent; border:none; padding:0; box-shadow:none;">
-                    <div style="display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap;">
-                        <div class="search-container" style="margin:0;"><svg class="icon search-icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><input type="text" id="admin-search-users" placeholder="بحث..." onkeyup="processAdminUserSearch()"></div>
-                        <div class="bulk-action-bar" style="margin:0; padding:8px 15px;"><label><input type="checkbox" id="select-all-users" onclick="toggleAllUsers(this)"> الكل</label><button type="button" class="btn-danger" onclick="deleteSelectedUsers()" style="padding:6px 12px; font-size:12px;">حذف</button></div>
+                    <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+                        <div class="search-container" style="margin:0;"><svg class="icon search-icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><input type="text" id="admin-search-users" placeholder="بحث بالاسم..." onkeyup="processAdminUserSearch()"></div>
+                        <div class="bulk-action-bar" style="margin:0; padding:6px 10px;"><label><input type="checkbox" id="select-all-users" onclick="toggleAllUsers(this)"> تحديد الكل</label><button type="button" class="btn-danger" onclick="deleteSelectedUsers()" style="padding:4px 8px; font-size:12px;">حذف</button></div>
                     </div>
                     <div id="admin-users-list"></div>
                 </div>
@@ -418,13 +406,13 @@
 
             <div id="tab-pending-users" class="tab-content">
                 <div class="admin-card">
-                    <h2 class="admin-title">طلبات التسجيل</h2>
+                    <h2 class="admin-title">طلبات الدخول</h2>
                     <div id="admin-pending-list"></div>
                 </div>
             </div>
             
             <div id="tab-settings" class="tab-content">
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:15px;">
                     <div class="admin-card">
                         <h2 class="admin-title">حساب الإدارة</h2>
                         <div class="input-group"><label class="input-label">الاسم</label><input type="text" id="admin-new-user"></div>
@@ -432,23 +420,24 @@
                         <button type="button" onclick="updateAdminCredentials()" class="btn-danger" style="width:100%;">تحديث</button>
                     </div>
                     <div class="admin-card">
-                        <h2 class="admin-title">النسخ الاحتياطي</h2>
-                        <button type="button" onclick="exportDB()" style="width:100%; margin-bottom:15px;">تحميل بيانات المنصة</button>
+                        <h2 class="admin-title">قاعدة البيانات</h2>
+                        <button type="button" onclick="exportDB()" class="btn-success" style="width:100%; margin-bottom:15px;">تنزيل نسخة (Export)</button>
                         <hr style="border:0; border-top:1px solid var(--border); margin:15px 0;">
-                        <input type="file" id="import-file" accept=".json" style="margin-bottom:10px; padding:8px; border:1px dashed var(--border); width:100%;">
-                        <button type="button" onclick="importDB()" class="btn-warning" style="width:100%;">استعادة</button>
+                        <input type="file" id="import-file" accept=".json" style="margin-bottom:10px; padding:6px; border:1px dashed var(--border); width:100%; font-size:12px;">
+                        <button type="button" onclick="importDB()" class="btn-warning" style="width:100%;">استعادة البيانات (Import)</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- واجهة عرض الطالب -->
     <div id="user-section" class="hidden" style="flex: 1; display: flex;">
         <div id="user-layout">
             <aside id="student-sidebar" class="sidebar">
                 <h3><svg class="icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg> الفهرس</h3>
                 <div class="sidebar-search-box">
-                    <input type="text" id="student-search-input" placeholder="بحث..." onkeyup="processStudentSearch()" onkeypress="if(event.key === 'Enter') searchAllContent()">
+                    <input type="text" id="student-search-input" placeholder="بحث سريع..." onkeyup="processStudentSearch()" onkeypress="if(event.key === 'Enter') searchAllContent()">
                     <button type="button" onclick="searchAllContent()"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
                 </div>
                 <div id="sidebar-content-list" style="flex: 1; overflow-y: auto;"></div>
@@ -458,7 +447,7 @@
     </div>
 
     <div class="version-footer">
-        <div>Enterprise UI/UX V64 | Responsive Core</div>
+        <div>Enterprise UI Responsive Edition V65 | Scaled Viewport</div>
     </div>
 
     <script>
@@ -499,7 +488,8 @@
 
         function showToast(msg, type = 'success') { 
             const c = document.getElementById('toast-container'); const t = document.createElement('div'); t.className = `toast ${type}`; 
-            t.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle></svg> <span>${msg}</span>`; 
+            let ic = type==='success'?'<polyline points="20 6 9 17 4 12"></polyline>':(type==='error'?'<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>':'<line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>');
+            t.innerHTML = `<svg class="icon" viewBox="0 0 24 24">${ic}</svg> <span>${msg}</span>`; 
             c.appendChild(t); setTimeout(() => t.remove(), 4000); 
         }
         function toggleDarkMode() { document.body.classList.toggle('dark-mode'); localStorage.setItem('eduDarkMode', document.body.classList.contains('dark-mode')); }
@@ -552,7 +542,7 @@
                 try { localStorage.setItem('eduPlatformSession', JSON.stringify(user)); localStorage.setItem('eduSessionId', sid); if(document.getElementById('remember-me').checked) { localStorage.setItem('eduRememberMe', JSON.stringify({username: u, password: p})); } else { localStorage.removeItem('eduRememberMe'); } } catch(e) {}
                 const idx = db.users.findIndex(x => x?.username === user?.username); if(idx > -1) { db.users[idx].sessionId = sid; saveDB(); }
                 currentUser = user; isGuestMode = false; initDashboard(); 
-            } else { showToast('بيانات خاطئة', 'error'); }
+            } else { showToast('بيانات غير صحيحة', 'error'); }
         }
         
         function logout(c = true) { try { localStorage.removeItem('eduPlatformSession'); sessionStorage.removeItem('eduPlatformActiveSession'); if(c) localStorage.removeItem('eduSessionId'); } catch(e) {} window.location.href = window.location.pathname; }
@@ -569,17 +559,17 @@
 
         function renderPendingUsers() {
             const list = document.getElementById('admin-pending-list'); list.innerHTML = '';
-            if(!db.pendingUsers.length) return list.innerHTML = '<div class="empty-state">لا طلبات</div>';
-            [...db.pendingUsers].reverse().forEach(u => { list.innerHTML += `<div class="admin-list-item"><div><h4>${escapeHTML(u?.username)}</h4><div class="admin-item-meta"><span>${escapeHTML(u?.class)}</span></div></div><div class="admin-item-actions"><button onclick="approveUser('${u?.username}')" class="btn-success" style="padding:6px 12px;">موافقة</button><button onclick="rejectUser('${u?.username}')" class="btn-danger" style="padding:6px 12px;">رفض</button></div></div>`; });
+            if(!db.pendingUsers.length) return list.innerHTML = '<div class="empty-state">لا طلبات حالياً</div>';
+            [...db.pendingUsers].reverse().forEach(u => { list.innerHTML += `<div class="admin-list-item"><div><h4 style="font-size:14px;margin-bottom:4px;">${escapeHTML(u?.username)}</h4><div class="admin-item-meta"><span style="font-size:12px;">${escapeHTML(u?.class)}</span></div></div><div class="admin-item-actions"><button onclick="approveUser('${u?.username}')" class="btn-success" style="padding:4px 8px;font-size:12px;">قبول</button><button onclick="rejectUser('${u?.username}')" class="btn-danger" style="padding:4px 8px;font-size:12px;">رفض</button></div></div>`; });
         }
         function approveUser(u) { const idx = db.pendingUsers.findIndex(x => x?.username === u); if(idx > -1) { db.users.push(db.pendingUsers[idx]); db.pendingUsers.splice(idx, 1); saveDB(); showToast('تم'); renderPendingUsers(); updateClassesDropdown(); } }
-        function rejectUser(u) { if(confirm('متأكد؟')) { db.pendingUsers = db.pendingUsers.filter(x => x?.username !== u); saveDB(); showToast('مرفوض'); renderPendingUsers(); } }
+        function rejectUser(u) { if(confirm('تأكيد؟')) { db.pendingUsers = db.pendingUsers.filter(x => x?.username !== u); saveDB(); showToast('مرفوض'); renderPendingUsers(); } }
 
         function initDashboard() {
             document.getElementById('login-section').classList.add('hidden'); document.getElementById('register-section').classList.add('hidden'); document.getElementById('main-header').classList.remove('hidden'); 
             if (isGuestMode) {
                 document.getElementById('welcome-msg').innerText = 'زائر'; document.getElementById('welcome-msg').style.display = 'flex'; 
-                document.getElementById('logout-btn').innerHTML = 'تسجيل دخول'; document.getElementById('sidebar-toggle').classList.remove('hidden'); document.getElementById('student-sidebar').style.display = 'flex'; document.querySelector('.sidebar-search-box').style.display = 'none'; showUserDashboard(); return;
+                document.getElementById('logout-btn').innerHTML = 'دخول'; document.getElementById('sidebar-toggle').classList.remove('hidden'); document.getElementById('student-sidebar').style.display = 'flex'; document.querySelector('.sidebar-search-box').style.display = 'none'; showUserDashboard(); return;
             }
             document.getElementById('welcome-msg').innerText = escapeHTML(currentUser?.username); document.getElementById('welcome-msg').style.display = 'flex'; document.getElementById('logout-btn').innerHTML = 'خروج';
             if (currentUser?.role === 'admin') { 
@@ -604,15 +594,21 @@
         window.exitCSSFullScreen = function(id) { const w = document.getElementById(id); if(w) { w.classList.remove('css-fullscreen'); document.body.style.overflow = ''; } }
 
         function updateClassesDropdown() {
-            const s = document.getElementById('content-classes'); if(!s) return; const v = s.value; s.innerHTML = `<option value="admin">مسودة</option><option value="all">عام</option>`;
+            const s = document.getElementById('content-classes'); if(!s) return; const v = s.value; s.innerHTML = `<option value="admin">مسودة للإدارة</option><option value="all">عام</option>`;
             const set = new Set(); db.users.forEach(u => { if (u?.role === 'student' && u?.class) set.add(escapeHTML(u.class)); }); db.contents.forEach(c => { if(c?.classes) c.classes.forEach(x => { if(x !== 'admin_only') set.add(escapeHTML(x)); }); });
             set.forEach(x => s.innerHTML += `<option value="${x}">${x}</option>`); if(v && [...s.options].some(o => o.value === v)) s.value = v;
         }
 
         function addFolder() { const f = escapeHTML(document.getElementById('new-folder-name').value.trim()); if(!f || db.folders.includes(f)) return; db.folders.push(f); saveDB(); document.getElementById('new-folder-name').value = ''; renderAdminFolders(); updateFolderDropdowns(); }
         function editFolder(old) { const n = prompt("الاسم:", old); if (n && n.trim() && n!==old) { const t = escapeHTML(n.trim()); if (db.folders.includes(t)) return; db.folders[db.folders.indexOf(old)] = t; db.contents.forEach(c => { if (c?.folder === old) c.folder = t; }); saveDB(); renderAdminFolders(); updateFolderDropdowns(); filterAdminContent(); } }
-        function deleteFolder(f) { if(confirm("مسح؟")) { db.folders = db.folders.filter(x => x !== f); db.contents.forEach(c => { if(c?.folder === f) c.folder = 'none'; }); saveDB(); renderAdminFolders(); updateFolderDropdowns(); filterAdminContent(); } }
-        function renderAdminFolders() { const l = document.getElementById('admin-folders-list'); l.innerHTML = ''; db.folders.forEach(f => { l.innerHTML += `<li class="admin-list-item"><strong style="font-size:14px;">${f}</strong><div style="display:flex;gap:5px;"><button class="btn-warning" onclick="editFolder('${f}')" style="padding:4px 8px;font-size:12px;">✏️</button><button class="btn-danger" onclick="deleteFolder('${f}')" style="padding:4px 8px;font-size:12px;">🗑️</button></div></li>`; }); }
+        function deleteFolder(f) { if(confirm("مسح المجلد؟")) { db.folders = db.folders.filter(x => x !== f); db.contents.forEach(c => { if(c?.folder === f) c.folder = 'none'; }); saveDB(); renderAdminFolders(); updateFolderDropdowns(); filterAdminContent(); } }
+        
+        function renderAdminFolders() { 
+            const l = document.getElementById('admin-folders-list'); l.innerHTML = ''; 
+            db.folders.forEach(f => { 
+                l.innerHTML += `<li class="admin-list-item" style="padding:10px 15px;"><strong style="font-size:13px; font-weight:700;">${f}</strong><div style="display:flex;gap:6px;"><button class="btn-icon-only" onclick="copyShareLink('folder', '${f}', this)" title="نسخ رابط القائمة"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></button><button class="btn-icon-only" onclick="editFolder('${f}')" title="تعديل"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button class="btn-icon-only" style="color:var(--danger);" onclick="deleteFolder('${f}')" title="حذف"><svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></li>`; 
+            }); 
+        }
         function updateFolderDropdowns() { const s = document.getElementById('content-folder'); s.innerHTML = '<option value="none">مستقل</option>'; db.folders.forEach(f => s.innerHTML += `<option value="${f}">${f}</option>`); }
         
         function saveContent() {
@@ -624,8 +620,10 @@
         function filterAdminContent() {
             const term = document.getElementById('admin-search-content').value.toLowerCase(); const list = document.getElementById('admin-content-list'); list.innerHTML = '';
             const res = db.contents.filter(i => i?.title?.toLowerCase().includes(term) || (i?.folder||'').toLowerCase().includes(term));
-            if(!res.length) return list.innerHTML = '<div class="empty-state">لا يوجد</div>';
-            [...res].reverse().forEach(i => { list.innerHTML += `<div class="admin-list-item"><div><h4 style="font-size:14px;"><input type="checkbox" class="content-checkbox" value="${i?.id}" style="margin-left:5px;"> ${i?.title}</h4><div class="admin-item-meta"><span>${i?.folder==='none'?'مستقل':i?.folder}</span></div></div><div class="admin-item-actions"><button onclick="editContent(${i?.id})" class="btn-warning" style="padding:4px 8px;font-size:12px;">تعديل</button><button onclick="deleteContent(${i?.id})" class="btn-danger" style="padding:4px 8px;font-size:12px;">حذف</button></div></div>`; });
+            if(!res.length) return list.innerHTML = '<div class="empty-state">لا نتائج</div>';
+            [...res].reverse().forEach(i => { 
+                list.innerHTML += `<div class="admin-list-item"><div><h4 style="font-size:13px; font-weight:700;"><input type="checkbox" class="content-checkbox" value="${i?.id}" style="margin-left:6px;"> ${i?.title}</h4><div class="admin-item-meta" style="font-size:11px;"><span>${i?.folder==='none'?'مستقل':i?.folder}</span></div></div><div class="admin-item-actions"><button onclick="copyShareLink('content', '${i?.id}', this)" class="btn-icon-only" title="نسخ رابط المحتوى"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></button><button onclick="editContent(${i?.id})" class="btn-icon-only" title="تعديل"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button onclick="deleteContent(${i?.id})" class="btn-icon-only" style="color:var(--danger);" title="حذف"><svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></div>`; 
+            });
         }
         function deleteContent(id) { if(confirm('حذف؟')) { db.contents = db.contents.filter(c => c?.id !== id); saveDB(); filterAdminContent(); } }
         function toggleAllContent(src) { document.querySelectorAll('.content-checkbox').forEach(cb => cb.checked = src?.checked); }
@@ -642,7 +640,9 @@
             const term = document.getElementById('admin-search-users').value.toLowerCase(); const list = document.getElementById('admin-users-list'); list.innerHTML = '';
             const res = db.users.filter(u => u?.role === 'student' && (u?.username?.toLowerCase().includes(term) || (u?.class||'').toLowerCase().includes(term)));
             if(!res.length) return list.innerHTML = '<div class="empty-state">لا يوجد</div>';
-            [...res].reverse().forEach(u => { list.innerHTML += `<div class="admin-list-item"><div><h4 style="font-size:14px;"><input type="checkbox" class="user-checkbox" value="${u?.username}" style="margin-left:5px;"> ${u?.username}</h4><div class="admin-item-meta"><span>${u?.class||'-'}</span> <span>${u?.isStar?'⭐':''}</span></div></div><div class="admin-item-actions"><button onclick="copyCredentials('${u?.username}', '${u?.password}', this)" class="btn-info" style="padding:4px 8px;font-size:12px;">نسخ</button><button onclick="editUser('${u?.username}')" class="btn-warning" style="padding:4px 8px;font-size:12px;">تعديل</button><button onclick="deleteUser('${u?.username}')" class="btn-danger" style="padding:4px 8px;font-size:12px;">حذف</button></div></div>`; });
+            [...res].reverse().forEach(u => { 
+                list.innerHTML += `<div class="admin-list-item"><div><h4 style="font-size:13px; font-weight:700;"><input type="checkbox" class="user-checkbox" value="${u?.username}" style="margin-left:6px;"> ${u?.username}</h4><div class="admin-item-meta" style="font-size:11px;"><span>${u?.class||'-'}</span> <span>${u?.isStar?'⭐':''}</span></div></div><div class="admin-item-actions"><button onclick="copyCredentials('${u?.username}', '${u?.password}', this)" class="btn-icon-only" title="نسخ"><svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><button onclick="editUser('${u?.username}')" class="btn-icon-only" title="تعديل"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button onclick="deleteUser('${u?.username}')" class="btn-icon-only" style="color:var(--danger);" title="حذف"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg></button></div></div>`; 
+            });
         }
         function deleteUser(u) { if(confirm('حذف؟')) { db.users = db.users.filter(x => x?.username !== u); saveDB(); filterAdminUsers(); } }
         function toggleAllUsers(src) { document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = src?.checked); }
@@ -679,15 +679,24 @@
                 const sb = document.getElementById('sidebar-content-list'); sb.innerHTML = ''; 
                 let grp = {}; let ind = []; res.forEach(i => { if(i?.folder && i.folder !== 'none') { if(!grp[i.folder]) grp[i.folder] = []; grp[i.folder].push(i); } else ind.push(i); });
                 let h = '';
-                for(let f in grp) { h += `<details ${isGuestMode?'open':''}><summary><svg class="icon arrow-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg><span>${f}</span></summary><ul>`; grp[f].forEach(i => { h += `<li class="sidebar-item" onclick="showSingleContent(${i?.id}, this)">${i?.title}</li>`; }); h += `</ul></details>`; }
+                for(let f in grp) { 
+                    h += `<details ${isGuestMode?'open':''}><summary>
+                        <div class="summary-content">
+                            <svg class="icon arrow-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            <span>${f}</span>
+                        </div>
+                        <button onclick="event.stopPropagation(); event.preventDefault(); copyShareLink('folder', '${f}', this);" class="btn-icon-only" title="نسخ رابط القائمة"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></button>
+                    </summary><ul>`; 
+                    grp[f].forEach(i => { h += `<li class="sidebar-item" onclick="showSingleContent(${i?.id}, this)">${i?.title}</li>`; }); h += `</ul></details>`; 
+                }
                 ind.forEach(i => { h += `<div class="independent-item" onclick="showSingleContent(${i?.id}, this)">${i?.title}</div>`; });
-                sb.innerHTML = h || '<div class="empty-state">فارغ</div>';
+                sb.innerHTML = h || '<div class="empty-state">المكتبة فارغة حالياً</div>';
                 
                 const sid = localStorage.getItem('lastViewedContentId_' + (currentUser?.username || 'g'));
                 let load = vC ? res.find(c => c?.id == vC) : (sid && !isGuestMode ? res.find(c => c?.id == sid) : null);
                 if (load) setTimeout(() => { let el = null; document.querySelectorAll('.sidebar-item, .independent-item').forEach(e => { if(e.getAttribute('onclick')?.includes(load.id)) el = e; }); showSingleContent(load.id, el); if(el?.closest('details')) el.closest('details').open = true; }, 50);
                 else if (vF) setTimeout(() => { renderContentItems(res.filter(c => c?.folder === vF).reverse()); document.querySelectorAll('.sidebar summary').forEach(s => { if(s.innerText.includes(vF)) s.closest('details').open = true; }); }, 50);
-                else document.getElementById('content-display').innerHTML = '<div class="empty-state" style="padding:100px;">اختر مادة</div>';
+                else document.getElementById('content-display').innerHTML = '<div class="empty-state" style="padding:80px 20px;">الرجاء اختيار وحدة دراسية من الفهرس للمتابعة.</div>';
             } catch(e) {}
         }
 
@@ -697,17 +706,32 @@
         function renderContentItems(arr) {
             try {
                 const d = document.getElementById('content-display'); d.innerHTML = '';
-                if(!arr.length) return d.innerHTML = '<div class="empty-state">فارغ</div>';
+                if(!arr.length) return d.innerHTML = '<div class="empty-state">لا يوجد محتوى لعرضه</div>';
                 arr.forEach(i => {
                     const div = document.createElement('div'); div.className = 'content-item academic-text';
                     let html = '';
+                    
+                    let copyLinkBtn = `<button type="button" onclick="copyShareLink('content', ${i?.id}, this)" class="btn-outline" style="padding:4px 10px; font-size:12px; display:flex; align-items:center; gap:6px;" title="نسخ الرابط"><svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> نسخ الرابط</button>`;
+
                     if (i?.type === 'html') {
                         const wid = `w-${i?.id}`; let safe = i.data.replace(/user-scalable=[a-z0-9]+/gi, 'user-scalable=yes').replace(/maximum-scale=[0-9.]+/gi, 'maximum-scale=5.0');
                         const m = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"><style>html,body{margin:0!important;padding:0!important;width:100%!important;min-height:100vh!important;touch-action:pan-x pan-y pinch-zoom!important;}iframe{width:100%!important;height:100vh!important;border:none!important;}</style>`;
                         safe = (!safe.includes('touch-action')) ? (safe.includes('</head>') ? safe.replace(/<\/head>/i, m + '</head>') : m + safe) : safe; safe = safe.replace(/"/g, '&quot;');
-                        const tb = `<div class="fullscreen-top-bar"><button class="fullscreen-close-btn" onclick="exitCSSFullScreen('${wid}')">إغلاق <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div>`;
-                        html = `<div class="content-header"><h3 class="content-title">${i?.title}</h3><div class="header-actions"><button onclick="toggleCSSFullScreen('${wid}')" class="btn-secondary" style="padding:6px 12px; font-size:12px;">تكبير</button></div></div><div id="${wid}" class="iframe-responsive-wrapper">${tb}<iframe class="html-sandbox" srcdoc="${safe}" allowfullscreen loading="lazy"></iframe></div>`;
-                    } else { html = `<div class="content-header"><h3 class="content-title">${i?.title}</h3></div><a href="${i?.data}" target="_blank" style="display:flex;justify-content:center;padding:20px;background:var(--primary);color:white;text-decoration:none;border-radius:var(--radius-sm);font-weight:bold;">فتح الرابط</a>`; }
+                        
+                        // تم ضبط الزر ليكون مطابق للصورة المرفقة (أحمر، كبسولة، إطار أبيض، علامة X)
+                        const tb = `
+                        <div class="fullscreen-top-bar">
+                            <button class="fullscreen-close-btn" onclick="exitCSSFullScreen('${wid}')">
+                                إغلاق وضع الشاشة الكاملة
+                                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>`;
+                        
+                        html = `<div class="content-header"><h3 class="content-title">${i?.title}</h3><div class="header-actions">${copyLinkBtn}<button onclick="toggleCSSFullScreen('${wid}')" class="btn-secondary" style="padding:4px 10px; font-size:12px;">ملء الشاشة</button></div></div><div id="${wid}" class="iframe-responsive-wrapper">${tb}<iframe class="html-sandbox" srcdoc="${safe}" allowfullscreen loading="lazy"></iframe></div>`;
+                    } else { html = `<div class="content-header"><h3 class="content-title">${i?.title}</h3><div class="header-actions">${copyLinkBtn}</div></div><a href="${i?.data}" target="_blank" style="display:flex;justify-content:center;padding:15px;background:var(--primary);color:white;text-decoration:none;border-radius:var(--radius-sm);font-weight:bold;font-size:16px;">فتح الرابط الخارجي</a>`; }
                     div.innerHTML = html; d.appendChild(div);
                 });
             } catch (e) {}
