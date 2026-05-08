@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <!-- إجبار عرض سطح المكتب 1366 بكسل لجميع الأجهزة كما طلبت -->
+    <!-- إجبار عرض سطح المكتب 1366 بكسل لجميع الأجهزة -->
     <meta name="viewport" content="width=1366, user-scalable=yes">
     
     <meta name="theme-color" content="#1e3a8a">
@@ -11,6 +11,9 @@
     <meta name="apple-mobile-web-app-title" content="منصتي التعليمية">
     <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%231e3a8a' rx='115'/%3E%3Cpath fill='%23fff' d='M256 90c-44 0-86 16-121 44-7 5-11 13-11 22v223c0 14 11 25 25 25 6 0 12-2 17-6 26-19 57-29 89-29s64 10 90 29c5 3 11 6 17 6 13 0 25-11 25-25V156c0-8-4-16-11-22-35-28-76-44-120-44zm0 263c-24 0-48 5-70 14v-166c21-12 45-19 70-19s49 7 70 19v166c-22-9-46-14-70-14z'/%3E%3C/svg%3E">
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22%D8%A7%D9%84%D9%85%D9%86%D8%B5%D8%A9%20%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85%D9%8A%D8%A9%22%2C%22short_name%22%3A%22%D9%85%D9%86%D8%B5%D8%AA%D9%8A%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f0f4f8%22%2C%22theme_color%22%3A%22%231e3a8a%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bcharset%3Dutf-8%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20512%20512'%253E%253Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%25231e3a8a'%20rx%3D'115'%2F%253E%253Cpath%20fill%3D'%2523fff'%20d%3D'M256%2090c-44%200-86%2016-121%2044-7%205-11%2013-11%2022v223c0%2014%2011%2025%2025%2025%206%200%2012-2%2017-6%2026-19%2057-29%2089-29s64%2010%2090%2029c5%203%2011%206%2017%206%2013%200%2025-11%2025-25V156c0-8-4-16-11-22-35-28-76-44-120-44zm0%20263c-24%200-48%205-70%2014v-166c21-12%2045-19%2070-19s49%207%2070%2019v166c-22-9-46-14-70-14z'%2F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+    
+    <!-- خط القاهرة الاحترافي من جوجل -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <title>المنصة التعليمية | الإصدار الاحترافي</title>
     
@@ -60,7 +63,7 @@
         }
 
         body { 
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            font-family: 'Cairo', system-ui, -apple-system, sans-serif; /* تفعيل الخط الاحترافي */
             margin: 0; 
             background-color: var(--bg-color); 
             color: var(--text-main); 
@@ -96,7 +99,7 @@
 
         /* --- الإشعارات الاحترافية (Toast) مع شريط تقدم --- */
         #toast-container { position: fixed; bottom: 25px; left: 25px; z-index: 10000; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
-        .toast { padding: 15px 25px; border-radius: 10px; color: white; font-weight: bold; animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), fadeOut 0.4s 3.2s forwards; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 12px; max-width: 400px; position: relative; overflow: hidden; pointer-events: auto; }
+        .toast { padding: 15px 25px; border-radius: 10px; color: white; font-weight: bold; animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), fadeOut 0.4s 3.2s forwards; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 12px; max-width: 400px; position: relative; overflow: hidden; pointer-events: auto; font-family: 'Cairo', sans-serif;}
         .toast::after { content: ''; position: absolute; bottom: 0; left: 0; height: 4px; background: rgba(255,255,255,0.7); animation: toastProgress 3s linear forwards; }
         .toast.success { background: var(--success); }
         .toast.error { background: var(--danger); }
@@ -110,7 +113,7 @@
         input[type="text"], input[type="password"], select, textarea { 
             width: 100%; padding: 14px 18px; margin-bottom: 18px; 
             border: 2px solid transparent; border-radius: 10px; font-size: 15px; 
-            transition: all 0.3s ease; font-family: inherit; 
+            transition: all 0.3s ease; font-family: 'Cairo', sans-serif; font-weight: 600;
             background-color: var(--bg-color); color: var(--text-main); 
             box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
         }
@@ -121,7 +124,7 @@
         
         button { 
             background: var(--secondary); color: white; border: none; padding: 12px 24px; 
-            border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 700; 
+            border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 700; font-family: 'Cairo', sans-serif;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
             display: inline-flex; align-items: center; justify-content: center; gap: 8px; 
             box-shadow: var(--shadow-sm);
@@ -161,7 +164,7 @@
         
         .tabs-container { background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow-md); overflow: hidden; margin-top: 30px; border: 1px solid var(--border); }
         .tabs-header { display: flex; background: var(--bg-color); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-        .tab-btn { flex: 1; background: transparent; color: var(--text-muted); padding: 18px 15px; border-radius: 0; font-size: 15px; border-bottom: 3px solid transparent; font-weight: 700; transition: all 0.3s ease; min-width: 130px; box-shadow: none; }
+        .tab-btn { flex: 1; background: transparent; color: var(--text-muted); padding: 18px 15px; border-radius: 0; font-size: 16px; border-bottom: 3px solid transparent; font-weight: 700; transition: all 0.3s ease; min-width: 130px; box-shadow: none; }
         .tab-btn:hover { color: var(--primary); background: rgba(0,0,0,0.02); transform: none; box-shadow: none;}
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: var(--card-bg); }
         .tab-content { padding: 35px; display: none; animation: fadeInTab 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -244,7 +247,9 @@
             display: block; 
         }
 
-        /* --- سر التكبير الأصلي (CSS Fake Fullscreen) --- */
+        /* ----------------------------------------------------------- */
+        /* --- التصميم الاحترافي للشريط العلوي لملء الشاشة (TOP BAR) --- */
+        /* ----------------------------------------------------------- */
         .iframe-responsive-wrapper.css-fullscreen { 
             position: fixed !important;
             top: 0 !important;
@@ -254,33 +259,60 @@
             width: 100vw !important; 
             height: 100vh !important; 
             height: 100dvh !important; 
-            background: #ffffff; 
+            background: var(--bg-color) !important; 
             border-radius: 0 !important; 
             border: none !important; 
             z-index: 999999 !important;
-            overflow: auto !important; 
+            overflow: hidden !important; 
+            padding-top: 55px !important; /* إزاحة المحتوى للأسفل بمقدار ارتفاع الشريط */
         }
-        
-        .exit-fullscreen-btn {
+
+        .fullscreen-top-bar {
             display: none;
-            position: fixed;
-            top: 20px;
-            left: 20px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 55px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
             z-index: 9999999;
-            background-color: var(--danger);
-            color: white;
-            border: 2px solid white;
-            border-radius: 50px;
-            padding: 12px 25px;
-            font-size: 16px;
-            font-weight: 800;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
+            align-items: center;
+            justify-content: flex-end; /* وضع الأيقونة في أقصى اليسار بالنسبة لـ RTL */
+            padding: 0 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-        .exit-fullscreen-btn:hover { transform: scale(1.05); background: #dc2626; }
         
-        .iframe-responsive-wrapper.css-fullscreen .exit-fullscreen-btn { display: block; animation: fadeInTab 0.5s ease; }
+        .iframe-responsive-wrapper.css-fullscreen .fullscreen-top-bar {
+            display: flex;
+            position: fixed; /* تثبيت الشريط في أعلى الشاشة */
+        }
+
+        .fullscreen-close-icon {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: none;
+        }
+
+        .fullscreen-close-icon:hover {
+            background: var(--bg-color);
+            color: var(--danger);
+            transform: scale(1.1);
+        }
+        
+        .iframe-responsive-wrapper.css-fullscreen .html-sandbox {
+            height: calc(100vh - 55px) !important;
+            height: calc(100dvh - 55px) !important;
+        }
+        /* ----------------------------------------------------------- */
 
         .version-footer { text-align: center; padding: 25px; color: var(--text-muted); font-size: 15px; font-weight: 700; width: 100%; margin-top: auto; border-top: 1px solid var(--border); background: var(--bg-color); }
     </style>
@@ -489,7 +521,7 @@
     </div>
 
     <div class="version-footer">
-        تم التطوير بواسطة نظام الإدارة الاحترافي | الإصدار الشامل (Enterprise Edition V56)
+        تم التطوير بواسطة نظام الإدارة الاحترافي | الإصدار الشامل (Enterprise Edition V57)
     </div>
 
     <script>
@@ -823,7 +855,7 @@
             const wrapper = document.getElementById(wrapperId);
             wrapper.classList.add('css-fullscreen');
             document.body.style.overflow = 'hidden'; 
-            showToast('وضع الشاشة الكاملة: استخدم إصبعين للتكبير الحر داخل الدرس.', 'success');
+            showToast('تم التكبير.. الشريط العلوي متاح للإغلاق.', 'success');
         }
         
         window.exitCSSFullScreen = function(wrapperId) {
@@ -953,7 +985,7 @@
         function showUserDashboard() {
             document.getElementById('user-section').classList.remove('hidden');
             
-            const urlParams = new URLSearchParams(window.location.search);
+            const urlParams = newSearchParams(window.location.search);
             const viewContent = urlParams.get('view_content');
             const viewFolder = urlParams.get('view_folder');
 
@@ -1100,9 +1132,18 @@
                     
                     safeHTML = safeHTML.replace(/"/g, '&quot;');
                     
-                    const exitBtn = `<button type="button" class="exit-fullscreen-btn" onclick="exitCSSFullScreen('${wrapperId}')">❌ إغلاق وضع الشاشة الكاملة</button>`;
+                    // -- الشريط العلوي المطابق للصورة (به علامة X فقط) -- //
+                    const topBarHTML = `
+                    <div class="fullscreen-top-bar">
+                        <button type="button" class="fullscreen-close-icon" onclick="exitCSSFullScreen('${wrapperId}')" title="إغلاق وضع ملء الشاشة">
+                            <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>`;
                     
-                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper"><iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="yes"></iframe>${exitBtn}</div>`;
+                    innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper">${topBarHTML}<iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="yes"></iframe></div>`;
                     
                     fullScreenBtnHTML = `<button type="button" onclick="toggleCSSFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير للتركيز الأقصى" style="background: var(--bg-color); color: var(--text-main); border: 2px solid var(--border); box-shadow: none;">🔲 وضع ملء الشاشة</button>`;
                 } else { innerMedia = `<a href="${item.data}" target="_blank" style="display:flex; justify-content:center; align-items:center; gap:10px; background:var(--primary); color:white; padding:20px; text-decoration:none; border-radius:12px; margin-top:15px; font-weight:800; font-size: 18px; box-shadow: var(--shadow-md); transition: 0.3s; transform: scale(1);">🔗 اضغط هنا لفتح الرابط الخارجي</a>`; }
