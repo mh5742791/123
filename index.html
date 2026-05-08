@@ -12,10 +12,10 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%231e3a8a' rx='115'/%3E%3Cpath fill='%23fff' d='M256 90c-44 0-86 16-121 44-7 5-11 13-11 22v223c0 14 11 25 25 25 6 0 12-2 17-6 26-19 57-29 89-29s64 10 90 29c5 3 11 6 17 6 13 0 25-11 25-25V156c0-8-4-16-11-22-35-28-76-44-120-44zm0 263c-24 0-48 5-70 14v-166c21-12 45-19 70-19s49 7 70 19v166c-22-9-46-14-70-14z'/%3E%3C/svg%3E">
     <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22%D8%A7%D9%84%D9%85%D9%86%D8%B5%D8%A9%20%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85%D9%8A%D8%A9%22%2C%22short_name%22%3A%22%D9%85%D9%86%D8%B5%D8%AA%D9%8A%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f0f4f8%22%2C%22theme_color%22%3A%22%231e3a8a%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bcharset%3Dutf-8%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20512%20512'%253E%253Crect%20width%3D'512'%20height%3D'512'%20fill%3D'%25231e3a8a'%20rx%3D'115'%2F%253E%253Cpath%20fill%3D'%2523fff'%20d%3D'M256%2090c-44%200-86%2016-121%2044-7%205-11%2013-11%2022v223c0%2014%2011%2025%2025%2025%206%200%2012-2%2017-6%2026-19%2057-29%2089-29s64%2010%2090%2029c5%203%2011%206%2017%206%2013%200%2025-11%2025-25V156c0-8-4-16-11-22-35-28-76-44-120-44zm0%20263c-24%200-48%205-70%2014v-166c21-12%2045-19%2070-19s49%207%2070%2019v166c-22-9-46-14-70-14z'%2F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
     
-    <!-- خط القاهرة الاحترافي من جوجل -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- دمج خطوط جوجل الاحترافية -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     
-    <title>المنصة التعليمية | الإصدار الاحترافي V58</title>
+    <title>المنصة التعليمية | الإصدار الاحترافي V60</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -75,6 +75,13 @@
             min-height: 100vh; 
         }
 
+        /* الطباعة المتخصصة للنصوص الطويلة */
+        .long-text-content {
+            font-family: 'Amiri', serif;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
         /* --- تخصيص شريط التمرير باحترافية --- */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-color); }
@@ -91,11 +98,13 @@
             width: 100%; 
         }
         
-        /* شاشة التحميل الحديثة */
-        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s; }
+        /* شاشة التحميل الحديثة مع تأثير ضبابي */
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s; }
+        body.dark-mode #loading-overlay { background: rgba(15, 23, 42, 0.95); }
         .spinner { width: 60px; height: 60px; border: 4px solid var(--border); border-top-color: var(--secondary); border-radius: 50%; animation: spin 1s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite; margin-bottom: 20px; }
-        #loading-text { color: var(--primary); font-weight: 700; letter-spacing: 0.5px; }
+        #loading-text { color: var(--primary); font-weight: 800; letter-spacing: 0.5px; animation: pulseText 1.5s infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
         /* --- الإشعارات الاحترافية (Toast) مع شريط تقدم --- */
         #toast-container { position: fixed; bottom: 25px; left: 25px; z-index: 10000; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
@@ -109,7 +118,7 @@
         @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(20px); display: none; } }
         @keyframes toastProgress { from { width: 100%; } to { width: 0%; } }
 
-        /* --- الحقول والأزرار العصرية --- */
+        /* --- الحقول والأزرار العصرية مع تأثير Ripple --- */
         input[type="text"], input[type="password"], select, textarea { 
             width: 100%; padding: 14px 18px; margin-bottom: 18px; 
             border: 2px solid transparent; border-radius: 10px; font-size: 15px; 
@@ -127,10 +136,18 @@
             border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 700; font-family: 'Cairo', sans-serif;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
             display: inline-flex; align-items: center; justify-content: center; gap: 8px; 
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
         }
         button:hover { background: var(--secondary-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
         button:active { transform: scale(0.96); box-shadow: none; }
+        
+        /* تأثير Ripple للأزرار */
+        .ripple-effect {
+            position: absolute; border-radius: 50%; background: rgba(255,255,255,0.4);
+            transform: scale(0); animation: ripple-anim 0.6s linear; pointer-events: none;
+        }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+
         .btn-danger { background: var(--danger); } .btn-danger:hover { background: #dc2626; }
         .btn-success { background: var(--success); } .btn-success:hover { background: #059669; }
         .btn-warning { background: var(--warning); color: #000; } .btn-warning:hover { background: #d97706; }
@@ -205,7 +222,7 @@
         .sidebar summary::after { content: '▼'; margin-right: auto; font-size: 12px; transition: transform 0.3s ease; color: var(--text-muted); }
         .sidebar details[open] summary::after { transform: rotate(180deg); color: var(--secondary); }
         .sidebar details[open] summary { border-bottom: 1px solid var(--border); color: var(--secondary); background: var(--card-bg);}
-        .sidebar details ul { list-style: none; padding: 0; margin: 0; background: var(--card-bg); }
+        .sidebar details ul { list-style: none; padding: 0; margin: 0; background: var(--card-bg); transition: all 0.3s ease;}
         
         .sidebar-item { padding: 14px 25px 14px 15px; border-bottom: 1px solid var(--bg-color); cursor: pointer; color: var(--text-muted); font-weight: 600; transition: all 0.2s ease; display: flex; align-items: center; gap: 10px; position: relative;}
         .sidebar-item::before { content: ''; position: absolute; right: 0; top: 0; height: 100%; width: 0; background: var(--secondary); transition: 0.2s ease; }
@@ -265,6 +282,7 @@
             z-index: 999999 !important;
             overflow: hidden !important; 
             padding-top: 55px !important; /* إزاحة المحتوى للأسفل بمقدار ارتفاع الشريط */
+            transition: all 0.3s ease;
         }
 
         .fullscreen-top-bar {
@@ -281,11 +299,16 @@
             justify-content: flex-end; /* وضع الأيقونة في أقصى اليسار بالنسبة لـ RTL */
             padding: 0 15px;
             box-shadow: 0 1px 5px rgba(0,0,0,0.08);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s, transform 0.3s;
         }
         
         .iframe-responsive-wrapper.css-fullscreen .fullscreen-top-bar {
             display: flex;
             position: fixed; /* تثبيت الشريط في أعلى الشاشة */
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .fullscreen-close-icon {
@@ -521,11 +544,26 @@
     </div>
 
     <div class="version-footer">
-        تم التطوير بواسطة نظام الإدارة الاحترافي | الإصدار الشامل المستقر (Enterprise Edition V59)
+        تم التطوير بواسطة نظام الإدارة الاحترافي | الإصدار الشامل المستقر (Enterprise Edition V60)
     </div>
 
     <script>
-        // --- دالة Debounce لتحسين أداء البحث وعدم التعليق (Enterprise Enhancement) ---
+        // --- دالة إضافة تأثير Ripple لجميع الأزرار عند النقر (UX/UI Enhancement) ---
+        document.body.addEventListener('mousedown', function (e) {
+            let btn = e.target.closest('button');
+            if (!btn) return;
+            let d = Math.max(btn.clientWidth, btn.clientHeight);
+            let rect = btn.getBoundingClientRect();
+            let ripple = document.createElement('span');
+            ripple.style.width = ripple.style.height = d + 'px';
+            ripple.style.left = e.clientX - rect.left - d/2 + 'px';
+            ripple.style.top = e.clientY - rect.top - d/2 + 'px';
+            ripple.classList.add('ripple-effect');
+            btn.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        });
+
+        // --- دالة Debounce لتحسين أداء البحث وعدم التعليق ---
         function debounce(func, timeout = 300){
             let timer;
             return (...args) => {
@@ -540,7 +578,7 @@
         // --- دالة الحماية من الثغرات (XSS Security) ---
         function escapeHTML(str) {
             if (!str) return '';
-            return str.replace(/[&<>'"]/g, tag => ({
+            return String(str).replace(/[&<>'"]/g, tag => ({
                 '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
             }[tag] || tag));
         }
@@ -548,7 +586,7 @@
         // --- متغير لتحديد وضع الضيف ---
         let isGuestMode = false;
 
-        // --- دالة نسخ الروابط المباشرة مع استجابة بصرية للمستخدم (UX Upgrade) ---
+        // --- دالة نسخ الروابط المباشرة مع استجابة بصرية ---
         function copyShareLink(type, value, btnElement) {
             const baseUrl = window.location.origin + window.location.pathname;
             const shareUrl = `${baseUrl}?view_${type}=${encodeURIComponent(value)}`;
@@ -632,9 +670,7 @@
         };
         try {
             firebase.initializeApp(firebaseConfig); 
-        } catch(e) {
-            // تجاهل أخطاء إعادة التهيئة
-        }
+        } catch(e) { }
         const database = firebase.database();
 
         let db = { users: [], contents: [], folders: [], pendingUsers: [] };
@@ -645,8 +681,8 @@
         database.ref('/').on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                db.users = sanitizeArray(data.users); db.contents = sanitizeArray(data.contents); db.folders = sanitizeArray(data.folders); db.pendingUsers = sanitizeArray(data.pendingUsers); 
-                db.contents.forEach(item => { if (!item.classes) item.classes = []; if(!item.ratio) item.ratio = '16:9'; });
+                db.users = sanitizeArray(data?.users); db.contents = sanitizeArray(data?.contents); db.folders = sanitizeArray(data?.folders); db.pendingUsers = sanitizeArray(data?.pendingUsers); 
+                db.contents.forEach(item => { if (!item?.classes) item.classes = []; if(!item?.ratio) item.ratio = '16:9'; });
             } else { db = { users: [{ username: '228820', password: '228820', role: 'admin' }], contents: [], folders: [], pendingUsers: [] }; saveDB(); }
             
             if (isFirstLoad) { 
@@ -656,10 +692,10 @@
                 isFirstLoad = false; 
             } 
             else if (currentUser && !isGuestMode) {
-                const verifyUser = db.users.find(u => u.username === currentUser.username && u.password === currentUser.password);
+                const verifyUser = db.users.find(u => u?.username === currentUser?.username && u?.password === currentUser?.password);
                 if (verifyUser) { 
                     const localSessionId = localStorage.getItem('eduSessionId');
-                    if (verifyUser.role === 'student' && verifyUser.sessionId && verifyUser.sessionId !== localSessionId) {
+                    if (verifyUser?.role === 'student' && verifyUser?.sessionId && verifyUser?.sessionId !== localSessionId) {
                         showToast('⚠️ تم تسجيل الدخول لحسابك من جهاز آخر. حمايةً لك، سيتم تسجيل خروجك الآن.', 'error');
                         setTimeout(() => logout(false), 3500); 
                         return;
@@ -678,17 +714,14 @@
             let savedSession = null;
             try { savedSession = sessionStorage.getItem('eduPlatformActiveSession') || localStorage.getItem('eduPlatformSession'); } catch(e) {}
             
-            // إصلاح دالة جلب البيانات من الرابط لحل مشكلة اختفاء القوائم
             let hasSharedLink = false;
             try {
                 const urlParams = new URLSearchParams(window.location.search);
                 hasSharedLink = urlParams.has('view_content') || urlParams.has('view_folder');
-            } catch(e) {
-                console.error('URL parsing error', e);
-            }
+            } catch(e) {}
 
             if (savedSession) {
-                const sessionUser = JSON.parse(savedSession); const verifyUser = db.users.find(u => u.username === sessionUser.username && u.password === sessionUser.password);
+                const sessionUser = JSON.parse(savedSession); const verifyUser = db.users.find(u => u?.username === sessionUser?.username && u?.password === sessionUser?.password);
                 if (verifyUser) { 
                     currentUser = verifyUser; 
                     initDashboard(); 
@@ -706,14 +739,14 @@
             document.getElementById('login-section').classList.remove('hidden'); checkRememberMe();
         }
         
-        function checkRememberMe() { try { const rememberedData = localStorage.getItem('eduRememberMe'); if (rememberedData) { const data = JSON.parse(rememberedData); document.getElementById('login-username').value = data.username; document.getElementById('login-password').value = data.password; document.getElementById('remember-me').checked = true; } } catch(e) {} }
+        function checkRememberMe() { try { const rememberedData = localStorage.getItem('eduRememberMe'); if (rememberedData) { const data = JSON.parse(rememberedData); document.getElementById('login-username').value = data?.username || ''; document.getElementById('login-password').value = data?.password || ''; document.getElementById('remember-me').checked = true; } } catch(e) {} }
         
         function login() {
             if(db.users.length === 0) return showToast('جاري استيراد البيانات من الخادم، لحظات...', 'warning');
             const u = document.getElementById('login-username').value.trim(); const p = document.getElementById('login-password').value.trim(); 
-            if (db.pendingUsers.find(x => x.username === u && x.password === p)) return showToast('طلبك وصل للإدارة وقيد المراجعة حالياً.', 'warning');
+            if (db.pendingUsers.find(x => x?.username === u && x?.password === p)) return showToast('طلبك وصل للإدارة وقيد المراجعة حالياً.', 'warning');
             
-            const user = db.users.find(x => x.username === u && x.password === p); 
+            const user = db.users.find(x => x?.username === u && x?.password === p); 
             if (user) { 
                 const rememberMe = document.getElementById('remember-me').checked;
                 const newSessionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -726,7 +759,7 @@
                     else { localStorage.removeItem('eduRememberMe'); } 
                 } catch(e) {}
                 
-                const dbUserIndex = db.users.findIndex(x => x.username === user.username);
+                const dbUserIndex = db.users.findIndex(x => x?.username === user?.username);
                 if(dbUserIndex > -1) {
                     db.users[dbUserIndex].sessionId = newSessionId;
                     saveDB();
@@ -764,7 +797,7 @@
         function submitRegistration() {
             const u = escapeHTML(document.getElementById('reg-username').value.trim()); const p = document.getElementById('reg-password').value.trim(); const c = escapeHTML(document.getElementById('reg-class').value.trim());
             if(!u || !p || !c) return showToast('عفواً، جميع البيانات مطلوبة لإنشاء الحساب!', 'error');
-            if(db.users.find(x => x.username === u) || db.pendingUsers.find(x => x.username === u)) return showToast('اسم المستخدم هذا محجوز لشخص آخر، جرب اسماً مختلفاً.', 'error');
+            if(db.users.find(x => x?.username === u) || db.pendingUsers.find(x => x?.username === u)) return showToast('اسم المستخدم هذا محجوز لشخص آخر، جرب اسماً مختلفاً.', 'error');
             db.pendingUsers.push({ username: u, password: p, class: c, role: 'student', isStar: false }); saveDB();
             document.getElementById('reg-username').value = ''; document.getElementById('reg-password').value = ''; document.getElementById('reg-class').value = ''; showToast('ممتاز! تم إرسال طلبك بأمان للإدارة.'); showLoginForm();
         }
@@ -773,11 +806,11 @@
             const listDiv = document.getElementById('admin-pending-list'); listDiv.innerHTML = '';
             if(!db.pendingUsers || db.pendingUsers.length === 0) { listDiv.innerHTML = '<div class="empty-state"><span class="empty-state-icon">✅</span>لا توجد أي طلبات تسجيل معلقة حالياً.</div>'; return; }
             [...db.pendingUsers].reverse().forEach(u => {
-                listDiv.innerHTML += `<div class="admin-list-item"><div class="admin-item-info"><h4>👤 ${escapeHTML(u.username)}</h4><div class="admin-item-meta"><span>📁 الصف: ${escapeHTML(u.class)}</span><span>🔑 المرور: ${u.password}</span></div></div><div class="admin-item-actions"><button type="button" class="btn-success" onclick="approveUser('${u.username}')">✅ موافقة وتفعيل</button><button type="button" class="btn-danger" onclick="rejectUser('${u.username}')">❌ رفض الحساب</button></div></div>`;
+                listDiv.innerHTML += `<div class="admin-list-item"><div class="admin-item-info"><h4>👤 ${escapeHTML(u?.username)}</h4><div class="admin-item-meta"><span>📁 الصف: ${escapeHTML(u?.class)}</span><span>🔑 المرور: ${u?.password}</span></div></div><div class="admin-item-actions"><button type="button" class="btn-success" onclick="approveUser('${u?.username}')">✅ موافقة وتفعيل</button><button type="button" class="btn-danger" onclick="rejectUser('${u?.username}')">❌ رفض الحساب</button></div></div>`;
             });
         }
-        function approveUser(username) { const idx = db.pendingUsers.findIndex(u => u.username === username); if(idx > -1) { db.users.push(db.pendingUsers[idx]); db.pendingUsers.splice(idx, 1); saveDB(); showToast(`تم تفعيل حساب الطالب بنجاح.`); renderPendingUsers(); updateClassesDropdown(); } }
-        function rejectUser(username) { if(confirm(`هل أنت متأكد من رفض وحذف طلب ${username} نهائياً؟`)) { db.pendingUsers = db.pendingUsers.filter(u => u.username !== username); saveDB(); showToast(`تم رفض الطلب.`, 'warning'); renderPendingUsers(); } }
+        function approveUser(username) { const idx = db.pendingUsers.findIndex(u => u?.username === username); if(idx > -1) { db.users.push(db.pendingUsers[idx]); db.pendingUsers.splice(idx, 1); saveDB(); showToast(`تم تفعيل حساب الطالب بنجاح.`); renderPendingUsers(); updateClassesDropdown(); } }
+        function rejectUser(username) { if(confirm(`هل أنت متأكد من رفض وحذف طلب ${username} نهائياً؟`)) { db.pendingUsers = db.pendingUsers.filter(u => u?.username !== username); saveDB(); showToast(`تم رفض الطلب.`, 'warning'); renderPendingUsers(); } }
 
         function initDashboard() {
             document.getElementById('login-section').classList.add('hidden'); 
@@ -798,15 +831,15 @@
                 return;
             }
 
-            document.getElementById('welcome-msg').innerText = `أهلاً بك، ${escapeHTML(currentUser.username)}`; 
+            document.getElementById('welcome-msg').innerText = `أهلاً بك، ${escapeHTML(currentUser?.username)}`; 
             document.getElementById('welcome-msg').style.display = 'block'; 
             document.getElementById('logout-btn').innerText = '🚪 خروج آمن';
 
-            if (currentUser.role === 'admin') { 
+            if (currentUser?.role === 'admin') { 
                 const installBtn = document.getElementById('install-pwa-btn');
                 if(installBtn) installBtn.classList.add('hidden');
                 
-                const isPreviewSaved = localStorage.getItem('adminPreviewMode_' + currentUser.username) === 'true';
+                const isPreviewSaved = localStorage.getItem('adminPreviewMode_' + currentUser?.username) === 'true';
                 if (isPreviewSaved) {
                     showPreview(true); 
                 } else {
@@ -824,7 +857,7 @@
         }
 
         function refreshDashboard() { 
-            if (currentUser && currentUser.role === 'admin' && !isPreviewMode) { 
+            if (currentUser && currentUser?.role === 'admin' && !isPreviewMode) { 
                 renderAdminFolders(); 
                 updateFolderDropdowns(); 
                 filterAdminContent(); 
@@ -832,7 +865,7 @@
                 updateClassesDropdown(); 
                 renderPendingUsers(); 
 
-                const savedTabId = localStorage.getItem('lastActiveAdminTab_' + currentUser.username);
+                const savedTabId = localStorage.getItem('lastActiveAdminTab_' + currentUser?.username);
                 if (savedTabId && document.getElementById(savedTabId)) {
                     openTab(null, savedTabId);
                 } else {
@@ -855,8 +888,8 @@
                 if(btn) btn.classList.add('active');
             }
 
-            if (currentUser && currentUser.role === 'admin') {
-                localStorage.setItem('lastActiveAdminTab_' + currentUser.username, tabId);
+            if (currentUser && currentUser?.role === 'admin') {
+                localStorage.setItem('lastActiveAdminTab_' + currentUser?.username, tabId);
             }
         }
 
@@ -881,13 +914,13 @@
 
         function updateClassesDropdown() {
             const select = document.getElementById('content-classes'); if(!select) return; const currentVal = select.value; select.innerHTML = `<option value="admin">🔒 خاص بالإدارة فقط (مسودة)</option><option value="all">🌍 متاح لجميع الطلاب</option>`;
-            const uniqueClasses = new Set(); db.users.forEach(u => { if (u.role === 'student' && u.class && u.class.trim() !== '') uniqueClasses.add(escapeHTML(u.class.trim())); }); db.contents.forEach(c => { if(c.classes) { c.classes.forEach(cls => { if(cls !== 'admin_only') uniqueClasses.add(escapeHTML(cls)); }); } });
+            const uniqueClasses = new Set(); db.users.forEach(u => { if (u?.role === 'student' && u?.class && u?.class.trim() !== '') uniqueClasses.add(escapeHTML(u.class.trim())); }); db.contents.forEach(c => { if(c?.classes) { c.classes.forEach(cls => { if(cls !== 'admin_only') uniqueClasses.add(escapeHTML(cls)); }); } });
             uniqueClasses.forEach(cls => { select.innerHTML += `<option value="${cls}">📁 مجموعة: ${cls}</option>`; }); if(currentVal && Array.from(select.options).some(opt => opt.value === currentVal)) select.value = currentVal;
         }
 
         function addFolder() { const f = escapeHTML(document.getElementById('new-folder-name').value.trim()); if(!f) return; if(db.folders.includes(f)) return showToast('هذا المجلد موجود مسبقاً!', 'error'); db.folders.push(f); saveDB(); document.getElementById('new-folder-name').value = ''; showToast('تم إنشاء المجلد بنجاح!'); }
-        function editFolder(old) { const n = prompt(`أدخل الاسم الجديد لمجلد "${old}":`, old); if (n && n.trim()!=="" && n!==old) { const t = escapeHTML(n.trim()); if (db.folders.includes(t)) return showToast('الاسم الجديد مستخدم بالفعل!', 'error'); const idx = db.folders.indexOf(old); if (idx !== -1) db.folders[idx] = t; db.contents.forEach(c => { if (c.folder === old) c.folder = t; }); saveDB(); showToast('تم تحديث اسم المجلد.'); } }
-        function deleteFolder(f) { if(confirm(`تحذير: هل أنت متأكد من حذف قائمة "${f}" بالكامل؟ (الدروس بداخلها ستصبح مستقلة)`)) { db.folders = db.folders.filter(x => x !== f); db.contents.forEach(c => { if(c.folder === f) c.folder = 'none'; }); saveDB(); showToast('تم الحذف بأمان.'); } }
+        function editFolder(old) { const n = prompt(`أدخل الاسم الجديد لمجلد "${old}":`, old); if (n && n.trim()!=="" && n!==old) { const t = escapeHTML(n.trim()); if (db.folders.includes(t)) return showToast('الاسم الجديد مستخدم بالفعل!', 'error'); const idx = db.folders.indexOf(old); if (idx !== -1) db.folders[idx] = t; db.contents.forEach(c => { if (c?.folder === old) c.folder = t; }); saveDB(); showToast('تم تحديث اسم المجلد.'); } }
+        function deleteFolder(f) { if(confirm(`تحذير: هل أنت متأكد من حذف قائمة "${f}" بالكامل؟ (الدروس بداخلها ستصبح مستقلة)`)) { db.folders = db.folders.filter(x => x !== f); db.contents.forEach(c => { if(c?.folder === f) c.folder = 'none'; }); saveDB(); showToast('تم الحذف بأمان.'); } }
         
         function renderAdminFolders() { const l = document.getElementById('admin-folders-list'); l.innerHTML = ''; 
             if(db.folders.length === 0) { l.innerHTML = '<div class="empty-state"><span class="empty-state-icon">📂</span>لا توجد أي مجلدات. أنشئ مجلداً جديداً للبدء بالتنظيم.</div>'; return;}
@@ -899,33 +932,33 @@
             const title = escapeHTML(document.getElementById('content-title').value.trim()); const type = document.getElementById('content-type').value; const folder = document.getElementById('content-folder').value; const data = document.getElementById('content-data').value.trim(); const classesVal = document.getElementById('content-classes').value; const ratio = document.getElementById('content-ratio').value;
             let classesArray = classesVal === 'admin' ? ['admin_only'] : (classesVal === 'all' ? [] : [classesVal]);
             if (!title || !data) return showToast('يرجى ملء عنوان الدرس وإضافة المحتوى (الكود/الرابط) أولاً.', 'error');
-            if (currentEditContentId) { const idx = db.contents.findIndex(c => c.id === currentEditContentId); db.contents[idx] = { id: currentEditContentId, title, type, data, classes: classesArray, folder, ratio }; cancelEditContent(); showToast('تم تحديث المحتوى وتطبيقه للطلاب!'); } else { db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, folder, ratio }); document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; showToast('رائع! تم نشر المحتوى الجديد بنجاح.'); } saveDB();
+            if (currentEditContentId) { const idx = db.contents.findIndex(c => c?.id === currentEditContentId); db.contents[idx] = { id: currentEditContentId, title, type, data, classes: classesArray, folder, ratio }; cancelEditContent(); showToast('تم تحديث المحتوى وتطبيقه للطلاب!'); } else { db.contents.push({ id: Date.now(), title, type, data, classes: classesArray, folder, ratio }); document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; showToast('رائع! تم نشر المحتوى الجديد بنجاح.'); } saveDB();
         }
         
         function renderAdminContentList(searchTerm = '') {
             const listDiv = document.getElementById('admin-content-list'); listDiv.innerHTML = ''; document.getElementById('select-all-content').checked = false;
-            const filtered = db.contents.filter(item => { const term = searchTerm.toLowerCase(); return item.title.toLowerCase().includes(term) || (item.folder || '').toLowerCase().includes(term) || (item.classes && item.classes.join(' ').toLowerCase().includes(term)); });
+            const filtered = db.contents.filter(item => { const term = searchTerm.toLowerCase(); return item?.title?.toLowerCase().includes(term) || (item?.folder || '').toLowerCase().includes(term) || (item?.classes && item.classes.join(' ').toLowerCase().includes(term)); });
             if(filtered.length === 0) { listDiv.innerHTML = `<div class="empty-state"><span class="empty-state-icon">📭</span>لا توجد أي دروس متطابقة مع بحثك.</div>`; return; }
             [...filtered].reverse().forEach(item => {
-                const folderText = item.folder === 'none' ? 'مستقل (بدون مجلد)' : item.folder; let classesText = 'متاح للكل'; if(item.classes) { if (item.classes.includes('admin_only')) classesText = '<span style="color:var(--danger)">🔒 مسودة (إدارة)</span>'; else if (item.classes.length > 0) classesText = item.classes.join(', '); }
-                listDiv.innerHTML += `<div class="admin-list-item"><div class="admin-item-info"><h4 style="display:flex; align-items:center; gap:12px;"><input type="checkbox" class="content-checkbox" value="${item.id}" style="width:18px; height:18px;"> ${item.title}</h4><div class="admin-item-meta"><span>📁 ${folderText}</span><span>👥 الصلاحية: ${classesText}</span></div></div><div class="admin-item-actions"><button type="button" class="btn-info" onclick="copyShareLink('content', ${item.id}, this)" title="نسخ رابط مباشر لهذا الدرس">🔗 نسخ للطلاب</button><button type="button" class="btn-warning" onclick="editContent(${item.id})" title="تعديل محتوى الدرس">✏️ تعديل</button><button type="button" class="btn-danger" onclick="deleteContent(${item.id})" title="حذف نهائي">🗑️ حذف</button></div></div>`;
+                const folderText = item?.folder === 'none' ? 'مستقل (بدون مجلد)' : item?.folder; let classesText = 'متاح للكل'; if(item?.classes) { if (item.classes.includes('admin_only')) classesText = '<span style="color:var(--danger)">🔒 مسودة (إدارة)</span>'; else if (item.classes.length > 0) classesText = item.classes.join(', '); }
+                listDiv.innerHTML += `<div class="admin-list-item"><div class="admin-item-info"><h4 style="display:flex; align-items:center; gap:12px;"><input type="checkbox" class="content-checkbox" value="${item?.id}" style="width:18px; height:18px;"> ${item?.title}</h4><div class="admin-item-meta"><span>📁 ${folderText}</span><span>👥 الصلاحية: ${classesText}</span></div></div><div class="admin-item-actions"><button type="button" class="btn-info" onclick="copyShareLink('content', ${item?.id}, this)" title="نسخ رابط مباشر لهذا الدرس">🔗 نسخ للطلاب</button><button type="button" class="btn-warning" onclick="editContent(${item?.id})" title="تعديل محتوى الدرس">✏️ تعديل</button><button type="button" class="btn-danger" onclick="deleteContent(${item?.id})" title="حذف نهائي">🗑️ حذف</button></div></div>`;
             });
         }
         function filterAdminContent() { renderAdminContentList(document.getElementById('admin-search-content').value); }
-        function deleteContent(id) { if(confirm('هل أنت متأكد من قرار مسح هذا الدرس نهائياً؟ لا يمكن التراجع عن هذا الإجراء.')) { db.contents = db.contents.filter(c => c.id !== id); saveDB(); showToast('تم إزالة الدرس.'); } }
-        function toggleAllContent(source) { document.querySelectorAll('.content-checkbox').forEach(cb => cb.checked = source.checked); }
-        function deleteSelectedContent() { const selected = Array.from(document.querySelectorAll('.content-checkbox:checked')).map(cb => parseInt(cb.value)); if(selected.length === 0) return showToast('يرجى تحديد درس واحد على الأقل أولاً.', 'warning'); if(confirm(`أنت على وشك مسح ${selected.length} درس. تأكيد الإجراء؟`)) { db.contents = db.contents.filter(c => !selected.includes(c.id)); saveDB(); showToast(`تم تنفيذ المسح الجماعي بنجاح.`); } }
-        function editContent(id) { const item = db.contents.find(c => c.id === id); if(!item) return; document.getElementById('content-title').value = item.title; document.getElementById('content-type').value = item.type; document.getElementById('content-folder').value = item.folder || 'none'; document.getElementById('content-data').value = item.data; document.getElementById('content-ratio').value = item.ratio || '16:9'; document.getElementById('content-classes').value = (item.classes && item.classes.includes('admin_only')) ? 'admin' : ((!item.classes || item.classes.length === 0) ? 'all' : item.classes[0]); currentEditContentId = id; document.getElementById('add-edit-title').innerText = `✏️ وضع التعديل لـ: ${item.title}`; document.getElementById('save-content-btn').innerHTML = '🔄 تطبيق التحديثات'; document.getElementById('cancel-edit-btn').classList.remove('hidden'); openTab(null, 'tab-content-add'); document.getElementById('tab-btn-add').classList.add('active'); window.scrollTo(0,0); }
+        function deleteContent(id) { if(confirm('هل أنت متأكد من قرار مسح هذا الدرس نهائياً؟ لا يمكن التراجع عن هذا الإجراء.')) { db.contents = db.contents.filter(c => c?.id !== id); saveDB(); showToast('تم إزالة الدرس.'); } }
+        function toggleAllContent(source) { document.querySelectorAll('.content-checkbox').forEach(cb => cb.checked = source?.checked); }
+        function deleteSelectedContent() { const selected = Array.from(document.querySelectorAll('.content-checkbox:checked')).map(cb => parseInt(cb.value)); if(selected.length === 0) return showToast('يرجى تحديد درس واحد على الأقل أولاً.', 'warning'); if(confirm(`أنت على وشك مسح ${selected.length} درس. تأكيد الإجراء؟`)) { db.contents = db.contents.filter(c => !selected.includes(c?.id)); saveDB(); showToast(`تم تنفيذ المسح الجماعي بنجاح.`); } }
+        function editContent(id) { const item = db.contents.find(c => c?.id === id); if(!item) return; document.getElementById('content-title').value = item.title; document.getElementById('content-type').value = item.type; document.getElementById('content-folder').value = item.folder || 'none'; document.getElementById('content-data').value = item.data; document.getElementById('content-ratio').value = item.ratio || '16:9'; document.getElementById('content-classes').value = (item.classes && item.classes.includes('admin_only')) ? 'admin' : ((!item.classes || item.classes.length === 0) ? 'all' : item.classes[0]); currentEditContentId = id; document.getElementById('add-edit-title').innerText = `✏️ وضع التعديل لـ: ${item.title}`; document.getElementById('save-content-btn').innerHTML = '🔄 تطبيق التحديثات'; document.getElementById('cancel-edit-btn').classList.remove('hidden'); openTab(null, 'tab-content-add'); document.getElementById('tab-btn-add').classList.add('active'); window.scrollTo(0,0); }
         function cancelEditContent() { currentEditContentId = null; document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; document.getElementById('content-classes').value = 'admin'; document.getElementById('content-ratio').value = '16:9'; document.getElementById('add-edit-title').innerText = 'نشر محتوى تعليمي جديد'; document.getElementById('save-content-btn').innerHTML = '💾 حفظ ونشر المحتوى للطلاب'; document.getElementById('cancel-edit-btn').classList.add('hidden'); }
         
         function generatePassword() { document.getElementById('new-user-pass').value = Math.random().toString(36).slice(-8) + Math.floor(Math.random() * 99); }
-        function saveUser() { const name = escapeHTML(document.getElementById('new-user-name').value.trim()); const pass = document.getElementById('new-user-pass').value.trim(); const userClass = escapeHTML(document.getElementById('new-user-class').value.trim()); const isStar = document.getElementById('new-user-star').checked; if (!name || !pass) return showToast('اسم المستخدم وكلمة المرور بيانات أساسية وإلزامية.', 'error'); if (currentEditUserOldName) { if (name !== currentEditUserOldName && db.users.find(u => u.username === name)) return showToast('اسم المستخدم تم حجزه لطالب آخر، اختر اسماً فريداً.', 'error'); const idx = db.users.findIndex(u => u.username === currentEditUserOldName); db.users[idx] = { username: name, password: pass, role: 'student', class: userClass, isStar: isStar }; cancelEditUser(); showToast('تم حفظ التعديلات على حساب الطالب.'); } else { if (db.users.find(u => u.username === name)) return showToast('المستخدم موجود بالفعل، ابحث عنه في قائمة الإدارة.', 'error'); db.users.push({ username: name, password: pass, role: 'student', class: userClass, isStar: isStar }); document.getElementById('new-user-name').value=''; document.getElementById('new-user-pass').value=''; document.getElementById('new-user-class').value=''; showToast('تم قيد الطالب الجديد بنجاح وصلاحياته فعالة.'); } saveDB(); }
-        function renderAdminUsersList(searchTerm = '') { const listDiv = document.getElementById('admin-users-list'); listDiv.innerHTML = ''; document.getElementById('select-all-users').checked = false; const filtered = db.users.filter(u => u.role === 'student').filter(u => u.username.toLowerCase().includes(searchTerm.toLowerCase()) || (u.class || '').toLowerCase().includes(searchTerm.toLowerCase())); if(filtered.length === 0){ listDiv.innerHTML = `<div class="empty-state"><span class="empty-state-icon">👥</span>لا يوجد طلاب يتطابقون مع بحثك.</div>`; return;} [...filtered].reverse().forEach(u => { listDiv.innerHTML += `<div class="admin-list-item"><div class="admin-item-info"><h4 style="display:flex; align-items:center; gap:12px;"><input type="checkbox" class="user-checkbox" value="${u.username}" style="width:18px;height:18px;"> 👤 ${u.username}</h4><div class="admin-item-meta"><span>📁 الفصل: ${u.class ? u.class : 'غير محدد'}</span><span style="color:var(--warning);">${u.isStar ? '⭐ عضوية مميزة VIP' : 'عضوية عادية'}</span></div></div><div class="admin-item-actions"><button type="button" class="btn-info" onclick="copyCredentials('${u.username}', '${u.password}', this)" title="نسخ اسم الدخول والباسورد لإرسالها للطالب">📋 نسخ بيانات الدخول</button><button type="button" class="btn-warning" onclick="editUser('${u.username}')" title="تعديل الملف الشخصي">✏️</button><button type="button" class="btn-danger" onclick="deleteUser('${u.username}')" title="طرد الطالب ومسح حسابه">🗑️</button></div></div>`; }); }
+        function saveUser() { const name = escapeHTML(document.getElementById('new-user-name').value.trim()); const pass = document.getElementById('new-user-pass').value.trim(); const userClass = escapeHTML(document.getElementById('new-user-class').value.trim()); const isStar = document.getElementById('new-user-star').checked; if (!name || !pass) return showToast('اسم المستخدم وكلمة المرور بيانات أساسية وإلزامية.', 'error'); if (currentEditUserOldName) { if (name !== currentEditUserOldName && db.users.find(u => u?.username === name)) return showToast('اسم المستخدم تم حجزه لطالب آخر، اختر اسماً فريداً.', 'error'); const idx = db.users.findIndex(u => u?.username === currentEditUserOldName); db.users[idx] = { username: name, password: pass, role: 'student', class: userClass, isStar: isStar }; cancelEditUser(); showToast('تم حفظ التعديلات على حساب الطالب.'); } else { if (db.users.find(u => u?.username === name)) return showToast('المستخدم موجود بالفعل، ابحث عنه في قائمة الإدارة.', 'error'); db.users.push({ username: name, password: pass, role: 'student', class: userClass, isStar: isStar }); document.getElementById('new-user-name').value=''; document.getElementById('new-user-pass').value=''; document.getElementById('new-user-class').value=''; showToast('تم قيد الطالب الجديد بنجاح وصلاحياته فعالة.'); } saveDB(); }
+        function renderAdminUsersList(searchTerm = '') { const listDiv = document.getElementById('admin-users-list'); listDiv.innerHTML = ''; document.getElementById('select-all-users').checked = false; const filtered = db.users.filter(u => u?.role === 'student').filter(u => u?.username?.toLowerCase().includes(searchTerm.toLowerCase()) || (u?.class || '').toLowerCase().includes(searchTerm.toLowerCase())); if(filtered.length === 0){ listDiv.innerHTML = `<div class="empty-state"><span class="empty-state-icon">👥</span>لا يوجد طلاب يتطابقون مع بحثك.</div>`; return;} [...filtered].reverse().forEach(u => { listDiv.innerHTML += `<div class="admin-list-item"><div class="admin-item-info"><h4 style="display:flex; align-items:center; gap:12px;"><input type="checkbox" class="user-checkbox" value="${u?.username}" style="width:18px;height:18px;"> 👤 ${u?.username}</h4><div class="admin-item-meta"><span>📁 الفصل: ${u?.class ? u.class : 'غير محدد'}</span><span style="color:var(--warning);">${u?.isStar ? '⭐ عضوية مميزة VIP' : 'عضوية عادية'}</span></div></div><div class="admin-item-actions"><button type="button" class="btn-info" onclick="copyCredentials('${u?.username}', '${u?.password}', this)" title="نسخ اسم الدخول والباسورد لإرسالها للطالب">📋 نسخ بيانات الدخول</button><button type="button" class="btn-warning" onclick="editUser('${u?.username}')" title="تعديل الملف الشخصي">✏️</button><button type="button" class="btn-danger" onclick="deleteUser('${u?.username}')" title="طرد الطالب ومسح حسابه">🗑️</button></div></div>`; }); }
         function filterAdminUsers() { renderAdminUsersList(document.getElementById('admin-search-users').value); }
-        function deleteUser(username) { if(confirm('إلغاء حساب الطالب سيمنعه من الدخول نهائياً. متابعة؟')) { db.users = db.users.filter(u => u.username !== username); saveDB(); showToast('تم إغلاق وإزالة الحساب.'); } }
-        function toggleAllUsers(source) { document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = source.checked); }
-        function deleteSelectedUsers() { const selected = Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => cb.value); if(selected.length === 0) return showToast('يجب وضع علامة صح جانب الطلاب المراد حذفهم.', 'warning'); if(confirm(`هل أنت واثق من رغبتك في شطب ${selected.length} طالب نهائياً؟`)) { db.users = db.users.filter(u => !selected.includes(u.username)); saveDB(); showToast(`تم إنهاء تسجيلهم بنجاح.`); } }
-        function editUser(username) { const user = db.users.find(u => u.username === username); if(!user) return; document.getElementById('new-user-name').value = user.username; document.getElementById('new-user-pass').value = user.password; document.getElementById('new-user-class').value = user.class || ''; document.getElementById('new-user-star').checked = user.isStar; currentEditUserOldName = username; document.getElementById('add-edit-user-title').innerText = `✏️ تحديث بيانات الطالب: ${username}`; document.getElementById('save-user-btn').innerHTML = '🔄 حفظ التعديلات'; document.getElementById('cancel-edit-user-btn').classList.remove('hidden'); openTab(null, 'tab-users-add'); document.getElementById('tab-btn-user-add').classList.add('active'); window.scrollTo(0,0); }
+        function deleteUser(username) { if(confirm('إلغاء حساب الطالب سيمنعه من الدخول نهائياً. متابعة؟')) { db.users = db.users.filter(u => u?.username !== username); saveDB(); showToast('تم إغلاق وإزالة الحساب.'); } }
+        function toggleAllUsers(source) { document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = source?.checked); }
+        function deleteSelectedUsers() { const selected = Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => cb.value); if(selected.length === 0) return showToast('يجب وضع علامة صح جانب الطلاب المراد حذفهم.', 'warning'); if(confirm(`هل أنت واثق من رغبتك في شطب ${selected.length} طالب نهائياً؟`)) { db.users = db.users.filter(u => !selected.includes(u?.username)); saveDB(); showToast(`تم إنهاء تسجيلهم بنجاح.`); } }
+        function editUser(username) { const user = db.users.find(u => u?.username === username); if(!user) return; document.getElementById('new-user-name').value = user.username; document.getElementById('new-user-pass').value = user.password; document.getElementById('new-user-class').value = user.class || ''; document.getElementById('new-user-star').checked = user.isStar; currentEditUserOldName = username; document.getElementById('add-edit-user-title').innerText = `✏️ تحديث بيانات الطالب: ${username}`; document.getElementById('save-user-btn').innerHTML = '🔄 حفظ التعديلات'; document.getElementById('cancel-edit-user-btn').classList.remove('hidden'); openTab(null, 'tab-users-add'); document.getElementById('tab-btn-user-add').classList.add('active'); window.scrollTo(0,0); }
         function cancelEditUser() { currentEditUserOldName = null; document.getElementById('new-user-name').value = ''; document.getElementById('new-user-pass').value = ''; document.getElementById('new-user-class').value = ''; document.getElementById('new-user-star').checked = false; document.getElementById('add-edit-user-title').innerText = 'إضافة طالب للمنصة يدوياً'; document.getElementById('save-user-btn').innerHTML = '➕ تسجيل الطالب'; document.getElementById('cancel-edit-user-btn').classList.add('hidden'); }
         
         function updateAdminCredentials() { const u = escapeHTML(document.getElementById('admin-new-user').value.trim()); const p = document.getElementById('admin-new-pass').value; if(u && p) { db.users[0].username = u; db.users[0].password = p; saveDB(); alert('تم تغيير بيانات المدير بنجاح. سيتم الآن تسجيل خروجك وعليك الدخول بالبيانات الجديدة للأمان.'); logout(); } else { showToast('يجب إدخال اسم وباسورد جديدين!', 'warning');} }
@@ -935,7 +968,7 @@
         function showPreview(isInit = false) { 
             isPreviewMode = true; 
             if (currentUser) {
-                localStorage.setItem('adminPreviewMode_' + currentUser.username, 'true');
+                localStorage.setItem('adminPreviewMode_' + currentUser?.username, 'true');
             }
             document.getElementById('admin-section').classList.add('hidden'); 
             document.getElementById('preview-btn').classList.add('hidden'); 
@@ -950,7 +983,7 @@
         function backToAdmin() { 
             isPreviewMode = false; 
             if (currentUser) {
-                localStorage.setItem('adminPreviewMode_' + currentUser.username, 'false');
+                localStorage.setItem('adminPreviewMode_' + currentUser?.username, 'false');
             }
             document.getElementById('user-section').classList.add('hidden'); 
             document.getElementById('admin-section').classList.remove('hidden'); 
@@ -962,15 +995,14 @@
             showToast('عدت للوحة التحكم والمراقبة المركزية.'); 
         }
 
-        // للزوار، نسمح برؤية المحتوى المرسل إليهم مباشرة، لغيرهم تُطبق الصلاحيات
         function canViewContent(item) { 
             if (isGuestMode) return true; 
-            if (!item.classes) return true; 
-            if (item.classes.includes('admin_only')) return currentUser.role === 'admin' && !isPreviewMode; 
+            if (!item?.classes) return true; 
+            if (item.classes.includes('admin_only')) return currentUser?.role === 'admin' && !isPreviewMode; 
             if (item.classes.length === 0) return true; 
-            if (currentUser.role === 'admin' && !isPreviewMode) return true; 
-            if (currentUser.isStar) return true; 
-            if (item.classes.includes(currentUser.class)) return true; 
+            if (currentUser?.role === 'admin' && !isPreviewMode) return true; 
+            if (currentUser?.isStar) return true; 
+            if (item.classes.includes(currentUser?.class)) return true; 
             return false; 
         }
 
@@ -985,16 +1017,14 @@
                 document.querySelectorAll('#sidebar-content-list .independent-item').forEach(item => {
                     if (item.innerText.toLowerCase().includes(term)) { item.style.display = 'flex'; } else { item.style.display = 'none'; }
                 });
-            } catch(e) {
-                console.warn("Search UI warning", e);
-            }
+            } catch(e) {}
         }
 
         function searchAllContent() {
             const term = document.getElementById('student-search-input').value.toLowerCase();
             let visibleContents = db.contents.filter(canViewContent);
             if (term) {
-                visibleContents = visibleContents.filter(item => { return item.title.toLowerCase().includes(term) || (item.folder && item.folder.toLowerCase().includes(term)) || (item.data && item.data.toLowerCase().includes(term)); });
+                visibleContents = visibleContents.filter(item => { return item?.title?.toLowerCase().includes(term) || (item?.folder && item?.folder.toLowerCase().includes(term)) || (item?.data && item?.data.toLowerCase().includes(term)); });
                 if(visibleContents.length > 0) showToast(`تم العثور على نتائج بحث تطابق: ${term}`, 'success');
             }
             renderContentItems(visibleContents.reverse());
@@ -1011,17 +1041,17 @@
                     const urlParams = new URLSearchParams(window.location.search);
                     viewContent = urlParams.get('view_content');
                     viewFolder = urlParams.get('view_folder');
-                } catch(e) { console.warn(e); }
+                } catch(e) {}
 
                 let visibleContents = db.contents.filter(canViewContent);
 
                 if (isGuestMode) {
                     if (viewFolder) {
-                        visibleContents = visibleContents.filter(c => c.folder === viewFolder);
+                        visibleContents = visibleContents.filter(c => c?.folder === viewFolder);
                     } else if (viewContent) {
-                        const singleContent = visibleContents.find(c => c.id == viewContent);
-                        if (singleContent && singleContent.folder && singleContent.folder !== 'none') {
-                            visibleContents = visibleContents.filter(c => c.folder === singleContent.folder);
+                        const singleContent = visibleContents.find(c => c?.id == viewContent);
+                        if (singleContent && singleContent?.folder && singleContent?.folder !== 'none') {
+                            visibleContents = visibleContents.filter(c => c?.folder === singleContent?.folder);
                         } else if (singleContent) {
                             visibleContents = [singleContent];
                         } else {
@@ -1034,36 +1064,36 @@
                 sidebarDiv.innerHTML = ''; 
                 
                 let groupedContent = {}; let independentContent = [];
-                visibleContents.forEach(item => { if(item.folder && item.folder !== 'none') { if(!groupedContent[item.folder]) groupedContent[item.folder] = []; groupedContent[item.folder].push(item); } else independentContent.push(item); });
+                visibleContents.forEach(item => { if(item?.folder && item?.folder !== 'none') { if(!groupedContent[item?.folder]) groupedContent[item?.folder] = []; groupedContent[item?.folder].push(item); } else independentContent.push(item); });
 
                 let sidebarHTML = '';
                 for(let folderName in groupedContent) {
                     const isOpen = isGuestMode ? 'open' : '';
                     sidebarHTML += `<details ${isOpen}><summary>
                         <span>📁 ${folderName}</span>
-                        <button onclick="event.stopPropagation(); event.preventDefault(); copyShareLink('folder', '${folderName}', this);" style="background:var(--bg-color); color:var(--text-muted); border:1px solid var(--border); border-radius:6px; padding:4px 8px; cursor:pointer; font-size:12px; font-weight: bold;" title="نسخ الرابط لإرسال الوحدة بالكامل">🔗 نسخ</button>
+                        <button onclick="event.stopPropagation(); event.preventDefault(); copyShareLink('folder', '${folderName}', this);" style="background:var(--bg-color); color:var(--text-muted); border:1px solid var(--border); border-radius:6px; padding:4px 8px; cursor:pointer; font-size:12px; font-weight: bold; box-shadow:none;" title="نسخ الرابط لإرسال الوحدة بالكامل">🔗 نسخ</button>
                     </summary><ul>`;
-                    groupedContent[folderName].forEach(item => { sidebarHTML += `<li class="sidebar-item" onclick="showSingleContent(${item.id}, this)">📄 ${item.title}</li>`; });
+                    groupedContent[folderName].forEach(item => { sidebarHTML += `<li class="sidebar-item" onclick="showSingleContent(${item?.id}, this)">📄 ${item?.title}</li>`; });
                     sidebarHTML += `</ul></details>`; 
                 }
-                independentContent.forEach(item => { sidebarHTML += `<div class="independent-item" onclick="showSingleContent(${item.id}, this)">📌 ${item.title}</div>`; });
+                independentContent.forEach(item => { sidebarHTML += `<div class="independent-item" onclick="showSingleContent(${item?.id}, this)">📌 ${item?.title}</div>`; });
                 
                 if(sidebarHTML === '') {
-                     sidebarDiv.innerHTML = '<div style="text-align:center; padding:30px 10px; color:var(--text-muted); font-size: 14px; font-weight: bold; line-height: 1.8;">لا يوجد محتوى متاح لك حالياً.<br>سيتم تحديث الفهرس قريباً.</div>';
+                     sidebarDiv.innerHTML = '<div class="empty-state"><span class="empty-state-icon">📭</span>لا يوجد محتوى متاح لك حالياً.<br>سيتم تحديث الفهرس قريباً.</div>';
                 } else {
                      sidebarDiv.innerHTML = sidebarHTML;
                 }
                 
-                const savedContentId = localStorage.getItem('lastViewedContentId_' + (currentUser ? currentUser.username : 'guest'));
+                const savedContentId = localStorage.getItem('lastViewedContentId_' + (currentUser ? currentUser?.username : 'guest'));
                 let contentToLoad = null;
                 let folderToLoad = null;
 
                 if (viewContent) {
-                    contentToLoad = visibleContents.find(c => c.id == viewContent);
+                    contentToLoad = visibleContents.find(c => c?.id == viewContent);
                 } else if (viewFolder) {
-                    folderToLoad = visibleContents.filter(c => c.folder === viewFolder);
+                    folderToLoad = visibleContents.filter(c => c?.folder === viewFolder);
                 } else if (savedContentId && !isGuestMode) { 
-                    contentToLoad = visibleContents.find(c => c.id == savedContentId);
+                    contentToLoad = visibleContents.find(c => c?.id == savedContentId);
                 }
 
                 if (contentToLoad) {
@@ -1071,11 +1101,11 @@
                         const sidebarItems = document.querySelectorAll('.sidebar-item, .independent-item');
                         let foundElement = null;
                         sidebarItems.forEach(el => {
-                            if(el.getAttribute('onclick') && el.getAttribute('onclick').includes(`showSingleContent(${contentToLoad.id}`)) {
+                            if(el.getAttribute('onclick') && el.getAttribute('onclick').includes(`showSingleContent(${contentToLoad?.id}`)) {
                                 foundElement = el;
                             }
                         });
-                        showSingleContent(contentToLoad.id, foundElement);
+                        showSingleContent(contentToLoad?.id, foundElement);
                         if(foundElement && foundElement.closest('details')) foundElement.closest('details').open = true;
                     }, 50);
                 } else if (folderToLoad && folderToLoad.length > 0) {
@@ -1093,8 +1123,7 @@
                     }
                 }
             } catch(e) {
-                console.error("Dashboard error:", e);
-                showToast("حدث خطأ أثناء تحميل الفهرس، جاري المحاولة...", "warning");
+                showToast("حدث خطأ أثناء تحميل الفهرس، يرجى تحديث الصفحة.", "warning");
             }
         }
 
@@ -1104,11 +1133,11 @@
         
         function showSingleContent(id, element) { 
             if (element) setActiveSidebarItem(element); 
-            const item = db.contents.find(c => c.id === id); 
+            const item = db.contents.find(c => c?.id === id); 
             if (item) {
                 renderContentItems([item]); 
                 if (currentUser && !isGuestMode) {
-                    localStorage.setItem('lastViewedContentId_' + currentUser.username, id);
+                    localStorage.setItem('lastViewedContentId_' + currentUser?.username, id);
                 }
             }
         }
@@ -1120,11 +1149,11 @@
                 
                 itemsArray.forEach(item => {
                     const contentDiv = document.createElement('div'); contentDiv.className = 'content-item';
-                    let innerMedia = ''; let fullScreenBtnHTML = ''; let folderBadge = (item.folder && item.folder !== 'none') ? `<span class="category-badge">📂 ${item.folder}</span>` : '';
+                    let innerMedia = ''; let fullScreenBtnHTML = ''; let folderBadge = (item?.folder && item?.folder !== 'none') ? `<span class="category-badge">📂 ${item?.folder}</span>` : '';
                     
-                    if (item.type === 'html') {
-                        const wrapperId = `wrapper-${item.id}`; 
-                        let contentData = item.data;
+                    if (item?.type === 'html') {
+                        const wrapperId = `wrapper-${item?.id}`; 
+                        let contentData = item?.data;
                         
                         let safeHTML = contentData;
                         safeHTML = safeHTML.replace(/user-scalable=0/gi, 'user-scalable=yes');
@@ -1161,7 +1190,7 @@
                         
                         safeHTML = safeHTML.replace(/"/g, '&quot;');
                         
-                        // -- الشريط العلوي المطابق للصورة المطلوبة (به علامة X فقط) -- //
+                        // الشريط العلوي الذي يظهر في وضع الشاشة الكاملة فقط (يحتوي فقط على X)
                         const topBarHTML = `
                         <div class="fullscreen-top-bar">
                             <button type="button" class="fullscreen-close-icon" onclick="exitCSSFullScreen('${wrapperId}')" title="إغلاق العرض والرجوع">
@@ -1172,14 +1201,15 @@
                             </button>
                         </div>`;
                         
-                        innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper">${topBarHTML}<iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="yes"></iframe></div>`;
+                        // إضافة التحميل الكسول (loading="lazy") للـ iframe
+                        innerMedia = `<div id="${wrapperId}" class="iframe-responsive-wrapper">${topBarHTML}<iframe class="html-sandbox" srcdoc="${safeHTML}" allowfullscreen scrolling="yes" loading="lazy"></iframe></div>`;
                         
                         fullScreenBtnHTML = `<button type="button" onclick="toggleCSSFullScreen('${wrapperId}')" class="fullscreen-btn" title="تكبير للتركيز الأقصى" style="background: var(--bg-color); color: var(--text-main); border: 2px solid var(--border); box-shadow: none;">🔲 وضع ملء الشاشة</button>`;
-                    } else { innerMedia = `<a href="${item.data}" target="_blank" style="display:flex; justify-content:center; align-items:center; gap:10px; background:var(--primary); color:white; padding:20px; text-decoration:none; border-radius:12px; margin-top:15px; font-weight:800; font-size: 18px; box-shadow: var(--shadow-md); transition: 0.3s; transform: scale(1);">🔗 اضغط هنا لفتح الرابط الخارجي</a>`; }
+                    } else { innerMedia = `<a href="${item?.data}" target="_blank" style="display:flex; justify-content:center; align-items:center; gap:10px; background:var(--primary); color:white; padding:20px; text-decoration:none; border-radius:12px; margin-top:15px; font-weight:800; font-size: 18px; box-shadow: var(--shadow-md); transition: 0.3s; transform: scale(1);">🔗 اضغط هنا لفتح الرابط الخارجي</a>`; }
                     
-                    let copyLinkBtn = `<button type="button" onclick="copyShareLink('content', ${item.id}, this)" class="category-badge btn-info" style="cursor:pointer; border:none; box-shadow: none; display:flex; align-items:center; gap:8px;" title="انسخ هذا الرابط وأرسله كمرجع مباشر للدرس">🔗 نسخ الرابط للدرس</button>`;
+                    let copyLinkBtn = `<button type="button" onclick="copyShareLink('content', ${item?.id}, this)" class="category-badge btn-info" style="cursor:pointer; border:none; box-shadow: none; display:flex; align-items:center; gap:8px;" title="انسخ هذا الرابط وأرسله كمرجع مباشر للدرس">🔗 نسخ الرابط للدرس</button>`;
 
-                    contentDiv.innerHTML = `<div class="content-header"><h3 class="content-title">${item.title}</h3><div class="header-actions">${copyLinkBtn} ${fullScreenBtnHTML} ${folderBadge}</div></div>${innerMedia}`;
+                    contentDiv.innerHTML = `<div class="content-header"><h3 class="content-title">${item?.title}</h3><div class="header-actions">${copyLinkBtn} ${fullScreenBtnHTML} ${folderBadge}</div></div>${innerMedia}`;
                     displayArea.appendChild(contentDiv);
                 });
             } catch (e) {
