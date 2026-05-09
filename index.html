@@ -480,21 +480,63 @@
         }
 
         /* ════════════════════════════════════════════════════
-           Fullscreen Mode
+           Fullscreen Mode & Floating Button
            ════════════════════════════════════════════════════ */
         .iframe-responsive-wrapper.css-fullscreen {
             position: fixed !important; inset: 0 !important;
             width: 100vw !important; height: 100vh !important; height: 100dvh !important;
             background: #fff !important; border-radius: 0 !important; border: none !important;
-            z-index: 9999999 !important; overflow: hidden !important; padding-top: 56px !important;
+            z-index: 9999999 !important; overflow: hidden !important; 
+            padding-top: 56px !important;
+            padding-bottom: 56px !important; 
+            transition: padding 0.3s ease; /* تأثير حركي ناعم */
         }
+        
+        /* تأثيرات حركية (Transitions) للأشرطة والمحتوى */
+        .fullscreen-top-bar, .fullscreen-bottom-bar {
+            transition: transform 0.3s ease;
+        }
+        .iframe-responsive-wrapper.css-fullscreen .html-sandbox {
+            transition: height 0.3s ease;
+        }
+
+        /* حالة إخفاء الأشرطة */
+        .iframe-responsive-wrapper.css-fullscreen.bars-hidden {
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+        .iframe-responsive-wrapper.css-fullscreen.bars-hidden .fullscreen-top-bar {
+            transform: translateY(-100%);
+        }
+        .iframe-responsive-wrapper.css-fullscreen.bars-hidden .fullscreen-bottom-bar {
+            transform: translateY(100%);
+        }
+        .iframe-responsive-wrapper.css-fullscreen.bars-hidden .html-sandbox {
+            height: 100vh !important; 
+            height: 100dvh !important;
+        }
+
+        /* الشريط العلوي */
         .fullscreen-top-bar {
             display: none; position: absolute; top: 0; left: 0; right: 0; height: 56px;
             background: #1e293b; border-bottom: 2px solid #0f172a; z-index: 99999999;
             align-items: center; justify-content: flex-end; padding: 0 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,.3);
         }
-        .iframe-responsive-wrapper.css-fullscreen .fullscreen-top-bar { display: flex; position: fixed; }
+        
+        /* الشريط السفلي */
+        .fullscreen-bottom-bar {
+            display: none; position: absolute; bottom: 0; left: 0; right: 0; height: 56px;
+            background: #1e293b; border-top: 2px solid #0f172a; z-index: 99999999;
+            box-shadow: 0 -4px 12px rgba(0,0,0,.3);
+        }
+
+        .iframe-responsive-wrapper.css-fullscreen .fullscreen-top-bar,
+        .iframe-responsive-wrapper.css-fullscreen .fullscreen-bottom-bar { 
+            display: flex; position: fixed; 
+        }
+
+        /* زر إغلاق ملء الشاشة */
         .fullscreen-close-btn {
             background: #ef4444; color: #fff; border: 2px solid #fff; cursor: pointer;
             padding: 8px 20px; border-radius: 50px;
@@ -504,8 +546,51 @@
         }
         .fullscreen-close-btn:hover { background: #dc2626; }
         .fullscreen-close-btn svg  { width: 20px; height: 20px; stroke-width: 2.5; flex-shrink: 0; }
+        
+        /* الزر العائم المركزي لإظهار/إخفاء الأشرطة */
+        .fullscreen-toggle-bars-btn {
+            display: none; /* يظهر فقط في وضع الشاشة الكاملة */
+            position: fixed;
+            top: 65px; /* مسافة قريبة من الأعلى */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999999999; /* أعلى شيء في الشاشة */
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+            padding: 0;
+            min-height: unset;
+        }
+        .fullscreen-toggle-bars-btn:hover {
+            background: rgba(15, 23, 42, 0.95);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateX(-50%) scale(1.05);
+        }
+        /* تعديل موقعه إذا كانت الأشرطة مخفية ليكون في أعلى الشاشة تماماً */
+        .iframe-responsive-wrapper.css-fullscreen.bars-hidden .fullscreen-toggle-bars-btn {
+            top: 15px;
+            background: rgba(37, 99, 235, 0.85); /* لون مميز عند الإخفاء */
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .iframe-responsive-wrapper.css-fullscreen .fullscreen-toggle-bars-btn {
+            display: flex;
+        }
+
         .iframe-responsive-wrapper.css-fullscreen .html-sandbox {
-            height: calc(100vh - 56px) !important; height: calc(100dvh - 56px) !important; border-radius: 0;
+            /* خصم ارتفاع الشريط العلوي والسفلي (56 + 56 = 112) */
+            height: calc(100vh - 112px) !important; 
+            height: calc(100dvh - 112px) !important; 
+            border-radius: 0;
         }
 
         /* ════════════════════════════════════════════════════
@@ -1279,9 +1364,31 @@
         showSingleContent(id, el);
     }
 
-    /* ── Fullscreen ── */
-    window.toggleCSSFullScreen = id => { const w = document.getElementById(id); if (w) { w.classList.add('css-fullscreen'); document.body.style.overflow = 'hidden'; } };
-    window.exitCSSFullScreen   = id => { const w = document.getElementById(id); if (w) { w.classList.remove('css-fullscreen'); document.body.style.overflow = ''; } };
+    /* ── Fullscreen & Bars Toggle ── */
+    window.toggleCSSFullScreen = id => { 
+        const w = document.getElementById(id); 
+        if (w) { 
+            w.classList.add('css-fullscreen'); 
+            document.body.style.overflow = 'hidden'; 
+        } 
+    };
+    
+    window.exitCSSFullScreen = id => { 
+        const w = document.getElementById(id); 
+        if (w) { 
+            w.classList.remove('css-fullscreen'); 
+            w.classList.remove('bars-hidden'); // إعادة الأشرطة للوضع الافتراضي عند الخروج
+            document.body.style.overflow = ''; 
+        } 
+    };
+
+    // الدالة المسؤولة عن إخفاء/إظهار المستطيلات عند ضغط الزر العائم
+    window.toggleFullscreenBars = id => {
+        const w = document.getElementById(id);
+        if (w) {
+            w.classList.toggle('bars-hidden');
+        }
+    };
 
     /* ── Dropdowns ── */
     function updateClassesDropdown() {
@@ -1650,13 +1757,23 @@
                         </div>
                     </div>
                     <div id="${wid}" class="iframe-responsive-wrapper">
+                        <!-- الشريط العلوي -->
                         <div class="fullscreen-top-bar">
                             <button class="fullscreen-close-btn" onclick="exitCSSFullScreen('${wid}')">
                                 إغلاق الشاشة الكاملة
                                 <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                             </button>
                         </div>
+                        
+                        <!-- الزر العائم في منتصف الأعلى للتحكم بالأشرطة -->
+                        <button class="fullscreen-toggle-bars-btn" onclick="toggleFullscreenBars('${wid}')" title="إظهار/إخفاء الأشرطة">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                        </button>
+
                         <iframe class="html-sandbox" srcdoc="${safe}" allowfullscreen loading="lazy"></iframe>
+                        
+                        <!-- الشريط السفلي -->
+                        <div class="fullscreen-bottom-bar"></div>
                     </div>`;
                 } else {
                     html = `
