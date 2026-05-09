@@ -4,18 +4,40 @@
     <meta charset="UTF-8">
     <script>
         (function() {
-            var screenWidth = window.screen.width;
-            var screenHeight = window.screen.height;
-            var minDimension = Math.min(screenWidth, screenHeight);
-            var meta = document.createElement('meta');
-            meta.name = 'viewport';
-            
-            if (minDimension < 768) {
-                meta.content = 'width=1280, initial-scale=0, maximum-scale=5.0, user-scalable=yes';
-            } else {
-                meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+            function applySmartViewport() {
+                var screenW = window.innerWidth || window.screen.width;
+                var screenH = window.innerHeight || window.screen.height;
+                var minDimension = Math.min(screenW, screenH);
+                
+                var meta = document.querySelector('meta[name="viewport"]');
+                if (!meta) {
+                    meta = document.createElement('meta');
+                    meta.name = 'viewport';
+                    document.head.appendChild(meta);
+                }
+                
+                // الاستكشاف الذكي: أقل من 768 بكسل يعتبر هاتف
+                if (minDimension < 768) {
+                    // إجبار الهاتف على عرض سطح المكتب بحجم 1200 بكسل
+                    // حساب نسبة التصغير الدقيقة لاحتواء الشاشة بالكامل بدون تمرير أفقي
+                    var desktopW = 1200;
+                    var exactScale = screenW / desktopW;
+                    meta.content = 'width=' + desktopW + ', initial-scale=' + exactScale + ', minimum-scale=' + exactScale + ', maximum-scale=5.0, user-scalable=yes';
+                    document.documentElement.style.overflowX = 'hidden';
+                } else {
+                    // التابلت واللابتوب: عرض متجاوب افتراضي
+                    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
+                    document.documentElement.style.overflowX = 'auto';
+                }
             }
-            document.head.appendChild(meta);
+            
+            // تنفيذ فوري
+            applySmartViewport();
+            
+            // استشعار تدوير الشاشة لتحديث القياسات ديناميكيا
+            window.addEventListener('orientationchange', function() {
+                setTimeout(applySmartViewport, 150);
+            });
         })();
     </script>
     
@@ -293,7 +315,7 @@
         }
         .html-sandbox { border: none; background: #fff; width: 100%; height: 100%; display: block; border-radius: calc(var(--radius-md) - 2px); }
 
-        /* وضع الشاشة الكاملة (Fixed Red Capsule Button matching requested image) */
+        /* وضع الشاشة الكاملة */
         .iframe-responsive-wrapper.css-fullscreen { 
             position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
             width: 100vw !important; height: 100vh !important; height: 100dvh !important; 
@@ -830,6 +852,11 @@
             try {
                 const d = document.getElementById('content-display'); d.innerHTML = '';
                 if(!arr.length) return d.innerHTML = '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>نطاق الاستدعاء خالٍ من المحتوى المقروء.</div>';
+                
+                const screenW = window.innerWidth || window.screen.width;
+                const screenH = window.innerHeight || window.screen.height;
+                const isPhone = Math.min(screenW, screenH) < 768;
+
                 arr.forEach(i => {
                     const div = document.createElement('div'); div.className = 'content-item academic-text';
                     let html = '';
@@ -837,8 +864,15 @@
                     let copyLinkBtn = `<button type="button" onclick="copyShareLink('content', ${i?.id}, this)" class="btn-outline" style="padding:8px 16px; font-size:14px; border-radius:20px; display:flex; align-items:center; gap:8px;" title="حفظ المسار"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> رابط الدرس</button>`;
 
                     if (i?.type === 'html') {
-                        const wid = `w-${i?.id}`; let safe = i.data.replace(/user-scalable=[a-z0-9]+/gi, 'user-scalable=yes').replace(/maximum-scale=[0-9.]+/gi, 'maximum-scale=5.0');
-                        const m = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"><style>html,body{margin:0!important;padding:0!important;width:100%!important;min-height:100vh!important;touch-action:pan-x pan-y pinch-zoom!important;}iframe{width:100%!important;height:100vh!important;border:none!important;}</style>`;
+                        const wid = `w-${i?.id}`; 
+                        let safe = i.data.replace(/user-scalable=[a-z0-9]+/gi, 'user-scalable=yes').replace(/maximum-scale=[0-9.]+/gi, 'maximum-scale=5.0');
+                        
+                        const viewportMeta = isPhone 
+                            ? `<meta name="viewport" content="width=1200, initial-scale=0, maximum-scale=5.0, user-scalable=yes">` 
+                            : `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">`;
+                            
+                        const m = viewportMeta + `<style>html,body{margin:0!important;padding:0!important;width:100%!important;min-height:100vh!important;touch-action:pan-x pan-y pinch-zoom!important;}iframe{width:100%!important;height:100vh!important;border:none!important;}</style>`;
+                        
                         safe = (!safe.includes('touch-action')) ? (safe.includes('</head>') ? safe.replace(/<\/head>/i, m + '</head>') : m + safe) : safe; safe = safe.replace(/"/g, '&quot;');
                         
                         const tb = `
