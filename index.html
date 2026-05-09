@@ -3,41 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <script>
+        window.isPhoneDevice = false;
         (function() {
-            function applySmartViewport() {
-                var screenW = window.innerWidth || window.screen.width;
-                var screenH = window.innerHeight || window.screen.height;
-                var minDimension = Math.min(screenW, screenH);
-                
-                var meta = document.querySelector('meta[name="viewport"]');
-                if (!meta) {
-                    meta = document.createElement('meta');
-                    meta.name = 'viewport';
-                    document.head.appendChild(meta);
-                }
-                
-                // الاستكشاف الذكي: أقل من 768 بكسل يعتبر هاتف
-                if (minDimension < 768) {
-                    // إجبار الهاتف على عرض سطح المكتب بحجم 1200 بكسل
-                    // حساب نسبة التصغير الدقيقة لاحتواء الشاشة بالكامل بدون تمرير أفقي
-                    var desktopW = 1200;
-                    var exactScale = screenW / desktopW;
-                    meta.content = 'width=' + desktopW + ', initial-scale=' + exactScale + ', minimum-scale=' + exactScale + ', maximum-scale=5.0, user-scalable=yes';
-                    document.documentElement.style.overflowX = 'hidden';
-                } else {
-                    // التابلت واللابتوب: عرض متجاوب افتراضي
-                    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
-                    document.documentElement.style.overflowX = 'auto';
-                }
+            var ua = navigator.userAgent;
+            var isTablet = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua);
+            var isPhone = /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua) && !isTablet;
+            window.isPhoneDevice = isPhone;
+
+            var meta = document.createElement('meta');
+            meta.name = 'viewport';
+            
+            if (isPhone) {
+                var scale = window.screen.width / 1280;
+                meta.content = 'width=1280, initial-scale=' + scale + ', maximum-scale=5.0, user-scalable=yes';
+            } else {
+                meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
             }
-            
-            // تنفيذ فوري
-            applySmartViewport();
-            
-            // استشعار تدوير الشاشة لتحديث القياسات ديناميكيا
-            window.addEventListener('orientationchange', function() {
-                setTimeout(applySmartViewport, 150);
-            });
+            document.head.appendChild(meta);
         })();
     </script>
     
@@ -236,7 +218,6 @@
         .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); background: var(--bg-color); border-radius: var(--radius-xl); border: 2px dashed var(--border); margin: 25px 0; font-weight: 700; font-size: 18px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
         .empty-state svg { color: var(--border-hover); width: 60px; height: 60px; }
 
-        /* واجهة الطالب */
         #user-layout { display: flex; gap: 35px; align-items: flex-start; padding: 0;}
         
         .sidebar { 
@@ -315,7 +296,6 @@
         }
         .html-sandbox { border: none; background: #fff; width: 100%; height: 100%; display: block; border-radius: calc(var(--radius-md) - 2px); }
 
-        /* وضع الشاشة الكاملة */
         .iframe-responsive-wrapper.css-fullscreen { 
             position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
             width: 100vw !important; height: 100vh !important; height: 100dvh !important; 
@@ -354,7 +334,6 @@
         <h2 id="loading-text">جاري مزامنة المنصة...</h2>
     </div>
 
-    <!-- واجهة تسجيل الدخول -->
     <div id="login-section" class="hidden auth-section">
         <div class="login-box">
             <div style="background: var(--primary-light); color: var(--primary); width: 80px; height: 80px; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px auto; box-shadow: var(--shadow-sm); transform: rotate(-5deg);">
@@ -386,7 +365,6 @@
         </div>
     </div>
 
-    <!-- التسجيل -->
     <div id="register-section" class="hidden auth-section">
         <div class="login-box">
             <div style="background: var(--success); color: white; width: 80px; height: 80px; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px auto; box-shadow: var(--shadow-sm); transform: rotate(5deg);">
@@ -410,7 +388,6 @@
         </div>
     </div>
 
-    <!-- الهيدر -->
     <header id="main-header" class="hidden">
         <div class="header-right">
             <button type="button" id="sidebar-toggle" class="btn-icon-only hidden" onclick="toggleSidebar()" title="إظهار/إخفاء الفهرس"><svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
@@ -426,7 +403,6 @@
         </div>
     </header>
 
-    <!-- واجهة الإدارة -->
     <div id="admin-section" class="container hidden">
         <div class="tabs-container">
             <div class="tabs-header">
@@ -439,7 +415,6 @@
                 <button type="button" class="tab-btn" onclick="openTab(event, 'tab-settings')"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
             </div>
 
-            <!-- إضافة محتوى -->
             <div id="tab-content-add" class="tab-content active">
                 <div class="admin-card">
                     <h2 class="admin-title" id="add-edit-title"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> إضافة ورفع مادة علمية</h2>
@@ -543,7 +518,6 @@
         </div>
     </div>
 
-    <!-- واجهة الطالب -->
     <div id="user-section" class="hidden" style="flex: 1; display: flex;">
         <div id="user-layout">
             <aside id="student-sidebar" class="sidebar">
@@ -823,7 +797,6 @@
                 ind.forEach(i => { h += `<div class="independent-item" onclick="showSingleContent(${i?.id}, this)"><svg class="icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> ${i?.title}</div>`; });
                 sb.innerHTML = h || '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> الفهرس فارغ حالياً</div>';
                 
-                // منطق إغلاق القوائم الأخرى عند فتح واحدة جديدة
                 const detailsElements = sb.querySelectorAll('details.premium-accordion');
                 detailsElements.forEach(detail => {
                     detail.addEventListener('toggle', (e) => {
@@ -852,11 +825,6 @@
             try {
                 const d = document.getElementById('content-display'); d.innerHTML = '';
                 if(!arr.length) return d.innerHTML = '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>نطاق الاستدعاء خالٍ من المحتوى المقروء.</div>';
-                
-                const screenW = window.innerWidth || window.screen.width;
-                const screenH = window.innerHeight || window.screen.height;
-                const isPhone = Math.min(screenW, screenH) < 768;
-
                 arr.forEach(i => {
                     const div = document.createElement('div'); div.className = 'content-item academic-text';
                     let html = '';
@@ -864,14 +832,13 @@
                     let copyLinkBtn = `<button type="button" onclick="copyShareLink('content', ${i?.id}, this)" class="btn-outline" style="padding:8px 16px; font-size:14px; border-radius:20px; display:flex; align-items:center; gap:8px;" title="حفظ المسار"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> رابط الدرس</button>`;
 
                     if (i?.type === 'html') {
-                        const wid = `w-${i?.id}`; 
-                        let safe = i.data.replace(/user-scalable=[a-z0-9]+/gi, 'user-scalable=yes').replace(/maximum-scale=[0-9.]+/gi, 'maximum-scale=5.0');
+                        const wid = `w-${i?.id}`; let safe = i.data.replace(/user-scalable=[a-z0-9]+/gi, 'user-scalable=yes').replace(/maximum-scale=[0-9.]+/gi, 'maximum-scale=5.0');
                         
-                        const viewportMeta = isPhone 
-                            ? `<meta name="viewport" content="width=1200, initial-scale=0, maximum-scale=5.0, user-scalable=yes">` 
+                        const viewportTag = window.isPhoneDevice 
+                            ? `<meta name="viewport" content="width=1280, initial-scale=${window.screen.width / 1280}, maximum-scale=5.0, user-scalable=yes">`
                             : `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">`;
                             
-                        const m = viewportMeta + `<style>html,body{margin:0!important;padding:0!important;width:100%!important;min-height:100vh!important;touch-action:pan-x pan-y pinch-zoom!important;}iframe{width:100%!important;height:100vh!important;border:none!important;}</style>`;
+                        const m = viewportTag + `<style>html,body{margin:0!important;padding:0!important;width:100%!important;min-height:100vh!important;touch-action:pan-x pan-y pinch-zoom!important;}iframe{width:100%!important;height:100vh!important;border:none!important;}</style>`;
                         
                         safe = (!safe.includes('touch-action')) ? (safe.includes('</head>') ? safe.replace(/<\/head>/i, m + '</head>') : m + safe) : safe; safe = safe.replace(/"/g, '&quot;');
                         
