@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <script>
-        // إعداد متقدم للشاشة: إجبار عرض سطح المكتب للهواتف فقط، واستخدام العرض الطبيعي للأجهزة اللوحية والكمبيوتر
         (function() {
             var width = window.innerWidth > 0 ? window.innerWidth : window.screen.width;
             var meta = document.createElement('meta');
             meta.name = 'viewport';
             if (width < 768) {
-                // هاتف: إجبار عرض 1280 بكسل
                 meta.content = 'width=1280, initial-scale=0, maximum-scale=5.0, user-scalable=yes';
             } else {
-                // تابلت أو كمبيوتر: عرض متجاوب طبيعي
                 meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
             }
             document.head.appendChild(meta);
@@ -28,15 +25,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <title>المنصة التعليمية | الإصدار الاحترافي المتكامل</title>
+    <title>المنصة التعليمية | الإصدار الاحترافي</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        /* =======================================================
-           هندسة الألوان والظلال (Enterprise Design System)
-           ======================================================= */
         :root {
             --primary: #2563eb;
             --primary-hover: #1d4ed8;
@@ -51,25 +45,22 @@
             --text-main: #0f172a;
             --text-muted: #475569;
             --border: #e2e8f0;
-            --border-light: #f1f5f9;
+            --border-hover: #cbd5e1;
             
             --success: #10b981;
-            --success-hover: #059669;
             --danger: #ef4444;
-            --danger-hover: #dc2626;
             --warning: #f59e0b;
-            --warning-hover: #d97706;
             
             --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 6px 10px -2px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 15px 20px -5px rgba(0, 0, 0, 0.1);
-            --focus-ring: 0 0 0 4px rgba(37, 99, 235, 0.15);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.2);
             
             --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 16px;
-            --radius-xl: 24px;
+            --radius-xl: 20px;
             
             --transition-fast: 0.2s ease;
             --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -80,18 +71,15 @@
             --primary-hover: #60a5fa;
             --primary-light: #1e3a8a;
             --primary-gradient: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
-            
             --bg-color: #0f172a;
             --card-bg: #1e293b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border: #334155;
-            --border-light: #1e293b;
-            
+            --border-hover: #475569;
             --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
             --shadow-md: 0 6px 10px -2px rgba(0, 0, 0, 0.4);
             --shadow-lg: 0 15px 20px -5px rgba(0, 0, 0, 0.5);
-            --focus-ring: 0 0 0 4px rgba(59, 130, 246, 0.25);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -100,8 +88,9 @@
         body { 
             font-family: 'Cairo', system-ui, sans-serif;
             background-color: var(--bg-color); color: var(--text-main); 
-            line-height: 1.7; overflow-x: hidden; transition: var(--transition-smooth); 
-            display: flex; flex-direction: column; min-height: 100vh; font-size: 16px;
+            line-height: 1.6; overflow-x: hidden; transition: var(--transition-smooth); 
+            display: flex; flex-direction: column; min-height: 100vh; font-size: 14px;
+            text-align: right;
         }
 
         .academic-text { font-family: 'Amiri', serif; font-size: 18px; line-height: 2; }
@@ -111,199 +100,203 @@
         ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
         .hidden { display: none !important; }
-        
-        /* التوسيط والحجم المناسب للتابلت والكمبيوتر */
-        .container, #user-layout { max-width: 1440px; margin: 0 auto; padding: 25px; flex: 1; width: 100%; }
+        .container, #user-layout { max-width: 1300px; margin: 0 auto; padding: 20px; flex: 1; width: 100%; }
 
-        /* =======================================================
-           عناصر الـ UI المتكررة (Inputs, Buttons, Toasts)
-           ======================================================= */
+        svg.icon { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+        svg.icon-fill { fill: currentColor; stroke: none; }
+
         #loading-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(8px);
+            background: rgba(248, 250, 252, 0.9); backdrop-filter: blur(8px);
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
             z-index: 999999; transition: opacity 0.4s; 
         }
-        body.dark-mode #loading-overlay { background: rgba(15, 23, 42, 0.95); }
-        .loader-core { width: 60px; height: 60px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s ease-in-out infinite; margin-bottom: 20px; }
-        #loading-text { color: var(--text-main); font-weight: 800; font-size: 18px; }
+        body.dark-mode #loading-overlay { background: rgba(15, 23, 42, 0.9); }
+        .loader-core { width: 50px; height: 50px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 15px; }
+        #loading-text { color: var(--text-main); font-weight: 700; font-size: 15px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        #toast-container { position: fixed; bottom: 30px; left: 30px; z-index: 100000; display: flex; flex-direction: column; gap: 15px; pointer-events: none; }
+        #toast-container { position: fixed; bottom: 25px; left: 25px; z-index: 100000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { 
-            padding: 16px 24px; border-radius: var(--radius-md); color: white; font-weight: 700; 
-            animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), fadeOut 0.4s 4s forwards; 
-            box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 12px; max-width: 450px; font-size: 16px;
-            white-space: pre-wrap;
+            padding: 12px 20px; border-radius: var(--radius-sm); color: white; font-weight: 600; 
+            animation: slideIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), fadeOut 0.3s 3.5s forwards; 
+            box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 10px; font-size: 14px;
         }
         .toast.success { background: var(--success); }
         .toast.error { background: var(--danger); }
         .toast.warning { background: var(--warning); color: #fff; }
-        .toast svg { width: 24px; height: 24px; flex-shrink: 0; }
         @keyframes slideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(15px); display: none; } }
 
-        .input-group { margin-bottom: 20px; width: 100%; }
-        .input-label { display: block; font-weight: 800; margin-bottom: 8px; color: var(--text-main); font-size: 15px; }
+        /* حقول الإدخال مع الأيقونات */
+        .input-group { margin-bottom: 15px; width: 100%; }
+        .input-label { display: block; font-weight: 700; margin-bottom: 6px; color: var(--text-main); font-size: 13px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-wrapper svg.icon { position: absolute; right: 12px; color: var(--text-muted); width: 16px; height: 16px; transition: var(--transition-fast);}
+        .input-wrapper input, .input-wrapper select { padding-right: 36px; }
+        .input-wrapper input:focus + svg, .input-wrapper select:focus + svg { color: var(--primary); }
+
         input[type="text"], input[type="password"], select, textarea { 
-            width: 100%; padding: 14px 18px; border: 2px solid var(--border); border-radius: var(--radius-md); 
-            font-size: 16px; font-family: 'Cairo', sans-serif; background-color: var(--card-bg); font-weight: 600;
-            color: var(--text-main); transition: var(--transition-fast); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); 
+            font-size: 14px; font-family: 'Cairo', sans-serif; background-color: var(--card-bg); font-weight: 600;
+            color: var(--text-main); transition: var(--transition-fast); box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
         }
         input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: var(--focus-ring); }
         
         button { 
-            background: var(--primary); color: white; border: none; padding: 12px 24px; 
-            border-radius: var(--radius-md); cursor: pointer; font-size: 16px; font-weight: 800; 
+            background: var(--primary); color: white; border: none; padding: 10px 18px; 
+            border-radius: var(--radius-sm); cursor: pointer; font-size: 14px; font-weight: 700; 
             font-family: 'Cairo', sans-serif; transition: var(--transition-fast); display: inline-flex; 
-            align-items: center; justify-content: center; gap: 10px; box-shadow: var(--shadow-sm);
+            align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-sm);
         }
-        button:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        button:hover { background: var(--primary-hover); transform: translateY(-1px); }
         button:active { transform: translateY(0); box-shadow: none; }
         
-        .btn-danger { background: var(--danger); } .btn-danger:hover { background: var(--danger-hover); }
-        .btn-success { background: var(--success); } .btn-success:hover { background: var(--success-hover); }
-        .btn-warning { background: var(--warning); color: #fff; } .btn-warning:hover { background: var(--warning-hover); }
-        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-main); box-shadow: none; }
+        .btn-danger { background: var(--danger); } .btn-danger:hover { background: #dc2626; }
+        .btn-success { background: var(--success); } .btn-success:hover { background: #059669; }
+        .btn-warning { background: var(--warning); color: #fff; } .btn-warning:hover { background: #d97706; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); box-shadow: none; }
         .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
-        .btn-secondary { background: var(--bg-color); color: var(--text-main); border: 2px solid var(--border); box-shadow: none;}
+        .btn-secondary { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border); box-shadow: none;}
         .btn-secondary:hover { background: var(--border-hover); border-color: var(--text-muted);}
-        .btn-icon-only { padding: 8px; background: transparent; color: var(--text-muted); box-shadow: none; border: 1px solid transparent;}
-        .btn-icon-only:hover { background: var(--bg-color); color: var(--primary); border-color: var(--border);}
         
-        svg.icon { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0;}
+        .btn-group { display: flex; gap: 10px; width: 100%;} .btn-group .input-wrapper { margin-bottom: 0; flex: 1; }
 
-        /* =======================================================
-           واجهة الدخول والتسجيل
-           ======================================================= */
+        /* واجهة تسجيل الدخول */
         .auth-section { display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--bg-color); }
-        .login-box { background: var(--card-bg); padding: 45px; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); width: 100%; max-width: 450px; text-align: center; border: 1px solid var(--border); }
-        .login-icon-wrapper { background: var(--primary-light); color: var(--primary); width: 80px; height: 80px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin: 0 auto 25px auto; }
-        .login-box h2 { color: var(--text-main); font-size: 26px; margin-bottom: 30px; font-weight: 900; }
-        .remember-container { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; cursor: pointer; color: var(--text-muted); font-size: 15px; font-weight: 700; justify-content: flex-start; }
-        .remember-container input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
+        .login-box { background: var(--card-bg); padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width: 100%; max-width: 400px; text-align: center; border: 1px solid var(--border); }
+        .login-icon-wrapper { background: var(--primary-light); color: var(--primary); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; }
+        .login-box h2 { color: var(--text-main); font-size: 22px; margin-bottom: 25px; font-weight: 800; }
+        .remember-container { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; cursor: pointer; color: var(--text-muted); font-size: 13px; font-weight: 700; justify-content: flex-start; }
+        .remember-container input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); }
 
-        /* =======================================================
-           الهيدر العلوي (Navbar)
-           ======================================================= */
+        /* الهيدر العلوي */
         header { 
-            background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(12px);
-            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; 
+            background: var(--card-bg); padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; 
             position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-sm);
         }
-        body.dark-mode header { background: rgba(30, 41, 59, 0.98); }
-        .header-right { display: flex; align-items: center; gap: 20px; }
-        header h3 { margin: 0; color: var(--primary); font-size: 22px; font-weight: 900; display: flex; align-items: center; gap: 12px; }
-        .logo-box { background: var(--primary-gradient); padding: 8px; border-radius: 10px; color: white; display: flex; box-shadow: var(--shadow-sm);}
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .user-badge { font-weight: 800; color: var(--text-main); font-size: 15px; background: var(--bg-color); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        header h3 { margin: 0; color: var(--primary); font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .logo-box { background: var(--primary-gradient); padding: 6px; border-radius: var(--radius-sm); color: white; display: flex; box-shadow: var(--shadow-sm);}
+        .header-left { display: flex; align-items: center; gap: 10px; }
+        .user-badge { font-weight: 700; color: var(--text-main); font-size: 13px; background: var(--bg-color); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
 
-        /* =======================================================
-           لوحة تحكم الإدارة (Admin Dashboard)
-           ======================================================= */
-        .tabs-container { margin-top: 10px; }
-        .tabs-header { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid var(--border); padding-bottom: 15px; }
-        .tab-btn { background: transparent; color: var(--text-muted); padding: 12px 20px; border-radius: var(--radius-md); font-size: 16px; font-weight: 800; box-shadow: none; border: 1px solid transparent; }
+        /* لوحة تحكم الإدارة */
+        .tabs-container { margin-top: 5px; }
+        .tabs-header { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+        .tab-btn { background: transparent; color: var(--text-muted); padding: 10px 16px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 700; box-shadow: none; border: 1px solid transparent; }
         .tab-btn:hover { background: var(--card-bg); border-color: var(--border); color: var(--text-main); }
-        .tab-btn.active { background: var(--primary-gradient); color: white; border-color: transparent; box-shadow: var(--shadow-md);}
-        .tab-content { padding: 0; display: none; animation: fadeIn 0.3s ease; }
+        .tab-btn.active { background: var(--primary); color: white; border-color: transparent; box-shadow: var(--shadow-md);}
+        .tab-content { padding: 0; display: none; animation: fadeIn 0.25s ease; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        .admin-card { background: var(--card-bg); padding: 35px; border-radius: var(--radius-xl); border: 1px solid var(--border); box-shadow: var(--shadow-md); margin-bottom: 25px; }
-        .admin-title { font-size: 22px; font-weight: 900; margin-top: 0; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; border-bottom: 2px solid var(--border); padding-bottom: 15px; color: var(--text-main);}
+        .admin-card { background: var(--card-bg); padding: 25px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); margin-bottom: 20px; }
+        .admin-title { font-size: 18px; font-weight: 800; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 12px; color: var(--text-main);}
         
-        .admin-list-item { background: var(--bg-color); border: 1px solid var(--border); padding: 20px 25px; border-radius: var(--radius-lg); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition-fast); }
-        .admin-list-item:hover { border-color: var(--primary); box-shadow: var(--shadow-md); background: var(--card-bg);}
-        .admin-item-info h4 { margin: 0 0 8px 0; font-size: 18px; display: flex; align-items: center; gap: 12px; font-weight: 800;}
-        .admin-item-meta { font-size: 14px; color: var(--text-muted); display: flex; gap: 20px; font-weight: 600;}
-        .admin-item-actions { display: flex; gap: 10px; }
+        .admin-list-item { background: var(--bg-color); border: 1px solid var(--border); padding: 15px 20px; border-radius: var(--radius-md); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; transition: var(--transition-fast); }
+        .admin-list-item:hover { border-color: var(--primary); box-shadow: var(--shadow-sm); background: var(--card-bg);}
+        .admin-item-info h4 { margin: 0 0 6px 0; font-size: 15px; display: flex; align-items: center; gap: 8px; font-weight: 700;}
+        .admin-item-meta { font-size: 13px; color: var(--text-muted); display: flex; gap: 15px; font-weight: 600;}
+        .admin-item-actions { display: flex; gap: 8px; }
         
-        .search-container { position: relative; width: 100%; max-width: 450px; margin-bottom: 20px; }
-        .search-container input { padding: 14px 45px 14px 20px; margin-bottom: 0; border-radius: var(--radius-lg); font-size: 16px;}
-        .search-icon-svg { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 20px; height: 20px; }
+        .search-container { position: relative; width: 100%; max-width: 350px; margin-bottom: 15px; }
+        .search-container .input-wrapper input { padding: 10px 35px 10px 15px; margin-bottom: 0; border-radius: var(--radius-sm); font-size: 14px;}
         
-        .bulk-action-bar { background: var(--card-bg); border: 2px dashed var(--border); padding: 15px 25px; border-radius: var(--radius-lg); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-        .bulk-action-bar label { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 12px; cursor: pointer; color: var(--text-main);}
-        input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary); border-radius: 4px; border: 2px solid var(--border); }
+        .bulk-action-bar { background: var(--card-bg); border: 1px dashed var(--border); padding: 12px 20px; border-radius: var(--radius-md); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .bulk-action-bar label { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-main);}
+        input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); border-radius: 4px; border: 1px solid var(--border); }
 
-        .empty-state { text-align: center; padding: 50px 20px; color: var(--text-muted); background: var(--bg-color); border-radius: var(--radius-xl); border: 2px dashed var(--border); margin: 25px 0; font-weight: 700; font-size: 18px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .empty-state svg { color: var(--border-hover); width: 60px; height: 60px; }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); background: var(--bg-color); border-radius: var(--radius-md); border: 1px dashed var(--border); margin: 20px 0; font-weight: 600; font-size: 15px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .empty-state svg { color: var(--border-hover); width: 45px; height: 45px; }
 
         /* =======================================================
-           واجهة عرض الطالب (Student UI) - احترافية ومحسنة
+           واجهة الطالب (الفهرس الجانبي الاحترافي)
            ======================================================= */
-        #user-layout { display: flex; gap: 35px; align-items: flex-start; padding: 0;}
+        #user-layout { display: flex; gap: 25px; align-items: flex-start; padding: 0;}
         
-        /* القائمة الجانبية المنسدلة (Sidebar Accordion) - تصميم عصري */
         .sidebar { 
-            width: 340px; background: var(--card-bg); padding: 25px; 
-            border-radius: var(--radius-xl); border: 1px solid var(--border); 
-            box-shadow: var(--shadow-md); flex-shrink: 0; height: fit-content; max-height: 85vh; 
-            overflow-y: auto; display: flex; flex-direction: column; position: sticky; top: 95px;
+            width: 300px; background: var(--card-bg); padding: 20px; 
+            border-radius: var(--radius-lg); border: 1px solid var(--border); 
+            box-shadow: var(--shadow-sm); flex-shrink: 0; height: fit-content; max-height: 85vh; 
+            overflow-y: auto; display: flex; flex-direction: column; position: sticky; top: 85px;
         }
-        .sidebar.collapsed { width: 0; padding: 0; border: none; margin: 0; opacity: 0; overflow: hidden; transform: translateX(20px); }
-        .sidebar h3 { margin-top: 0; color: var(--text-main); font-weight: 900; font-size: 20px; display: flex; align-items: center; gap: 12px; margin-bottom: 25px; border-bottom: 2px solid var(--border); padding-bottom: 15px;}
-        .sidebar-search-box { display: flex; gap: 10px; margin-bottom: 25px; position: relative;}
-        .sidebar-search-box input { margin-bottom: 0; padding: 12px 12px 12px 45px; border-radius: var(--radius-md); font-size: 15px; background: var(--bg-color);}
-        .sidebar-search-box button { position: absolute; left: 4px; top: 4px; bottom: 4px; padding: 0 12px; background: transparent; color: var(--primary); box-shadow: none; border-radius: var(--radius-sm);}
+        .sidebar.collapsed { width: 0; padding: 0; border: none; margin: 0; opacity: 0; overflow: hidden; transform: translateX(10px); }
+        .sidebar h3 { margin-top: 0; color: var(--text-main); font-weight: 800; font-size: 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px;}
+        
+        /* شريط بحث الفهرس */
+        .sidebar-search-box { position: relative; margin-bottom: 20px; }
+        .sidebar-search-box input { margin-bottom: 0; padding: 10px 10px 10px 35px; border-radius: var(--radius-sm); font-size: 13px; background: var(--bg-color);}
+        .sidebar-search-box button { position: absolute; left: 4px; top: 4px; bottom: 4px; padding: 0 8px; background: transparent; color: var(--primary); box-shadow: none; border-radius: var(--radius-sm);}
         .sidebar-search-box button:hover { background: var(--primary-light); }
 
-        /* تصميم القوائم المنسدلة الاحترافي */
-        .sidebar details { 
-            margin-bottom: 12px; border-radius: var(--radius-md); border: 1px solid var(--border); 
+        /* تصميم القوائم المنسدلة (Accordion) المطور */
+        .premium-accordion { 
+            margin-bottom: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); 
             overflow: hidden; transition: var(--transition-fast); background: var(--bg-color);
         }
-        .sidebar details:hover { border-color: var(--primary); }
-        .sidebar summary { 
-            padding: 16px 20px; font-weight: 800; cursor: pointer; color: var(--text-main); 
+        .premium-accordion:hover { border-color: var(--primary); box-shadow: var(--shadow-xs);}
+        .premium-accordion summary { 
+            padding: 12px 15px; font-weight: 700; cursor: pointer; color: var(--text-main); 
             display: flex; align-items: center; justify-content: space-between; 
-            list-style: none; user-select: none; font-size: 16px; background: var(--card-bg);
+            list-style: none; user-select: none; font-size: 14px; background: var(--card-bg);
+            transition: background 0.2s;
         }
-        .sidebar summary:hover { background: var(--bg-color); }
-        .sidebar summary::-webkit-details-marker { display: none; }
-        .summary-content { display: flex; align-items: center; gap: 12px; }
-        .sidebar summary .arrow-icon { transition: transform 0.3s; color: var(--text-muted); width: 18px; height: 18px;}
-        .sidebar details[open] summary .arrow-icon { transform: rotate(180deg); color: var(--primary); }
-        .sidebar details[open] summary { border-bottom: 2px solid var(--border); color: var(--primary); }
-        .sidebar details ul { list-style: none; padding: 8px 0; margin: 0; }
+        .premium-accordion summary:hover { background: var(--primary-light); }
+        .premium-accordion summary::-webkit-details-marker { display: none; }
+        
+        .summary-content { display: flex; align-items: center; gap: 10px; flex: 1; overflow: hidden; }
+        .summary-content span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .summary-actions { display: flex; align-items: center; gap: 8px; }
+        .btn-copy-folder { 
+            padding: 4px 8px; font-size: 11px; border-radius: 4px; background: var(--bg-color); 
+            color: var(--text-muted); border: 1px solid var(--border); box-shadow: none;
+            display: flex; align-items: center; gap: 4px; transition: 0.2s;
+        }
+        .btn-copy-folder:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .btn-copy-folder svg { width: 12px; height: 12px; }
+        
+        .premium-accordion summary .arrow-icon { transition: transform 0.3s; color: var(--text-muted); width: 16px; height: 16px;}
+        .premium-accordion[open] summary .arrow-icon { transform: rotate(180deg); color: var(--primary); }
+        .premium-accordion[open] summary { border-bottom: 1px solid var(--border); background: var(--bg-color); }
+        
+        .premium-accordion ul { list-style: none; padding: 5px 0; margin: 0; background: var(--card-bg); }
         
         .sidebar-item { 
-            padding: 12px 35px 12px 20px; cursor: pointer; color: var(--text-muted); 
-            font-weight: 700; transition: var(--transition-fast); display: flex; 
-            align-items: center; gap: 12px; font-size: 15px; border-right: 3px solid transparent;
+            padding: 10px 25px 10px 15px; cursor: pointer; color: var(--text-muted); 
+            font-weight: 600; transition: var(--transition-fast); display: flex; 
+            align-items: center; gap: 10px; font-size: 13px; border-right: 3px solid transparent;
         }
-        .sidebar-item:hover { color: var(--primary); background: var(--card-bg); border-right-color: var(--primary); }
+        .sidebar-item:hover { color: var(--primary); background: var(--primary-light); border-right-color: var(--primary); }
         .sidebar-item.active { background: var(--primary-light); color: var(--primary); font-weight: 800; border-right-color: var(--primary); }
         
         .independent-item { 
-            border-radius: var(--radius-md); margin-bottom: 12px; padding: 16px 20px; 
-            border: 1px solid var(--border); cursor: pointer; font-weight: 800; 
-            color: var(--text-main); display: flex; align-items: center; gap: 12px; font-size: 16px; 
-            background: var(--card-bg); box-shadow: var(--shadow-sm); border-right: 4px solid transparent;
+            border-radius: var(--radius-sm); margin-bottom: 10px; padding: 12px 15px; 
+            border: 1px solid var(--border); cursor: pointer; font-weight: 700; 
+            color: var(--text-main); display: flex; align-items: center; gap: 10px; font-size: 14px; 
+            background: var(--card-bg); box-shadow: var(--shadow-xs); border-right: 3px solid transparent;
         }
         .independent-item:hover { border-color: var(--primary); background: var(--bg-color); border-right-color: var(--primary); }
         .independent-item.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); border-right-color: var(--primary); }
 
-        /* محتوى الدرس */
+        /* منطقة المحتوى الأكاديمي */
         .main-content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-        .content-grid { display: flex; flex-direction: column; gap: 30px; flex: 1;} 
-        .content-item { background: var(--card-bg); padding: 40px; border-radius: var(--radius-xl); border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow-md); flex: 1; position: relative;}
-        .content-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 25px; flex-wrap: wrap; gap: 20px; }
-        .content-title { margin: 0; color: var(--text-main); font-size: 24px; font-weight: 900; display: flex; align-items: center; gap: 12px;}
-        .header-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-        .category-badge { font-size: 14px; font-weight: 800; background: var(--bg-color); color: var(--text-main); padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border); display: inline-flex; align-items: center; gap: 8px;}
+        .content-grid { display: flex; flex-direction: column; gap: 25px; flex: 1;} 
+        .content-item { background: var(--card-bg); padding: 30px; border-radius: var(--radius-lg); border: 1px solid var(--border); display: flex; flex-direction: column; box-shadow: var(--shadow-sm); flex: 1; position: relative;}
+        .content-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+        .content-title { margin: 0; color: var(--text-main); font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 10px;}
+        .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         
         .iframe-responsive-wrapper { 
-            position: relative; width: 100%; height: 78vh; min-height: 550px;
+            position: relative; width: 100%; height: 75vh; min-height: 500px;
             background: var(--bg-color); border-radius: var(--radius-md); 
-            border: 2px solid var(--border); overflow: auto; -webkit-overflow-scrolling: touch; 
-            box-shadow: inset var(--shadow-sm);
+            border: 1px solid var(--border); overflow: auto; -webkit-overflow-scrolling: touch; 
         }
-        .html-sandbox { border: none; background: #fff; width: 100%; height: 100%; display: block; border-radius: calc(var(--radius-md) - 2px); }
+        .html-sandbox { border: none; background: #fff; width: 100%; height: 100%; display: block; border-radius: calc(var(--radius-md) - 1px); }
 
         /* =======================================================
-           إصلاح وضع الشاشة الكاملة (Fixed Fullscreen Button Issue)
+           وضع الشاشة الكاملة الإجباري
            ======================================================= */
         .iframe-responsive-wrapper.css-fullscreen { 
             position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
@@ -314,28 +307,27 @@
 
         .fullscreen-top-bar {
             display: none; position: absolute; top: 0; left: 0; right: 0; height: 60px;
-            background: #1e293b; border-bottom: 2px solid #0f172a; z-index: 99999999;
+            background: #1e293b; border-bottom: 1px solid #0f172a; z-index: 99999999;
             align-items: center; justify-content: flex-end; padding: 0 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .iframe-responsive-wrapper.css-fullscreen .fullscreen-top-bar { display: flex; position: fixed; }
 
-        /* إصلاح زر الشاشة الكاملة ليطابق الصورة وبدون تشوه أو التفاف للنص */
+        /* الزر الأحمر المطابق للصورة */
         .fullscreen-close-btn {
             background: #ef4444; color: #ffffff; border: 2px solid #ffffff; cursor: pointer;
             padding: 8px 24px; border-radius: 50px; display: flex; flex-direction: row; 
             align-items: center; justify-content: center; gap: 10px;
-            font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 16px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            white-space: nowrap; /* الحل الجذري لمشكلة التفاف النص */
-            width: max-content;
+            font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 15px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); white-space: nowrap; width: max-content;
+            transition: all 0.2s ease;
         }
         .fullscreen-close-btn:hover { background: #dc2626; transform: scale(1.02); }
         .fullscreen-close-btn svg { width: 22px; height: 22px; stroke-width: 2.5; flex-shrink: 0; }
         
         .iframe-responsive-wrapper.css-fullscreen .html-sandbox { height: calc(100vh - 60px) !important; height: calc(100dvh - 60px) !important; border-radius: 0; }
 
-        .version-footer { text-align: center; padding: 25px; color: var(--text-muted); font-size: 14px; font-weight: 700; width: 100%; margin-top: auto; border-top: 1px solid var(--border); background: var(--card-bg);}
+        .version-footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 13px; font-weight: 700; width: 100%; margin-top: auto; border-top: 1px solid var(--border); background: var(--card-bg);}
     </style>
 </head>
 <body>
@@ -343,39 +335,61 @@
     <div id="toast-container"></div>
     <div id="loading-overlay">
         <div class="loader-core"></div>
-        <h2 id="loading-text">تحضير مساحة العمل...</h2>
+        <h2 id="loading-text">جاري مزامنة المنصة...</h2>
     </div>
 
-    <!-- واجهة تسجيل الدخول -->
+    <!-- تسجيل الدخول -->
     <div id="login-section" class="hidden auth-section">
         <div class="login-box">
             <div class="login-icon-wrapper">
-                <svg class="icon" style="width:36px; height:36px;" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+                <svg class="icon" style="width:32px; height:32px;" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
             </div>
-            <h2>بوابة العبور الآمنة</h2>
+            <h2>بوابة الدخول</h2>
+            
             <div class="input-group">
                 <label class="input-label">اسم المستخدم</label>
-                <input type="text" id="login-username" placeholder="معرّف الحساب">
+                <div class="input-wrapper">
+                    <input type="text" id="login-username" placeholder="معرّف الحساب">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
             </div>
+            
             <div class="input-group">
                 <label class="input-label">الرقم السري</label>
-                <input type="password" id="login-password" placeholder="كلمة المرور" onkeypress="if(event.key === 'Enter') login()">
+                <div class="input-wrapper">
+                    <input type="password" id="login-password" placeholder="كلمة المرور" onkeypress="if(event.key === 'Enter') login()">
+                    <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
             </div>
+            
             <label class="remember-container"><input type="checkbox" id="remember-me"> الاحتفاظ بتسجيل الدخول</label>
-            <button type="button" onclick="login()" style="width: 100%; padding: 14px; font-size: 18px;">تسجيل الدخول <svg class="icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
-            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--border);">
-                <button type="button" onclick="showRegisterForm()" class="btn-outline" style="width: 100%; padding: 12px; font-size: 15px;">تقديم طلب حساب جديد</button>
+            <button type="button" onclick="login()" style="width: 100%; padding: 12px; font-size: 15px;">تسجيل الدخول <svg class="icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border);">
+                <button type="button" onclick="showRegisterForm()" class="btn-outline" style="width: 100%;">تقديم طلب حساب جديد</button>
             </div>
         </div>
     </div>
 
+    <!-- التسجيل -->
     <div id="register-section" class="hidden auth-section">
         <div class="login-box">
-            <h2 style="color:var(--success);">تسجيل حساب جديد</h2>
-            <div class="input-group"><label class="input-label">الاسم المطلوب</label><input type="text" id="reg-username" placeholder="اسم المستخدم"></div>
-            <div class="input-group"><label class="input-label">الرقم السري المقترح</label><input type="password" id="reg-password" placeholder="كلمة المرور"></div>
-            <div class="input-group"><label class="input-label">المجموعة الدراسية</label><input type="text" id="reg-class" placeholder="مثال: الصف الثاني" onkeypress="if(event.key === 'Enter') submitRegistration()"></div>
-            <button type="button" onclick="submitRegistration()" class="btn-success" style="width: 100%; margin-bottom: 15px; padding: 14px; font-size: 16px;">تأكيد إرسال الطلب للإدارة</button>
+            <div class="login-icon-wrapper" style="background: var(--success-hover); color: white;">
+                <svg class="icon" style="width:32px; height:32px;" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+            </div>
+            <h2>إنشاء حساب</h2>
+            <div class="input-group">
+                <label class="input-label">الاسم المطلوب</label>
+                <div class="input-wrapper"><input type="text" id="reg-username" placeholder="اسم المستخدم"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">الرقم السري المقترح</label>
+                <div class="input-wrapper"><input type="password" id="reg-password" placeholder="كلمة المرور"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+            </div>
+            <div class="input-group">
+                <label class="input-label">المجموعة الدراسية</label>
+                <div class="input-wrapper"><input type="text" id="reg-class" placeholder="مثال: الصف الثاني" onkeypress="if(event.key === 'Enter') submitRegistration()"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></div>
+            </div>
+            <button type="button" onclick="submitRegistration()" class="btn-success" style="width: 100%; margin-bottom: 10px;">إرسال الطلب للإدارة</button>
             <button type="button" onclick="showLoginForm()" class="btn-secondary" style="width: 100%;">العودة للخلف</button>
         </div>
     </div>
@@ -383,16 +397,16 @@
     <!-- الهيدر -->
     <header id="main-header" class="hidden">
         <div class="header-right">
-            <button type="button" id="sidebar-toggle" class="btn-icon-only hidden" onclick="toggleSidebar()" title="إظهار/إخفاء القائمة"><svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+            <button type="button" id="sidebar-toggle" class="btn-outline hidden" style="padding:8px;" onclick="toggleSidebar()" title="إظهار/إخفاء الفهرس"><svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
             <h3><div class="logo-box"><svg class="icon" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg></div> المنصة التعليمية</h3>
         </div>
         <div class="header-left">
-            <button type="button" id="install-pwa-btn" class="btn-outline hidden" onclick="installPWA()" style="padding:8px 16px; font-size:14px;"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> تثبيت</button>
+            <button type="button" id="install-pwa-btn" class="btn-outline hidden" onclick="installPWA()"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> تثبيت</button>
             <span id="welcome-msg" class="user-badge" style="display: none;"></span>
-            <button type="button" onclick="toggleDarkMode()" class="btn-icon-only" title="الوضع الليلي"><svg class="icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
-            <button type="button" id="preview-btn" class="btn-warning hidden" onclick="showPreview()" style="padding:8px 16px; font-size:14px;"><svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> معاينة الواجهة</button>
-            <button type="button" id="back-admin-btn" class="btn-success hidden" onclick="backToAdmin()" style="padding:8px 16px; font-size:14px;"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> الإدارة</button>
-            <button type="button" id="logout-btn" class="btn-outline" onclick="logout(true)" style="padding:8px 16px; font-size:14px; color:var(--danger); border-color:var(--danger);"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> إنهاء</button>
+            <button type="button" onclick="toggleDarkMode()" class="btn-outline" style="padding:8px;" title="الوضع الليلي"><svg class="icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
+            <button type="button" id="preview-btn" class="btn-warning hidden" onclick="showPreview()"><svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> معاينة الواجهة</button>
+            <button type="button" id="back-admin-btn" class="btn-success hidden" onclick="backToAdmin()"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> الإدارة</button>
+            <button type="button" id="logout-btn" class="btn-outline" onclick="logout(true)" style="color:var(--danger); border-color:var(--danger);"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> إنهاء الدخول</button>
         </div>
     </header>
 
@@ -400,36 +414,53 @@
     <div id="admin-section" class="container hidden">
         <div class="tabs-container">
             <div class="tabs-header">
-                <button type="button" class="tab-btn active" id="tab-btn-add" onclick="openTab(event, 'tab-content-add')">محتوى جديد</button>
-                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-content-manage')">الأرشيف</button>
-                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-menus')">المجلدات</button>
-                <button type="button" class="tab-btn" id="tab-btn-user-add" onclick="openTab(event, 'tab-users-add')">تسجيل طالب</button>
-                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-users-manage')">المستخدمين</button>
-                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-pending-users'); renderPendingUsers();">الطلبات</button>
-                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-settings')">إعدادات</button>
+                <button type="button" class="tab-btn active" id="tab-btn-add" onclick="openTab(event, 'tab-content-add')"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> محتوى جديد</button>
+                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-content-manage')"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg> مكتبة الدروس</button>
+                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-menus')"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> المجلدات</button>
+                <button type="button" class="tab-btn" id="tab-btn-user-add" onclick="openTab(event, 'tab-users-add')"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg> تسجيل طالب</button>
+                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-users-manage')"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path></svg> إدارة الطلاب</button>
+                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-pending-users'); renderPendingUsers();"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> الطلبات</button>
+                <button type="button" class="tab-btn" onclick="openTab(event, 'tab-settings')"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
             </div>
 
-            <!-- إضافة محتوى -->
             <div id="tab-content-add" class="tab-content active">
                 <div class="admin-card">
-                    <h2 class="admin-title" id="add-edit-title">إضافة ورفع مادة علمية</h2>
-                    <div class="input-group"><label class="input-label">العنوان الوصفي للدرس</label><input type="text" id="content-title" placeholder="أدخل العنوان..."></div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px;">
-                        <div><label class="input-label">نوع التنسيق</label><select id="content-type"><option value="html">كود HTML (تفاعلي)</option><option value="link">رابط (URL خارجي)</option></select></div>
-                        <div><label class="input-label">ارتباط المجلد</label><select id="content-folder"><option value="none">بدون (مستقل)</option></select></div>
-                        <div><label class="input-label">تخصيص العرض</label><select id="content-classes"><option value="admin">مسودة للإدارة فقط</option><option value="all">متاح للكل</option></select></div>
+                    <h2 class="admin-title" id="add-edit-title"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> رفع مادة علمية</h2>
+                    <div class="input-group">
+                        <label class="input-label">العنوان الوصفي</label>
+                        <div class="input-wrapper"><input type="text" id="content-title" placeholder="أدخل العنوان..."><svg class="icon" viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg></div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <label class="input-label">تنسيق المصدر</label>
+                            <div class="input-wrapper"><select id="content-type"><option value="html">كود HTML (تفاعلي)</option><option value="link">رابط (URL خارجي)</option></select><svg class="icon" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></div>
+                        </div>
+                        <div>
+                            <label class="input-label" style="color: var(--primary);">ارتباط المجلد</label>
+                            <div class="input-wrapper"><select id="content-folder"><option value="none">بدون (مستقل)</option></select><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></div>
+                        </div>
+                        <div>
+                            <label class="input-label">تخصيص العرض</label>
+                            <div class="input-wrapper"><select id="content-classes" style="border-color: var(--primary); border-width: 2px;"><option value="admin">مسودة للإدارة فقط</option><option value="all">متاح للكل</option></select><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></div>
+                        </div>
                         <div class="hidden"><select id="content-ratio"><option value="16:9"></option></select></div>
                     </div>
-                    <div class="input-group"><label class="input-label">المحتوى البرمجي / الرابط</label><textarea id="content-data" rows="10" style="direction:ltr; background:#0f172a; color:#38bdf8; font-size:15px; font-family:monospace;"></textarea></div>
-                    <div style="display:flex; gap:15px;"><button type="button" id="save-content-btn" onclick="saveContent()" style="padding:15px 30px; font-size:18px;">حفظ المادة</button><button type="button" id="cancel-edit-btn" onclick="cancelEditContent()" class="btn-secondary hidden" style="padding:15px 30px; font-size:18px;">إلغاء الأمر</button></div>
+                    <div class="input-group">
+                        <label class="input-label">المحتوى البرمجي / الرابط</label>
+                        <textarea id="content-data" rows="8" style="direction:ltr; background:#0f172a; color:#38bdf8; font-family:monospace;"></textarea>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button type="button" id="save-content-btn" onclick="saveContent()"><svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> حفظ المادة</button>
+                        <button type="button" id="cancel-edit-btn" onclick="cancelEditContent()" class="btn-secondary hidden"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> إلغاء</button>
+                    </div>
                 </div>
             </div>
 
             <div id="tab-content-manage" class="tab-content">
                 <div class="admin-card" style="background:transparent; border:none; padding:0; box-shadow:none;">
-                    <div style="display:flex; gap:15px; margin-bottom:25px; flex-wrap:wrap;">
-                        <div class="search-container" style="margin:0;"><svg class="icon search-icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><input type="text" id="admin-search-content" placeholder="بحث متقدم في الأرشيف..." onkeyup="processAdminContentSearch()"></div>
-                        <div class="bulk-action-bar" style="margin:0;"><label><input type="checkbox" id="select-all-content" onclick="toggleAllContent(this)"> اختيار السجلات الحالية</label><button type="button" class="btn-danger" onclick="deleteSelectedContent()">حذف المحدد</button></div>
+                    <div style="display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap;">
+                        <div class="search-container" style="margin:0;"><div class="input-wrapper"><input type="text" id="admin-search-content" placeholder="بحث متقدم في الأرشيف..." onkeyup="processAdminContentSearch()"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div></div>
+                        <div class="bulk-action-bar" style="margin:0;"><label><input type="checkbox" id="select-all-content" onclick="toggleAllContent(this)"> اختيار السجلات الحالية</label><button type="button" class="btn-danger" onclick="deleteSelectedContent()"><svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> حذف المحدد</button></div>
                     </div>
                     <div id="admin-content-list"></div>
                 </div>
@@ -437,28 +468,31 @@
 
             <div id="tab-menus" class="tab-content">
                 <div class="admin-card" style="max-width:600px;">
-                    <h2 class="admin-title">تكوين وتصنيف الفهرس</h2>
-                    <div style="display:flex; gap:12px; margin-bottom:25px;"><input type="text" id="new-folder-name" placeholder="اسم التصنيف أو المجلد..." style="margin:0;"><button type="button" onclick="addFolder()" style="white-space:nowrap;">إنشاء القائمة</button></div>
+                    <h2 class="admin-title"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> تكوين المجلدات</h2>
+                    <div style="display:flex; gap:10px; margin-bottom:20px;">
+                        <div class="input-wrapper" style="flex:1;"><input type="text" id="new-folder-name" placeholder="اسم التصنيف أو المجلد..." style="margin:0;"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></div>
+                        <button type="button" onclick="addFolder()" style="white-space:nowrap;"><svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> إنشاء</button>
+                    </div>
                     <ul id="admin-folders-list" style="list-style:none; padding:0;"></ul>
                 </div>
             </div>
 
             <div id="tab-users-add" class="tab-content">
-                <div class="admin-card" style="max-width:600px;">
-                    <h2 class="admin-title" id="add-edit-user-title">هوية وصلاحيات الطالب</h2>
-                    <div class="input-group"><label class="input-label">معرف الطالب</label><input type="text" id="new-user-name" placeholder="اسم الدخول"></div>
-                    <div class="input-group"><label class="input-label">شفرة المرور</label><div class="btn-group"><input type="text" id="new-user-pass" placeholder="تشفير..."><button type="button" onclick="generatePassword()" class="btn-secondary">توليد آمن</button></div></div>
-                    <div class="input-group"><label class="input-label">الفئة أو الصف</label><input type="text" id="new-user-class" placeholder="تصنيف المجموعات"></div>
-                    <label style="display:flex; align-items:center; gap:12px; margin-bottom:25px; padding:15px; border:2px solid var(--border); border-radius:var(--radius-sm); cursor:pointer;"><input type="checkbox" id="new-user-star" style="width:20px;height:20px;"> <strong style="font-size:16px;">حساب إشرافي (VIP Access) ⭐</strong></label>
-                    <div style="display:flex; gap:12px;"><button type="button" id="save-user-btn" onclick="saveUser()" style="padding:15px 30px; font-size:18px;">تثبيت الحساب</button><button type="button" id="cancel-edit-user-btn" onclick="cancelEditUser()" class="btn-secondary hidden" style="padding:15px 30px; font-size:18px;">إلغاء</button></div>
+                <div class="admin-card" style="max-width:550px;">
+                    <h2 class="admin-title" id="add-edit-user-title"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle></svg> إصدار هوية طالب</h2>
+                    <div class="input-group"><label class="input-label">معرف الطالب</label><div class="input-wrapper"><input type="text" id="new-user-name" placeholder="اسم الدخول"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div></div>
+                    <div class="input-group"><label class="input-label">شفرة المرور</label><div class="btn-group"><div class="input-wrapper"><input type="text" id="new-user-pass" placeholder="تشفير..."><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div><button type="button" onclick="generatePassword()" class="btn-secondary"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><circle cx="15.5" cy="15.5" r="1.5"></circle><circle cx="15.5" cy="8.5" r="1.5"></circle><circle cx="8.5" cy="15.5" r="1.5"></circle></svg> توليد</button></div></div>
+                    <div class="input-group"><label class="input-label">الفئة أو الصف</label><div class="input-wrapper"><input type="text" id="new-user-class" placeholder="تصنيف المجموعات"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></div></div>
+                    <label style="display:flex; align-items:center; gap:10px; margin-bottom:20px; padding:12px; border:1px solid var(--border); border-radius:var(--radius-sm); cursor:pointer;"><input type="checkbox" id="new-user-star" style="width:18px;height:18px;"> <strong style="font-size:14px; color:var(--primary);">حساب إشرافي (VIP Access) ⭐</strong></label>
+                    <div style="display:flex; gap:10px;"><button type="button" id="save-user-btn" onclick="saveUser()"><svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> تثبيت الحساب</button><button type="button" id="cancel-edit-user-btn" onclick="cancelEditUser()" class="btn-secondary hidden"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> إلغاء</button></div>
                 </div>
             </div>
 
             <div id="tab-users-manage" class="tab-content">
                 <div class="admin-card" style="background:transparent; border:none; padding:0; box-shadow:none;">
-                    <div style="display:flex; gap:15px; margin-bottom:25px; flex-wrap:wrap;">
-                        <div class="search-container" style="margin:0;"><svg class="icon search-icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><input type="text" id="admin-search-users" placeholder="فلترة المستخدمين..." onkeyup="processAdminUserSearch()"></div>
-                        <div class="bulk-action-bar" style="margin:0;"><label><input type="checkbox" id="select-all-users" onclick="toggleAllUsers(this)"> تأشير المعروض</label><button type="button" class="btn-danger" onclick="deleteSelectedUsers()">مسح الحسابات</button></div>
+                    <div style="display:flex; gap:15px; margin-bottom:20px; flex-wrap:wrap;">
+                        <div class="search-container" style="margin:0;"><div class="input-wrapper"><input type="text" id="admin-search-users" placeholder="فلترة المستخدمين..." onkeyup="processAdminUserSearch()"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div></div>
+                        <div class="bulk-action-bar" style="margin:0;"><label><input type="checkbox" id="select-all-users" onclick="toggleAllUsers(this)"> تأشير المعروض</label><button type="button" class="btn-danger" onclick="deleteSelectedUsers()"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg> مسح الحسابات</button></div>
                     </div>
                     <div id="admin-users-list"></div>
                 </div>
@@ -466,25 +500,25 @@
 
             <div id="tab-pending-users" class="tab-content">
                 <div class="admin-card">
-                    <h2 class="admin-title">التدقيق والاعتماد المكتبي</h2>
+                    <h2 class="admin-title"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> التدقيق والاعتماد المكتبي</h2>
                     <div id="admin-pending-list"></div>
                 </div>
             </div>
             
             <div id="tab-settings" class="tab-content">
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap:25px;">
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
                     <div class="admin-card">
-                        <h2 class="admin-title">أمان حساب الإدارة</h2>
-                        <div class="input-group"><label class="input-label">المعرف الجديد</label><input type="text" id="admin-new-user"></div>
-                        <div class="input-group"><label class="input-label">المرور الجديد</label><input type="password" id="admin-new-pass"></div>
-                        <button type="button" onclick="updateAdminCredentials()" class="btn-danger" style="width:100%; padding:15px;">إنفاذ وإغلاق الجلسة</button>
+                        <h2 class="admin-title"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> أمان الإدارة</h2>
+                        <div class="input-group"><label class="input-label">المعرف الجديد</label><div class="input-wrapper"><input type="text" id="admin-new-user"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div></div>
+                        <div class="input-group"><label class="input-label">المرور الجديد</label><div class="input-wrapper"><input type="password" id="admin-new-pass"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect></svg></div></div>
+                        <button type="button" onclick="updateAdminCredentials()" class="btn-danger" style="width:100%;"><svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> إنفاذ وإغلاق الجلسة</button>
                     </div>
                     <div class="admin-card">
-                        <h2 class="admin-title">مزامنة البيانات (Backup)</h2>
-                        <button type="button" onclick="exportDB()" class="btn-success" style="width:100%; margin-bottom:20px; padding:15px;">تصدير سجلات النظام (Export JSON)</button>
-                        <hr style="border:0; border-top:2px dashed var(--border); margin:20px 0;">
-                        <input type="file" id="import-file" accept=".json" style="margin-bottom:15px; padding:12px; border:2px dashed var(--border); width:100%; border-radius:var(--radius-sm); font-size:14px; background:var(--bg-color);">
-                        <button type="button" onclick="importDB()" class="btn-warning" style="width:100%; padding:15px; color:#000;">إحلال واستعادة البيانات (Import)</button>
+                        <h2 class="admin-title"><svg class="icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg> مزامنة البيانات</h2>
+                        <button type="button" onclick="exportDB()" class="btn-success" style="width:100%; margin-bottom:15px;"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> تصدير السجلات (JSON)</button>
+                        <hr style="border:0; border-top:1px dashed var(--border); margin:15px 0;">
+                        <input type="file" id="import-file" accept=".json" style="margin-bottom:10px; padding:10px; border:1px dashed var(--border); width:100%; border-radius:var(--radius-sm); font-size:13px; background:var(--bg-color);">
+                        <button type="button" onclick="importDB()" class="btn-warning" style="width:100%;"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> إحلال واستعادة البيانات</button>
                     </div>
                 </div>
             </div>
@@ -495,10 +529,12 @@
     <div id="user-section" class="hidden" style="flex: 1; display: flex;">
         <div id="user-layout">
             <aside id="student-sidebar" class="sidebar">
-                <h3><svg class="icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg> محتويات المقرر</h3>
+                <h3><svg class="icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg> الفهرس</h3>
                 <div class="sidebar-search-box">
-                    <input type="text" id="student-search-input" placeholder="بحث دقيق..." onkeyup="processStudentSearch()" onkeypress="if(event.key === 'Enter') searchAllContent()">
-                    <button type="button" onclick="searchAllContent()"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+                    <div class="input-wrapper" style="width: 100%;">
+                        <input type="text" id="student-search-input" placeholder="بحث دقيق..." onkeyup="processStudentSearch()" onkeypress="if(event.key === 'Enter') searchAllContent()">
+                        <button type="button" onclick="searchAllContent()"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+                    </div>
                 </div>
                 <div id="sidebar-content-list" style="flex: 1; overflow-y: auto;"></div>
             </aside>
@@ -507,7 +543,7 @@
     </div>
 
     <div class="version-footer">
-        <div>واجهة المستخدم متوافقة مع معايير Enterprise UI/UX</div>
+        <div>Enterprise UI Responsive Edition V66 | Smart Viewport Control</div>
     </div>
 
     <script>
@@ -620,8 +656,8 @@
 
         function renderPendingUsers() {
             const list = document.getElementById('admin-pending-list'); list.innerHTML = '';
-            if(!db.pendingUsers.length) return list.innerHTML = '<div class="empty-state">سجل الطلبات فارغ حالياً</div>';
-            [...db.pendingUsers].reverse().forEach(u => { list.innerHTML += `<div class="admin-list-item"><div><h4 style="font-size:16px;margin-bottom:6px;">${escapeHTML(u?.username)}</h4><div class="admin-item-meta"><span style="font-size:14px;">${escapeHTML(u?.class)}</span></div></div><div class="admin-item-actions"><button onclick="approveUser('${u?.username}')" class="btn-success">تأكيد الموافقة</button><button onclick="rejectUser('${u?.username}')" class="btn-danger">إلغاء الطلب</button></div></div>`; });
+            if(!db.pendingUsers.length) return list.innerHTML = '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> سجل الطلبات فارغ حالياً</div>';
+            [...db.pendingUsers].reverse().forEach(u => { list.innerHTML += `<div class="admin-list-item"><div><h4 style="font-size:15px;margin-bottom:6px;"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${escapeHTML(u?.username)}</h4><div class="admin-item-meta"><span style="font-size:13px;">${escapeHTML(u?.class)}</span></div></div><div class="admin-item-actions"><button onclick="approveUser('${u?.username}')" class="btn-success btn-icon-only"><svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></button><button onclick="rejectUser('${u?.username}')" class="btn-danger btn-icon-only"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div></div>`; });
         }
         function approveUser(u) { const idx = db.pendingUsers.findIndex(x => x?.username === u); if(idx > -1) { db.users.push(db.pendingUsers[idx]); db.pendingUsers.splice(idx, 1); saveDB(); showToast('تم تفعيل المستخدم'); renderPendingUsers(); updateClassesDropdown(); } }
         function rejectUser(u) { if(confirm('هل أنت متأكد من قرار الرفض؟')) { db.pendingUsers = db.pendingUsers.filter(x => x?.username !== u); saveDB(); showToast('تم رفض الحساب'); renderPendingUsers(); } }
@@ -630,9 +666,9 @@
             document.getElementById('login-section').classList.add('hidden'); document.getElementById('register-section').classList.add('hidden'); document.getElementById('main-header').classList.remove('hidden'); 
             if (isGuestMode) {
                 document.getElementById('welcome-msg').innerText = 'زائر'; document.getElementById('welcome-msg').style.display = 'flex'; 
-                document.getElementById('logout-btn').innerHTML = 'تأكيد الهوية (دخول)'; document.getElementById('sidebar-toggle').classList.remove('hidden'); document.getElementById('student-sidebar').style.display = 'flex'; document.querySelector('.sidebar-search-box').style.display = 'none'; showUserDashboard(); return;
+                document.getElementById('logout-btn').innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg> دخول الحساب'; document.getElementById('sidebar-toggle').classList.remove('hidden'); document.getElementById('student-sidebar').style.display = 'flex'; document.querySelector('.sidebar-search-box').style.display = 'none'; showUserDashboard(); return;
             }
-            document.getElementById('welcome-msg').innerText = escapeHTML(currentUser?.username); document.getElementById('welcome-msg').style.display = 'flex'; document.getElementById('logout-btn').innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> إنهاء الدخول';
+            document.getElementById('welcome-msg').innerText = escapeHTML(currentUser?.username); document.getElementById('welcome-msg').style.display = 'flex'; document.getElementById('logout-btn').innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> خروج';
             if (currentUser?.role === 'admin') { 
                 const b = document.getElementById('install-pwa-btn'); if(b) b.classList.add('hidden');
                 if (localStorage.getItem('adminPreviewMode_' + currentUser?.username) === 'true') { showPreview(true); } else { document.getElementById('admin-section').classList.remove('hidden'); document.getElementById('preview-btn').classList.remove('hidden'); refreshDashboard(); }
@@ -655,7 +691,7 @@
         window.exitCSSFullScreen = function(id) { const w = document.getElementById(id); if(w) { w.classList.remove('css-fullscreen'); document.body.style.overflow = ''; } }
 
         function updateClassesDropdown() {
-            const s = document.getElementById('content-classes'); if(!s) return; const v = s.value; s.innerHTML = `<option value="admin">مقيد للإدارة</option><option value="all">مفتوح للملأ</option>`;
+            const s = document.getElementById('content-classes'); if(!s) return; const v = s.value; s.innerHTML = `<option value="admin">مسودة للإدارة</option><option value="all">مفتوح للجميع</option>`;
             const set = new Set(); db.users.forEach(u => { if (u?.role === 'student' && u?.class) set.add(escapeHTML(u.class)); }); db.contents.forEach(c => { if(c?.classes) c.classes.forEach(x => { if(x !== 'admin_only') set.add(escapeHTML(x)); }); });
             set.forEach(x => s.innerHTML += `<option value="${x}">${x}</option>`); if(v && [...s.options].some(o => o.value === v)) s.value = v;
         }
@@ -666,8 +702,9 @@
         
         function renderAdminFolders() { 
             const l = document.getElementById('admin-folders-list'); l.innerHTML = ''; 
+            if(!db.folders.length) return l.innerHTML = '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>لا يوجد مجلدات</div>';
             db.folders.forEach(f => { 
-                l.innerHTML += `<li class="admin-list-item"><strong style="font-size:16px;">${f}</strong><div style="display:flex;gap:8px;"><button class="btn-info btn-icon-only" onclick="copyShareLink('folder', '${f}', this)" title="نسخ رابط القائمة"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></button><button class="btn-warning btn-icon-only" onclick="editFolder('${f}')" title="تعديل"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button class="btn-danger btn-icon-only" onclick="deleteFolder('${f}')" title="إزالة"><svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></li>`; 
+                l.innerHTML += `<li class="admin-list-item"><strong style="font-size:14px; display:flex; align-items:center; gap:8px;"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> ${f}</strong><div style="display:flex;gap:6px;"><button class="btn-icon-only" onclick="copyShareLink('folder', '${f}', this)" title="نسخ رابط القائمة"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></button><button class="btn-icon-only" onclick="editFolder('${f}')" title="تعديل"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button class="btn-icon-only" style="color:var(--danger);" onclick="deleteFolder('${f}')" title="حذف"><svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></li>`; 
             }); 
         }
         function updateFolderDropdowns() { const s = document.getElementById('content-folder'); s.innerHTML = '<option value="none">مستقل</option>'; db.folders.forEach(f => s.innerHTML += `<option value="${f}">${f}</option>`); }
@@ -675,24 +712,24 @@
         function saveContent() {
             const t = escapeHTML(document.getElementById('content-title').value.trim()); const ty = document.getElementById('content-type').value; const f = document.getElementById('content-folder').value; const d = document.getElementById('content-data').value.trim(); const c = document.getElementById('content-classes').value; const r = document.getElementById('content-ratio').value;
             let arr = c === 'admin' ? ['admin_only'] : (c === 'all' ? [] : [c]);
-            if (!t || !d) return showToast('الاستمارة ناقصة', 'error');
+            if (!t || !d) return showToast('أكمل البيانات', 'error');
             if (currentEditContentId) { db.contents[db.contents.findIndex(x => x?.id === currentEditContentId)] = { id: currentEditContentId, title: t, type: ty, data: d, classes: arr, folder: f, ratio: r }; cancelEditContent(); } else { db.contents.push({ id: Date.now(), title: t, type: ty, data: d, classes: arr, folder: f, ratio: r }); document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; } saveDB(); filterAdminContent(); showToast('تم توثيق ونشر المادة');
         }
         function filterAdminContent() {
             const term = document.getElementById('admin-search-content').value.toLowerCase(); const list = document.getElementById('admin-content-list'); list.innerHTML = '';
             const res = db.contents.filter(i => i?.title?.toLowerCase().includes(term) || (i?.folder||'').toLowerCase().includes(term));
-            if(!res.length) return list.innerHTML = '<div class="empty-state">سجل الأرشيف فارغ وفق معطياتك</div>';
+            if(!res.length) return list.innerHTML = '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> الأرشيف فارغ وفق معطياتك</div>';
             [...res].reverse().forEach(i => { 
-                list.innerHTML += `<div class="admin-list-item"><div><h4 style="font-size:16px; font-weight:800;"><input type="checkbox" class="content-checkbox" value="${i?.id}" style="margin-left:8px;"> ${i?.title}</h4><div class="admin-item-meta" style="font-size:13px; margin-top:6px;"><span>${i?.folder==='none'?'غير مجدول':i?.folder}</span></div></div><div class="admin-item-actions"><button onclick="copyShareLink('content', '${i?.id}', this)" class="btn-info btn-icon-only" title="رابط المادة"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></button><button onclick="editContent(${i?.id})" class="btn-warning btn-icon-only" title="تعديل"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button onclick="deleteContent(${i?.id})" class="btn-danger btn-icon-only" title="إزالة"><svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></div>`; 
+                list.innerHTML += `<div class="admin-list-item"><div><h4 style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><input type="checkbox" class="content-checkbox" value="${i?.id}"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> ${i?.title}</h4><div class="admin-item-meta" style="font-size:12px; margin-top:6px;"><span>${i?.folder==='none'?'مستقل':i?.folder}</span></div></div><div class="admin-item-actions"><button onclick="copyShareLink('content', '${i?.id}', this)" class="btn-icon-only" title="رابط المادة"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></button><button onclick="editContent(${i?.id})" class="btn-icon-only" title="تعديل"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button onclick="deleteContent(${i?.id})" class="btn-icon-only" style="color:var(--danger);" title="إزالة"><svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></div>`; 
             });
         }
         function deleteContent(id) { if(confirm('هل تعي أن الإجراء يمحو الدرس بالكامل؟')) { db.contents = db.contents.filter(c => c?.id !== id); saveDB(); filterAdminContent(); } }
         function toggleAllContent(src) { document.querySelectorAll('.content-checkbox').forEach(cb => cb.checked = src?.checked); }
         function deleteSelectedContent() { const sel = Array.from(document.querySelectorAll('.content-checkbox:checked')).map(cb => parseInt(cb.value)); if(!sel.length) return; if(confirm('إزالة الجملة من النظام؟')) { db.contents = db.contents.filter(c => !sel.includes(c?.id)); saveDB(); filterAdminContent(); } }
-        function editContent(id) { const i = db.contents.find(c => c?.id === id); if(!i) return; document.getElementById('content-title').value = i.title; document.getElementById('content-type').value = i.type; document.getElementById('content-folder').value = i.folder || 'none'; document.getElementById('content-data').value = i.data; document.getElementById('content-classes').value = (i.classes && i.classes.includes('admin_only')) ? 'admin' : (!i.classes.length ? 'all' : i.classes[0]); currentEditContentId = id; document.getElementById('save-content-btn').innerText = 'تطبيق التعديل'; document.getElementById('cancel-edit-btn').classList.remove('hidden'); openTab(null, 'tab-content-add'); window.scrollTo(0,0); }
-        function cancelEditContent() { currentEditContentId = null; document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; document.getElementById('save-content-btn').innerText = 'حفظ وتثبيت النشر'; document.getElementById('cancel-edit-btn').classList.add('hidden'); }
+        function editContent(id) { const i = db.contents.find(c => c?.id === id); if(!i) return; document.getElementById('content-title').value = i.title; document.getElementById('content-type').value = i.type; document.getElementById('content-folder').value = i.folder || 'none'; document.getElementById('content-data').value = i.data; document.getElementById('content-classes').value = (i.classes && i.classes.includes('admin_only')) ? 'admin' : (!i.classes.length ? 'all' : i.classes[0]); currentEditContentId = id; document.getElementById('save-content-btn').innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> تطبيق التعديل'; document.getElementById('cancel-edit-btn').classList.remove('hidden'); openTab(null, 'tab-content-add'); window.scrollTo(0,0); }
+        function cancelEditContent() { currentEditContentId = null; document.getElementById('content-title').value = ''; document.getElementById('content-data').value = ''; document.getElementById('save-content-btn').innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> حفظ المادة'; document.getElementById('cancel-edit-btn').classList.add('hidden'); }
         
-        function generatePassword() { document.getElementById('new-user-pass').value = Math.random().toString(36).slice(-7) + Math.floor(Math.random() * 99); }
+        function generatePassword() { document.getElementById('new-user-pass').value = Math.random().toString(36).slice(-6) + Math.floor(Math.random() * 99); }
         function saveUser() {
             const u = escapeHTML(document.getElementById('new-user-name').value.trim()); const p = document.getElementById('new-user-pass').value.trim(); const c = escapeHTML(document.getElementById('new-user-class').value.trim()); const s = document.getElementById('new-user-star').checked;
             if(!u || !p) return; if(currentEditUserOldName) { if(u !== currentEditUserOldName && db.users.find(x => x?.username === u)) return; db.users[db.users.findIndex(x => x?.username === currentEditUserOldName)] = { username: u, password: p, role: 'student', class: c, isStar: s }; cancelEditUser(); showToast('تم التعديل بنجاح');} else { if(db.users.find(x => x?.username === u)) return; db.users.push({ username: u, password: p, role: 'student', class: c, isStar: s }); document.getElementById('new-user-name').value=''; document.getElementById('new-user-pass').value=''; document.getElementById('new-user-class').value=''; showToast('شمل الطالب بالمظلة التامة');} saveDB(); filterAdminUsers();
@@ -700,16 +737,16 @@
         function filterAdminUsers() {
             const term = document.getElementById('admin-search-users').value.toLowerCase(); const list = document.getElementById('admin-users-list'); list.innerHTML = '';
             const res = db.users.filter(u => u?.role === 'student' && (u?.username?.toLowerCase().includes(term) || (u?.class||'').toLowerCase().includes(term)));
-            if(!res.length) return list.innerHTML = '<div class="empty-state">العضوية غير موجودة</div>';
+            if(!res.length) return list.innerHTML = '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>العضوية غير موجودة</div>';
             [...res].reverse().forEach(u => { 
-                list.innerHTML += `<div class="admin-list-item"><div><h4 style="font-size:16px; font-weight:800;"><input type="checkbox" class="user-checkbox" value="${u?.username}" style="margin-left:8px;"> ${u?.username}</h4><div class="admin-item-meta" style="font-size:13px; margin-top:6px;"><span>${u?.class||'-'}</span> <span>${u?.isStar?'⭐ حيازة مطلقة':''}</span></div></div><div class="admin-item-actions"><button onclick="copyCredentials('${u?.username}', '${u?.password}', this)" class="btn-info btn-icon-only" title="نسخ مفاتيح الدخول"><svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><button onclick="editUser('${u?.username}')" class="btn-warning btn-icon-only" title="تحديث الخواص"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button onclick="deleteUser('${u?.username}')" class="btn-danger btn-icon-only" title="طرد العضو"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg></button></div></div>`; 
+                list.innerHTML += `<div class="admin-list-item"><div><h4 style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><input type="checkbox" class="user-checkbox" value="${u?.username}"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${u?.username}</h4><div class="admin-item-meta" style="font-size:12px; margin-top:6px;"><span>${u?.class||'-'}</span> <span>${u?.isStar?'⭐ حيازة مطلقة':''}</span></div></div><div class="admin-item-actions"><button onclick="copyCredentials('${u?.username}', '${u?.password}', this)" class="btn-icon-only" title="نسخ مفاتيح الدخول"><svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><button onclick="editUser('${u?.username}')" class="btn-icon-only" title="تحديث الخواص"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button onclick="deleteUser('${u?.username}')" class="btn-icon-only" style="color:var(--danger);" title="طرد العضو"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg></button></div></div>`; 
             });
         }
         function deleteUser(u) { if(confirm('هل تعي أن طرد العضو يغلق عليه كافة السبل؟')) { db.users = db.users.filter(x => x?.username !== u); saveDB(); filterAdminUsers(); } }
         function toggleAllUsers(src) { document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = src?.checked); }
         function deleteSelectedUsers() { const sel = Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => cb.value); if(!sel.length) return; if(confirm('شطب المجموعة المقررة؟')) { db.users = db.users.filter(u => !sel.includes(u?.username)); saveDB(); filterAdminUsers(); } }
-        function editUser(u) { const i = db.users.find(x => x?.username === u); if(!i) return; document.getElementById('new-user-name').value = i.username; document.getElementById('new-user-pass').value = i.password; document.getElementById('new-user-class').value = i.class || ''; document.getElementById('new-user-star').checked = i.isStar; currentEditUserOldName = u; document.getElementById('save-user-btn').innerText = 'الموافقة على التعديلات'; document.getElementById('cancel-edit-user-btn').classList.remove('hidden'); openTab(null, 'tab-users-add'); window.scrollTo(0,0); }
-        function cancelEditUser() { currentEditUserOldName = null; document.getElementById('new-user-name').value = ''; document.getElementById('new-user-pass').value = ''; document.getElementById('new-user-class').value = ''; document.getElementById('new-user-star').checked = false; document.getElementById('save-user-btn').innerText = 'إصدار حساب جديد'; document.getElementById('cancel-edit-user-btn').classList.add('hidden'); }
+        function editUser(u) { const i = db.users.find(x => x?.username === u); if(!i) return; document.getElementById('new-user-name').value = i.username; document.getElementById('new-user-pass').value = i.password; document.getElementById('new-user-class').value = i.class || ''; document.getElementById('new-user-star').checked = i.isStar; currentEditUserOldName = u; document.getElementById('save-user-btn').innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> الموافقة على التعديلات'; document.getElementById('cancel-edit-user-btn').classList.remove('hidden'); openTab(null, 'tab-users-add'); window.scrollTo(0,0); }
+        function cancelEditUser() { currentEditUserOldName = null; document.getElementById('new-user-name').value = ''; document.getElementById('new-user-pass').value = ''; document.getElementById('new-user-class').value = ''; document.getElementById('new-user-star').checked = false; document.getElementById('save-user-btn').innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> تثبيت الحساب'; document.getElementById('cancel-edit-user-btn').classList.add('hidden'); }
         
         function updateAdminCredentials() { const u = escapeHTML(document.getElementById('admin-new-user').value.trim()); const p = document.getElementById('admin-new-pass').value; if(u && p) { db.users[0].username = u; db.users[0].password = p; saveDB(); logout(); } }
         function exportDB() { const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db)); a.download = "DB_Platform.json"; document.body.appendChild(a); a.click(); a.remove(); }
@@ -741,25 +778,31 @@
                 let grp = {}; let ind = []; res.forEach(i => { if(i?.folder && i.folder !== 'none') { if(!grp[i.folder]) grp[i.folder] = []; grp[i.folder].push(i); } else ind.push(i); });
                 let h = '';
                 
-                // تصميم القائمة المنسدلة (Accordion) المطلوب مع زر النسخ
+                // تصميم القائمة المنسدلة (Accordion) المتقدم مع زر النسخ
                 for(let f in grp) { 
-                    h += `<details ${isGuestMode?'open':''}><summary>
-                        <div class="summary-content">
-                            <svg class="icon arrow-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                            <span>${f}</span>
-                        </div>
-                        <button onclick="event.stopPropagation(); event.preventDefault(); copyShareLink('folder', '${f}', this);" class="btn-outline" style="padding:6px 10px; font-size:12px; border-radius:6px;" title="نسخ رابط المجلد بالكامل"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> نسخ</button>
-                    </summary><ul>`; 
-                    grp[f].forEach(i => { h += `<li class="sidebar-item" onclick="showSingleContent(${i?.id}, this)">${i?.title}</li>`; }); h += `</ul></details>`; 
+                    h += `<details ${isGuestMode?'open':''} class="premium-accordion">
+                        <summary>
+                            <div class="summary-content">
+                                <svg class="icon folder-icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                <span>${f}</span>
+                            </div>
+                            <div class="summary-actions">
+                                <button onclick="event.stopPropagation(); event.preventDefault(); copyShareLink('folder', '${f}', this);" class="btn-copy-folder" title="نسخ رابط القائمة">
+                                    <svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> نسخ
+                                </button>
+                                <svg class="icon arrow-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                        </summary><ul>`; 
+                    grp[f].forEach(i => { h += `<li class="sidebar-item" onclick="showSingleContent(${i?.id}, this)"><svg class="icon" viewBox="0 0 24 24" style="width:16px;height:16px;opacity:0.7;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> ${i?.title}</li>`; }); h += `</ul></details>`; 
                 }
-                ind.forEach(i => { h += `<div class="independent-item" onclick="showSingleContent(${i?.id}, this)">${i?.title}</div>`; });
-                sb.innerHTML = h || '<div class="empty-state">المسار التدريسي فارغ</div>';
+                ind.forEach(i => { h += `<div class="independent-item" onclick="showSingleContent(${i?.id}, this)"><svg class="icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> ${i?.title}</div>`; });
+                sb.innerHTML = h || '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> المسار التدريسي فارغ</div>';
                 
                 const sid = localStorage.getItem('lastViewedContentId_' + (currentUser?.username || 'g'));
                 let load = vC ? res.find(c => c?.id == vC) : (sid && !isGuestMode ? res.find(c => c?.id == sid) : null);
                 if (load) setTimeout(() => { let el = null; document.querySelectorAll('.sidebar-item, .independent-item').forEach(e => { if(e.getAttribute('onclick')?.includes(load.id)) el = e; }); showSingleContent(load.id, el); if(el?.closest('details')) el.closest('details').open = true; }, 50);
                 else if (vF) setTimeout(() => { renderContentItems(res.filter(c => c?.folder === vF).reverse()); document.querySelectorAll('.sidebar summary').forEach(s => { if(s.innerText.includes(vF)) s.closest('details').open = true; }); }, 50);
-                else document.getElementById('content-display').innerHTML = '<div class="empty-state" style="padding:100px 20px;">الردهة الرئيسية جاهزة. قم باختيار المحتوى المراد فتحه من الفهرس.</div>';
+                else document.getElementById('content-display').innerHTML = '<div class="empty-state" style="padding:100px 20px;"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4"></path><path d="M12 16h.01"></path></svg>الردهة الرئيسية جاهزة. قم باختيار المحتوى المراد فتحه من الفهرس.</div>';
             } catch(e) {}
         }
 
@@ -769,20 +812,19 @@
         function renderContentItems(arr) {
             try {
                 const d = document.getElementById('content-display'); d.innerHTML = '';
-                if(!arr.length) return d.innerHTML = '<div class="empty-state">نطاق الاستدعاء خالٍ من المحتوى المقروء.</div>';
+                if(!arr.length) return d.innerHTML = '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>نطاق الاستدعاء خالٍ من المحتوى المقروء.</div>';
                 arr.forEach(i => {
                     const div = document.createElement('div'); div.className = 'content-item academic-text';
                     let html = '';
                     
-                    // زر نسخ رابط الدرس المطلوب رجوعه
-                    let copyLinkBtn = `<button type="button" onclick="copyShareLink('content', ${i?.id}, this)" class="btn-outline" style="padding:8px 16px; font-size:14px; border-radius:20px; display:flex; align-items:center; gap:8px;" title="حفظ المسار"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> استخراج الرابط</button>`;
+                    let copyLinkBtn = `<button type="button" onclick="copyShareLink('content', ${i?.id}, this)" class="btn-outline" style="padding:8px 16px; font-size:13px; border-radius:20px; display:flex; align-items:center; gap:8px;" title="حفظ المسار"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> استخراج الرابط</button>`;
 
                     if (i?.type === 'html') {
                         const wid = `w-${i?.id}`; let safe = i.data.replace(/user-scalable=[a-z0-9]+/gi, 'user-scalable=yes').replace(/maximum-scale=[0-9.]+/gi, 'maximum-scale=5.0');
                         const m = `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"><style>html,body{margin:0!important;padding:0!important;width:100%!important;min-height:100vh!important;touch-action:pan-x pan-y pinch-zoom!important;}iframe{width:100%!important;height:100vh!important;border:none!important;}</style>`;
                         safe = (!safe.includes('touch-action')) ? (safe.includes('</head>') ? safe.replace(/<\/head>/i, m + '</head>') : m + safe) : safe; safe = safe.replace(/"/g, '&quot;');
                         
-                        // زر الشاشة الكاملة المصحح والمطابق للصورة دون التفاف النص
+                        // زر الشاشة الكاملة المطابق تماماً للصورة
                         const tb = `
                         <div class="fullscreen-top-bar">
                             <button class="fullscreen-close-btn" onclick="exitCSSFullScreen('${wid}')">
@@ -794,8 +836,8 @@
                             </button>
                         </div>`;
                         
-                        html = `<div class="content-header"><h3 class="content-title">${i?.title}</h3><div class="header-actions">${copyLinkBtn}<button onclick="toggleCSSFullScreen('${wid}')" class="btn-secondary" style="padding:8px 16px; font-size:14px; border-radius:20px;">ملء الحيز البصري <svg class="icon" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg></button></div></div><div id="${wid}" class="iframe-responsive-wrapper">${tb}<iframe class="html-sandbox" srcdoc="${safe}" allowfullscreen loading="lazy"></iframe></div>`;
-                    } else { html = `<div class="content-header"><h3 class="content-title">${i?.title}</h3><div class="header-actions">${copyLinkBtn}</div></div><a href="${i?.data}" target="_blank" style="display:flex;justify-content:center;padding:25px;background:var(--primary);color:white;text-decoration:none;border-radius:var(--radius-md);font-weight:bold;font-size:20px; box-shadow:var(--shadow-md);">بدء تصفح المنظومة الخارجية</a>`; }
+                        html = `<div class="content-header"><h3 class="content-title"><svg class="icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> ${i?.title}</h3><div class="header-actions">${copyLinkBtn}<button onclick="toggleCSSFullScreen('${wid}')" class="btn-secondary" style="padding:8px 16px; font-size:13px; border-radius:20px;">ملء الحيز البصري <svg class="icon" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg></button></div></div><div id="${wid}" class="iframe-responsive-wrapper">${tb}<iframe class="html-sandbox" srcdoc="${safe}" allowfullscreen loading="lazy"></iframe></div>`;
+                    } else { html = `<div class="content-header"><h3 class="content-title"><svg class="icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> ${i?.title}</h3><div class="header-actions">${copyLinkBtn}</div></div><a href="${i?.data}" target="_blank" style="display:flex;justify-content:center;padding:20px;background:var(--primary-gradient);color:white;text-decoration:none;border-radius:var(--radius-md);font-weight:bold;font-size:18px; box-shadow:var(--shadow-md); align-items:center; gap:10px;"><svg class="icon" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg> بدء تصفح المنظومة الخارجية</a>`; }
                     div.innerHTML = html; d.appendChild(div);
                 });
             } catch (e) {}
