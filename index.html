@@ -1159,11 +1159,22 @@
         document.getElementById('main-header').classList.remove('hidden');
 
         if (isGuestMode) {
+            const p = new URLSearchParams(location.search);
+            const vC = p.get('view_content');
+
             document.getElementById('welcome-msg').innerText = 'زائر';
             document.getElementById('welcome-msg').style.display = 'flex';
             document.getElementById('logout-btn').innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg> <span>دخول</span>';
-            document.getElementById('sidebar-toggle').classList.remove('hidden');
-            document.getElementById('student-sidebar').style.display = 'flex';
+            
+            // تعديل: إذا كان الرابط مخصصاً لدرس واحد، نخفي الفهرس الجانبي تماماً
+            if (vC) {
+                document.getElementById('sidebar-toggle').classList.add('hidden');
+                document.getElementById('student-sidebar').style.display = 'none';
+            } else {
+                document.getElementById('sidebar-toggle').classList.remove('hidden');
+                document.getElementById('student-sidebar').style.display = 'flex';
+            }
+            
             document.querySelector('.sidebar-search-box').style.display = 'none';
             showUserDashboard(); return;
         }
@@ -1497,9 +1508,14 @@
             try { const p = new URLSearchParams(location.search); vC = p.get('view_content'); vF = p.get('view_folder'); } catch(e) {}
 
             let res = db.contents.filter(canViewContent);
+            
+            // تعديل: جلب الدرس المعني فقط عند وجود رابط مباشر لدرس واحد وتجاهل باقي دروس مجلده
             if (isGuestMode) {
                 if (vF) res = res.filter(c => c?.folder === vF);
-                else if (vC) { const s = res.find(c => c?.id == vC); res = s && s.folder !== 'none' ? res.filter(c => c?.folder === s.folder) : (s ? [s] : []); }
+                else if (vC) {
+                    const s = res.find(c => c?.id == vC);
+                    res = s ? [s] : []; // جلب الدرس المحدد فقط لا غير
+                }
             }
 
             const sb = document.getElementById('sidebar-content-list'); sb.innerHTML = '';
