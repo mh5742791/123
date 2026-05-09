@@ -780,15 +780,45 @@
             <div id="tab-content-add" class="tab-content active">
                 <div class="admin-card">
                     <h2 class="admin-title" id="add-edit-title"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> إضافة ورفع مادة علمية</h2>
-                    <div class="input-group"><label class="input-label">العنوان الوصفي للدرس</label><input type="text" id="content-title" placeholder="أدخل العنوان..."></div>
+                    <div class="input-group">
+                        <label class="input-label" style="display:flex;align-items:center;gap:6px;">
+                            <svg class="icon" style="width:16px;height:16px;color:var(--primary);" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            العنوان الوصفي للدرس
+                        </label>
+                        <input type="text" id="content-title" placeholder="أدخل العنوان...">
+                    </div>
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:18px;">
-                        <div><label class="input-label">نوع التنسيق</label><select id="content-type"><option value="html">كود HTML (تفاعلي)</option><option value="link">رابط (URL خارجي)</option></select></div>
-                        <div><label class="input-label" style="color:var(--primary);">ارتباط المجلد</label><select id="content-folder"><option value="none">بدون (مستقل)</option></select></div>
-                        <div><label class="input-label">تخصيص العرض</label><select id="content-classes" style="border-color:var(--primary);border-width:2px;"><option value="admin">مسودة للإدارة فقط</option><option value="all">متاح للكل</option></select></div>
+                        <div>
+                            <label class="input-label" style="display:flex;align-items:center;gap:6px;">
+                                <svg class="icon" style="width:16px;height:16px;color:var(--primary);" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                                نوع التنسيق
+                            </label>
+                            <select id="content-type"><option value="html">كود HTML (تفاعلي)</option><option value="link">رابط (URL خارجي)</option></select>
+                        </div>
+                        <div>
+                            <label class="input-label" style="color:var(--primary);display:flex;align-items:center;gap:6px;">
+                                <svg class="icon" style="width:16px;height:16px;color:var(--primary);" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                ارتباط المجلد
+                            </label>
+                            <select id="content-folder"><option value="none">بدون (مستقل)</option></select>
+                        </div>
+                        <div>
+                            <label class="input-label" style="display:flex;align-items:center;gap:6px;">
+                                <svg class="icon" style="width:16px;height:16px;color:var(--primary);" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                تخصيص العرض
+                            </label>
+                            <select id="content-classes" style="border-color:var(--primary);border-width:2px;">
+                                <option value="all" selected>متاح للكل (الافتراضي)</option>
+                                <option value="admin">مسودة للإدارة فقط</option>
+                            </select>
+                        </div>
                         <div class="hidden"><select id="content-ratio"><option value="16:9"></option></select></div>
                     </div>
                     <div class="input-group">
-                        <label class="input-label">المحتوى البرمجي / الرابط</label>
+                        <label class="input-label" style="display:flex;align-items:center;gap:6px;">
+                            <svg class="icon" style="width:16px;height:16px;color:var(--primary);" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                            المحتوى البرمجي / الرابط
+                        </label>
                         <textarea id="content-data" rows="10" style="direction:ltr;background:#0f172a;color:#38bdf8;font-family:monospace;font-size:14px;border-radius:var(--radius-md);padding:14px;"></textarea>
                     </div>
                     <div style="display:flex;gap:12px;flex-wrap:wrap;">
@@ -1257,7 +1287,8 @@
     function updateClassesDropdown() {
         const s = document.getElementById('content-classes'); if (!s) return;
         const v = s.value;
-        s.innerHTML = `<option value="admin">مسودة للإدارة</option><option value="all">متاح للكل</option>`;
+        // التعديل: هنا نجعل "متاح للكل" هو العنصر الأول والافتراضي في القائمة المُنشأة
+        s.innerHTML = `<option value="all">متاح للكل (الافتراضي)</option><option value="admin">مسودة للإدارة</option>`;
         const set = new Set();
         db.users.forEach(u => { if (u?.role === 'student' && u?.class) set.add(escapeHTML(u.class)); });
         db.contents.forEach(c => { if (c?.classes) c.classes.forEach(x => { if (x !== 'admin_only') set.add(escapeHTML(x)); }); });
@@ -1320,6 +1351,7 @@
             db.contents.push({ id: Date.now(), title: t, type: ty, data: d, classes: arr, folder: f, ratio: r });
             document.getElementById('content-title').value = '';
             document.getElementById('content-data').value = '';
+            document.getElementById('content-classes').value = 'all'; // إرجاعها للافتراضي بعد الحفظ
             showToast('رائع! تم النشر');
         }
         saveDB(); filterAdminContent();
@@ -1359,6 +1391,7 @@
         currentEditContentId = null;
         document.getElementById('content-title').value = '';
         document.getElementById('content-data').value  = '';
+        document.getElementById('content-classes').value = 'all'; // إرجاعها للافتراضي عند الإلغاء
         document.getElementById('save-content-btn').innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> حفظ المادة';
         document.getElementById('cancel-edit-btn').classList.add('hidden');
     }
