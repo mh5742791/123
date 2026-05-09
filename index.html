@@ -486,9 +486,7 @@
             position: fixed !important; inset: 0 !important;
             width: 100vw !important; height: 100vh !important; height: 100dvh !important;
             background: #fff !important; border-radius: 0 !important; border: none !important;
-            z-index: 9999999 !important; overflow: hidden !important; 
-            padding-top: 56px !important;
-            padding-bottom: 56px !important; /* مساحة للشريط السفلي */
+            z-index: 9999999 !important; overflow: hidden !important; padding-top: 56px !important;
         }
         .fullscreen-top-bar {
             display: none; position: absolute; top: 0; left: 0; right: 0; height: 56px;
@@ -496,19 +494,7 @@
             align-items: center; justify-content: flex-end; padding: 0 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,.3);
         }
-        
-        /* الشريط السفلي الجديد لوضع الشاشة الكاملة */
-        .fullscreen-bottom-bar {
-            display: none; position: absolute; bottom: 0; left: 0; right: 0; height: 56px;
-            background: #1e293b; border-top: 2px solid #0f172a; z-index: 99999999;
-            box-shadow: 0 -4px 12px rgba(0,0,0,.3);
-        }
-
-        .iframe-responsive-wrapper.css-fullscreen .fullscreen-top-bar,
-        .iframe-responsive-wrapper.css-fullscreen .fullscreen-bottom-bar { 
-            display: flex; position: fixed; 
-        }
-
+        .iframe-responsive-wrapper.css-fullscreen .fullscreen-top-bar { display: flex; position: fixed; }
         .fullscreen-close-btn {
             background: #ef4444; color: #fff; border: 2px solid #fff; cursor: pointer;
             padding: 8px 20px; border-radius: 50px;
@@ -518,12 +504,8 @@
         }
         .fullscreen-close-btn:hover { background: #dc2626; }
         .fullscreen-close-btn svg  { width: 20px; height: 20px; stroke-width: 2.5; flex-shrink: 0; }
-        
         .iframe-responsive-wrapper.css-fullscreen .html-sandbox {
-            /* خصم ارتفاع الشريط العلوي والسفلي (56 + 56 = 112) */
-            height: calc(100vh - 112px) !important; 
-            height: calc(100dvh - 112px) !important; 
-            border-radius: 0;
+            height: calc(100vh - 56px) !important; height: calc(100dvh - 56px) !important; border-radius: 0;
         }
 
         /* ════════════════════════════════════════════════════
@@ -1675,9 +1657,6 @@
                             </button>
                         </div>
                         <iframe class="html-sandbox" srcdoc="${safe}" allowfullscreen loading="lazy"></iframe>
-                        
-                        <!-- الشريط السفلي الجديد في وضع الشاشة الكاملة -->
-                        <div class="fullscreen-bottom-bar"></div>
                     </div>`;
                 } else {
                     html = `
