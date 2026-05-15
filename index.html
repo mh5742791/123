@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#f3f2f1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="المنصة التعليمية">
@@ -19,64 +19,66 @@
 
     <style>
         /* ════════════════════════════════════════════════════
-           CSS Variables & Theming
+           Microsoft Fluent Design Variables
            ════════════════════════════════════════════════════ */
         :root {
-            --primary:          #2563eb;
-            --primary-hover:    #1d4ed8;
-            --primary-light:    #eff6ff;
-            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --primary:          #0078D4; /* Microsoft Blue */
+            --primary-hover:    #106EBE;
+            --primary-light:    #EFF6FC;
+            --primary-gradient: #0078D4; /* Solid in Fluent */
 
-            --secondary:        #0ea5e9;
-            --secondary-hover:  #0284c7;
+            --secondary:        #2B88D8;
+            --secondary-hover:  #005A9E;
 
-            --bg-color:         #f8fafc;
-            --card-bg:          #ffffff;
-            --text-main:        #0f172a;
-            --text-muted:       #475569;
-            --border:           #e2e8f0;
-            --border-light:     #f1f5f9;
+            --bg-color:         #F3F2F1; /* Fluent Background */
+            --card-bg:          #FFFFFF;
+            --text-main:        #323130; /* Fluent Text */
+            --text-muted:       #605E5C;
+            --border:           #EDEBE9;
+            --border-light:     #F3F2F1;
 
-            --success:          #10b981;
-            --success-hover:    #059669;
-            --danger:           #ef4444;
-            --danger-hover:     #dc2626;
-            --warning:          #f59e0b;
-            --warning-hover:    #d97706;
+            --success:          #107C10;
+            --success-hover:    #0B5A0B;
+            --danger:           #D13438;
+            --danger-hover:     #A4262C;
+            --warning:          #D83B01;
+            --warning-hover:    #A80000;
 
-            --shadow-xs:  0 1px 2px 0 rgba(0,0,0,.05);
-            --shadow-sm:  0 2px 4px 0 rgba(0,0,0,.06);
-            --shadow-md:  0 6px 10px -2px rgba(0,0,0,.1);
-            --shadow-lg:  0 15px 20px -5px rgba(0,0,0,.1);
-            --focus-ring: 0 0 0 4px rgba(37,99,235,.15);
+            /* Fluent Elevation Shadows */
+            --shadow-xs:  0 2px 4px rgba(0,0,0,0.04);
+            --shadow-sm:  0 2px 4px rgba(0,0,0,0.08), 0 0 2px rgba(0,0,0,0.08);
+            --shadow-md:  0 4px 8px rgba(0,0,0,0.10), 0 0 2px rgba(0,0,0,0.10);
+            --shadow-lg:  0 8px 16px rgba(0,0,0,0.14), 0 0 2px rgba(0,0,0,0.12);
+            --focus-ring: 0 0 0 2px #FFFFFF, 0 0 0 4px var(--primary);
 
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 24px;
+            /* Fluent Corner Radii (Sharper than Material) */
+            --radius-sm: 4px;
+            --radius-md: 4px;
+            --radius-lg: 8px;
+            --radius-xl: 8px;
 
-            --transition-fast:   0.2s ease;
-            --transition-smooth: 0.3s cubic-bezier(.4,0,.2,1);
+            --transition-fast:   0.15s ease;
+            --transition-smooth: 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
 
-            --header-h: 70px;
+            --header-h: 60px; /* Slimmer header */
         }
 
-        /* ── Dark Mode ── */
+        /* ── Dark Mode (Fluent Dark) ── */
         body.dark-mode {
-            --primary:          #3b82f6;
-            --primary-hover:    #60a5fa;
-            --primary-light:    #1e3a8a;
-            --primary-gradient: linear-gradient(135deg,#60a5fa 0%,#2563eb 100%);
-            --bg-color:   #0f172a;
-            --card-bg:    #1e293b;
-            --text-main:  #f8fafc;
-            --text-muted: #94a3b8;
-            --border:     #334155;
-            --border-light:#1e293b;
-            --shadow-sm: 0 2px 4px 0 rgba(0,0,0,.3);
-            --shadow-md: 0 6px 10px -2px rgba(0,0,0,.4);
-            --shadow-lg: 0 15px 20px -5px rgba(0,0,0,.5);
-            --focus-ring:0 0 0 4px rgba(59,130,246,.25);
+            --primary:          #2899F5;
+            --primary-hover:    #3AA0F3;
+            --primary-light:    #252423;
+            --primary-gradient: #2899F5;
+            --bg-color:   #11100F;
+            --card-bg:    #201F1E;
+            --text-main:  #F3F2F1;
+            --text-muted: #A19F9D;
+            --border:     #3B3A39;
+            --border-light:#292827;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
+            --shadow-md: 0 8px 16px rgba(0,0,0,0.4);
+            --shadow-lg: 0 16px 32px rgba(0,0,0,0.5);
+            --focus-ring:0 0 0 2px #11100F, 0 0 0 4px var(--primary);
         }
 
         /* ════════════════════════════════════════════════════
@@ -86,30 +88,30 @@
         html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'Cairo', system-ui, sans-serif;
+            font-family: 'Cairo', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            line-height: 1.7;
+            line-height: 1.6;
             overflow-x: hidden;
             transition: background-color var(--transition-smooth), color var(--transition-smooth);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            font-size: 16px;
+            font-size: 14px; /* Fluent uses slightly smaller base fonts */
         }
 
-        .academic-text { font-family: 'Amiri', serif; font-size: 18px; line-height: 2; }
+        .academic-text { font-family: 'Amiri', serif; font-size: 16px; line-height: 1.8; }
 
-        ::-webkit-scrollbar       { width: 6px; height: 6px; }
+        ::-webkit-scrollbar        { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: var(--radius-sm); }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
         .hidden { display: none !important; }
 
         .container, #user-layout {
             max-width: 1440px; margin: 0 auto;
-            padding: 25px; flex: 1; width: 100%;
+            padding: 24px; flex: 1; width: 100%;
         }
 
         /* ════════════════════════════════════════════════════
@@ -117,100 +119,114 @@
            ════════════════════════════════════════════════════ */
         #loading-overlay {
             position: fixed; inset: 0;
-            background: rgba(248,250,252,.95);
-            backdrop-filter: blur(8px);
+            background: rgba(243, 242, 241, 0.85); /* Fluent acrylic feel */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             z-index: 999999; transition: opacity .4s;
         }
-        body.dark-mode #loading-overlay { background: rgba(15,23,42,.95); }
+        body.dark-mode #loading-overlay { background: rgba(17, 16, 15, 0.85); }
         .loader-core {
-            width: 60px; height: 60px;
-            border: 4px solid var(--border);
+            width: 48px; height: 48px;
+            border: 3px solid var(--border);
             border-top-color: var(--primary);
             border-radius: 50%;
-            animation: spin .8s ease-in-out infinite;
-            margin-bottom: 20px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
         }
-        #loading-text { color: var(--text-main); font-weight: 800; font-size: 18px; }
+        #loading-text { color: var(--text-main); font-weight: 600; font-size: 16px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ════════════════════════════════════════════════════
            Toast Notifications
            ════════════════════════════════════════════════════ */
         #toast-container {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
             z-index: 100000; display: flex; flex-direction: column;
-            gap: 12px; pointer-events: none; width: 90%; max-width: 420px;
+            gap: 8px; pointer-events: none; width: 90%; max-width: 360px;
         }
         .toast {
-            padding: 14px 20px; border-radius: var(--radius-md);
-            color: white; font-weight: 700;
-            animation: slideUp .4s cubic-bezier(.2,.8,.2,1),
-                       fadeOut .4s 4s forwards;
-            box-shadow: var(--shadow-lg);
+            padding: 12px 16px; border-radius: var(--radius-sm);
+            color: white; font-weight: 600;
+            animation: slideUp .3s cubic-bezier(0.1, 0.9, 0.2, 1), fadeOut .4s 4s forwards;
+            box-shadow: var(--shadow-md);
             display: flex; align-items: center; gap: 12px;
-            font-size: 15px; white-space: pre-wrap;
-            width: 100%;
+            font-size: 14px; white-space: pre-wrap; width: 100%;
         }
         .toast.success { background: var(--success); }
         .toast.error   { background: var(--danger); }
-        .toast.warning { background: var(--warning); }
-        .toast svg     { width: 22px; height: 22px; flex-shrink: 0; }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(15px); } }
+        .toast.warning { background: var(--warning); color: #fff;}
+        .toast svg     { width: 18px; height: 18px; flex-shrink: 0; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(10px); } }
 
         /* ════════════════════════════════════════════════════
-           Form Controls
+           Form Controls (Fluent Style)
            ════════════════════════════════════════════════════ */
-        .input-group { margin-bottom: 18px; width: 100%; }
-        .input-label { display: block; font-weight: 800; margin-bottom: 8px; color: var(--text-main); font-size: 14px; }
+        .input-group { margin-bottom: 16px; width: 100%; }
+        .input-label { display: flex; align-items: center; gap: 6px; font-weight: 600; margin-bottom: 6px; color: var(--text-main); font-size: 13px; }
+        .input-label svg { width: 14px; height: 14px; color: var(--primary); }
 
         input[type="text"],
         input[type="password"],
         select,
         textarea {
-            width: 100%; padding: 13px 16px;
-            border: 2px solid var(--border);
-            border-radius: var(--radius-md);
-            font-size: 16px; font-family: 'Cairo', sans-serif;
-            background-color: var(--card-bg); font-weight: 600;
+            width: 100%; padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-bottom: 2px solid var(--text-muted); /* Fluent bottom emphasis */
+            border-radius: var(--radius-sm);
+            font-size: 14px; font-family: 'Cairo', sans-serif;
+            background-color: rgba(255, 255, 255, 0.6);
             color: var(--text-main);
-            transition: var(--transition-fast);
+            transition: all var(--transition-fast);
             -webkit-appearance: none; appearance: none;
+            min-height: 36px;
+        }
+        body.dark-mode input[type="text"], body.dark-mode input[type="password"], body.dark-mode select, body.dark-mode textarea {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        
+        input:hover, select:hover, textarea:hover {
+            background-color: var(--card-bg);
         }
         input:focus, select:focus, textarea:focus {
-            outline: none; border-color: var(--primary); box-shadow: var(--focus-ring);
+            outline: none; border-color: var(--primary); border-bottom-color: var(--primary); 
+            background-color: var(--card-bg); box-shadow: none;
         }
 
+        /* Fluent Buttons */
         button {
-            background: var(--primary); color: white; border: none;
-            padding: 12px 22px; border-radius: var(--radius-md);
-            cursor: pointer; font-size: 15px; font-weight: 800;
+            background: var(--primary); color: white; border: 1px solid transparent;
+            padding: 6px 16px; border-radius: var(--radius-sm);
+            cursor: pointer; font-size: 14px; font-weight: 600;
             font-family: 'Cairo', sans-serif;
             transition: var(--transition-fast);
             display: inline-flex; align-items: center; justify-content: center;
-            gap: 8px; box-shadow: var(--shadow-sm);
-            min-height: 48px; /* touch target */
+            gap: 8px; box-shadow: var(--shadow-xs);
+            min-height: 32px;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
         }
-        button:hover  { background: var(--primary-hover); box-shadow: var(--shadow-md); }
-        button:active { transform: scale(0.97); box-shadow: none; }
+        button:hover  { background: var(--primary-hover); }
+        button:active { background: var(--primary); transform: scale(0.98); }
 
-        .btn-danger   { background: var(--danger); }  .btn-danger:hover  { background: var(--danger-hover); }
-        .btn-success  { background: var(--success); } .btn-success:hover { background: var(--success-hover); }
-        .btn-warning  { background: var(--warning); color:#fff; } .btn-warning:hover { background: var(--warning-hover); }
-        .btn-outline  { background: transparent; border: 2px solid var(--border); color: var(--text-main); box-shadow: none; }
-        .btn-outline:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
-        .btn-secondary { background: var(--bg-color); color: var(--text-main); border: 2px solid var(--border); box-shadow: none; }
-        .btn-secondary:hover { border-color: var(--text-muted); }
-        .btn-icon-only { padding: 10px; background: transparent; color: var(--text-muted); box-shadow: none; border: 1px solid transparent; min-height: 44px; min-width: 44px; border-radius: var(--radius-sm); }
-        .btn-icon-only:hover { background: var(--bg-color); color: var(--primary); border-color: var(--border); }
+        .btn-danger    { background: var(--danger); }  .btn-danger:hover  { background: var(--danger-hover); }
+        .btn-success   { background: var(--success); } .btn-success:hover { background: var(--success-hover); }
+        .btn-warning   { background: var(--warning); color:#fff; } .btn-warning:hover { background: var(--warning-hover); }
+        
+        .btn-outline   { background: transparent; border: 1px solid var(--border); color: var(--text-main); box-shadow: none; }
+        .btn-outline:hover { border-color: var(--text-muted); background: var(--bg-color); }
+        
+        .btn-secondary { background: var(--bg-color); color: var(--text-main); border: 1px solid var(--border); box-shadow: none; }
+        .btn-secondary:hover { background: var(--border-light); }
+        
+        .btn-icon-only { padding: 6px; background: transparent; color: var(--text-muted); box-shadow: none; border: 1px solid transparent; min-height: 32px; min-width: 32px; border-radius: var(--radius-sm); }
+        .btn-icon-only:hover { background: var(--border-light); color: var(--text-main); }
 
         svg.icon {
-            width: 20px; height: 20px; stroke: currentColor;
-            stroke-width: 2.2; fill: none;
+            width: 18px; height: 18px; stroke: currentColor;
+            stroke-width: 1.5; fill: none; /* Fluent icons are thinner */
             stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0;
         }
 
@@ -220,131 +236,128 @@
         .auth-section {
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh; background: var(--bg-color);
-            padding: 20px;
+            padding: 24px;
         }
         .login-box {
-            background: var(--card-bg); padding: 40px 35px;
-            border-radius: var(--radius-xl); box-shadow: var(--shadow-lg);
-            width: 100%; max-width: 440px; text-align: center;
+            background: var(--card-bg); padding: 36px 32px;
+            border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+            width: 100%; max-width: 400px; text-align: center;
             border: 1px solid var(--border);
         }
-        .login-box h2 { color: var(--text-main); font-size: 24px; margin-bottom: 28px; font-weight: 900; }
+        .login-box h2 { color: var(--text-main); font-size: 22px; margin-bottom: 24px; font-weight: 700; }
         .remember-container {
-            display: flex; align-items: center; gap: 10px;
-            margin-bottom: 22px; cursor: pointer;
-            color: var(--text-muted); font-size: 14px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 20px; cursor: pointer;
+            color: var(--text-main); font-size: 13px; font-weight: 500;
         }
-        .remember-container input { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary); flex-shrink: 0; }
+        .remember-container input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); flex-shrink: 0; border-bottom: none; border-radius: 2px;}
 
         /* ════════════════════════════════════════════════════
-           Header
+           Header (Fluent Acrylic)
            ════════════════════════════════════════════════════ */
         header {
-            background: rgba(255,255,255,.98);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 0 20px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 0 24px;
             height: var(--header-h);
             display: flex; justify-content: space-between; align-items: center;
             position: sticky; top: 0; z-index: 1000;
             border-bottom: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-            gap: 10px;
+            box-shadow: var(--shadow-xs);
+            gap: 12px;
         }
-        body.dark-mode header { background: rgba(30,41,59,.98); }
-        .header-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-        header h3 { margin: 0; color: var(--primary); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 10px; white-space: nowrap; }
-        .logo-box { background: var(--primary-gradient); padding: 8px; border-radius: 10px; color: white; display: flex; box-shadow: var(--shadow-sm); flex-shrink: 0; }
+        body.dark-mode header { background: rgba(32, 31, 30, 0.85); border-bottom: 1px solid #333; }
+        .header-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+        header h3 { margin: 0; color: var(--text-main); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+        .logo-box { background: var(--primary); padding: 6px; border-radius: var(--radius-sm); color: white; display: flex; }
+        .logo-box svg { width: 16px; height: 16px; stroke-width: 2; }
         .header-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; overflow: hidden; }
         .user-badge {
-            font-weight: 800; color: var(--text-main); font-size: 13px;
-            background: var(--bg-color); padding: 6px 12px;
-            border-radius: 20px; border: 1px solid var(--border);
+            font-weight: 600; color: var(--text-main); font-size: 13px;
+            background: transparent; padding: 4px 8px;
+            border-radius: var(--radius-sm); border: 1px solid var(--border);
             display: flex; align-items: center; gap: 6px;
             max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
 
-        /* ── Header text "المنصة التعليمية" hide on tiny screens ── */
         .header-title-text { display: inline; }
 
         /* ════════════════════════════════════════════════════
-           Tabs
+           Tabs (Fluent Pivot Style)
            ════════════════════════════════════════════════════ */
-        .tabs-container { margin-top: 10px; }
+        .tabs-container { margin-top: 8px; }
         .tabs-header {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 22px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 12px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            flex-wrap: nowrap;
-            padding-right: 2px;
+            display: flex; gap: 4px; margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto; -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; flex-wrap: nowrap;
         }
         .tabs-header::-webkit-scrollbar { display: none; }
         .tab-btn {
             background: transparent; color: var(--text-muted);
-            padding: 10px 16px; border-radius: var(--radius-md);
-            font-size: 14px; font-weight: 800; box-shadow: none; border: 1px solid transparent;
-            white-space: nowrap; flex-shrink: 0; min-height: 44px;
+            padding: 10px 16px; border-radius: 0;
+            font-size: 14px; font-weight: 600; box-shadow: none; 
+            border: none; border-bottom: 2px solid transparent;
+            white-space: nowrap; flex-shrink: 0; min-height: 40px;
         }
-        .tab-btn:hover  { background: var(--card-bg); border-color: var(--border); color: var(--text-main); }
-        .tab-btn.active { background: var(--primary-gradient); color: white; border-color: transparent; box-shadow: var(--shadow-md); }
-        .tab-content { padding: 0; display: none; animation: fadeIn .3s ease; }
+        .tab-btn:hover  { background: transparent; color: var(--text-main); }
+        .tab-btn.active { background: transparent; color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; box-shadow: none; }
+        .tab-content { padding: 0; display: none; animation: fadeIn .2s ease; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* ════════════════════════════════════════════════════
            Admin Cards & Lists
            ════════════════════════════════════════════════════ */
         .admin-card {
-            background: var(--card-bg); padding: 25px;
-            border-radius: var(--radius-xl); border: 1px solid var(--border);
-            box-shadow: var(--shadow-md); margin-bottom: 22px;
+            background: var(--card-bg); padding: 24px;
+            border-radius: var(--radius-lg); border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm); margin-bottom: 24px;
         }
         .admin-title {
-            font-size: 20px; font-weight: 900; margin: 0 0 22px;
-            display: flex; align-items: center; gap: 10px;
-            border-bottom: 2px solid var(--border); padding-bottom: 14px; color: var(--text-main);
+            font-size: 18px; font-weight: 600; margin: 0 0 20px;
+            display: flex; align-items: center; gap: 8px;
+            color: var(--text-main);
         }
+        .admin-title svg { color: var(--primary); }
+        
         .admin-list-item {
-            background: var(--bg-color); border: 1px solid var(--border);
-            padding: 16px 20px; border-radius: var(--radius-lg);
-            margin-bottom: 12px; display: flex; justify-content: space-between;
+            background: var(--card-bg); border: 1px solid var(--border);
+            padding: 12px 16px; border-radius: var(--radius-sm);
+            margin-bottom: 8px; display: flex; justify-content: space-between;
             align-items: center; transition: var(--transition-fast);
-            gap: 12px;
+            gap: 12px; box-shadow: var(--shadow-xs);
         }
-        .admin-list-item:hover { border-color: var(--primary); box-shadow: var(--shadow-md); background: var(--card-bg); }
-        .admin-item-meta { font-size: 13px; color: var(--text-muted); display: flex; gap: 15px; font-weight: 600; flex-wrap: wrap; }
-        .admin-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .admin-list-item:hover { border-color: var(--text-muted); }
+        .admin-item-meta { font-size: 12px; color: var(--text-muted); display: flex; gap: 12px; font-weight: 500; flex-wrap: wrap; }
+        .admin-item-actions { display: flex; gap: 4px; flex-shrink: 0; }
 
-        .search-container { position: relative; width: 100%; max-width: 450px; margin-bottom: 18px; }
-        .search-container input { padding: 13px 44px 13px 18px; margin-bottom: 0; border-radius: var(--radius-lg); }
-        .search-icon-svg { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 18px; height: 18px; }
+        .search-container { position: relative; width: 100%; max-width: 400px; margin-bottom: 16px; }
+        .search-container input { padding: 8px 36px 8px 12px; margin-bottom: 0; border-bottom: 1px solid var(--border); }
+        .search-icon-svg { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 16px; height: 16px; }
 
         .bulk-action-bar {
-            background: var(--card-bg); border: 2px dashed var(--border);
-            padding: 12px 18px; border-radius: var(--radius-lg); margin-bottom: 22px;
+            background: var(--bg-color); border: 1px solid var(--border);
+            padding: 8px 16px; border-radius: var(--radius-sm); margin-bottom: 16px;
             display: flex; justify-content: space-between; align-items: center; gap: 12px;
             flex-wrap: wrap;
         }
-        .bulk-action-bar label { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-main); }
+        .bulk-action-bar label { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-main); }
 
         input[type="checkbox"] {
-            width: 20px; height: 20px; cursor: pointer;
-            accent-color: var(--primary); border-radius: 4px; border: 2px solid var(--border);
+            width: 16px; height: 16px; cursor: pointer;
+            accent-color: var(--primary); border-radius: 2px; border: 1px solid var(--text-muted);
             flex-shrink: 0;
         }
 
         .empty-state {
-            text-align: center; padding: 45px 20px; color: var(--text-muted);
-            background: var(--bg-color); border-radius: var(--radius-xl);
-            border: 2px dashed var(--border); margin: 20px 0; font-weight: 700;
-            font-size: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px;
+            text-align: center; padding: 40px 20px; color: var(--text-muted);
+            background: var(--bg-color); border-radius: var(--radius-sm);
+            border: 1px dashed var(--border); margin: 16px 0; font-weight: 500;
+            font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 8px;
         }
-        .empty-state svg { width: 50px; height: 50px; }
+        .empty-state svg { width: 32px; height: 32px; color: var(--text-muted); opacity: 0.5; }
 
         /* ════════════════════════════════════════════════════
            Sidebar Overlay Backdrop (Mobile)
@@ -352,131 +365,131 @@
         #sidebar-backdrop {
             display: none;
             position: fixed; inset: 0;
-            background: rgba(0,0,0,.5);
+            background: rgba(0,0,0,.4);
             z-index: 499;
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
         }
         #sidebar-backdrop.active { display: block; }
 
         /* ════════════════════════════════════════════════════
-           Student Layout
+           Student Layout (Navigation Drawer Style)
            ════════════════════════════════════════════════════ */
-        #user-layout { display: flex; gap: 25px; align-items: flex-start; padding: 20px; }
+        #user-layout { display: flex; gap: 24px; align-items: flex-start; padding: 24px; }
 
         .sidebar {
-            width: 310px; background: var(--card-bg); padding: 20px;
-            border-radius: var(--radius-xl); border: 1px solid var(--border);
-            box-shadow: var(--shadow-md); flex-shrink: 0;
-            height: fit-content; max-height: calc(100vh - var(--header-h) - 40px);
+            width: 280px; background: var(--bg-color); padding: 16px;
+            border-radius: var(--radius-lg); border: 1px solid var(--border);
+            flex-shrink: 0;
+            height: fit-content; max-height: calc(100vh - var(--header-h) - 48px);
             overflow-y: auto; display: flex; flex-direction: column;
-            position: sticky; top: calc(var(--header-h) + 10px);
+            position: sticky; top: calc(var(--header-h) + 24px);
             transition: all var(--transition-smooth);
         }
         .sidebar.collapsed { width: 0; padding: 0; border: none; margin: 0; opacity: 0; overflow: hidden; }
         .sidebar h3 {
-            margin: 0 0 20px; color: var(--text-main); font-weight: 900; font-size: 18px;
-            display: flex; align-items: center; gap: 10px;
-            border-bottom: 2px solid var(--border); padding-bottom: 14px;
+            margin: 0 0 16px; color: var(--text-main); font-weight: 700; font-size: 16px;
+            display: flex; align-items: center; gap: 8px;
         }
-        .sidebar-search-box { display: flex; gap: 8px; margin-bottom: 20px; position: relative; }
-        .sidebar-search-box input { margin-bottom: 0; padding: 11px 11px 11px 40px; border-radius: var(--radius-md); font-size: 14px; background: var(--bg-color); }
+        .sidebar-search-box { display: flex; gap: 8px; margin-bottom: 16px; position: relative; }
+        .sidebar-search-box input { margin-bottom: 0; padding: 8px 8px 8px 32px; border-radius: var(--radius-sm); font-size: 13px; background: var(--card-bg); border-bottom: 1px solid var(--border); }
 
         /* Sidebar close btn (mobile only) */
         .sidebar-close-btn {
             display: none;
-            position: absolute; top: 15px; left: 15px;
-            background: var(--danger); color: white;
-            border: none; border-radius: 50%;
-            width: 36px; height: 36px; min-height: 36px;
+            position: absolute; top: 12px; left: 12px;
+            background: transparent; color: var(--text-main);
+            border: none; border-radius: var(--radius-sm);
+            width: 32px; height: 32px; min-height: 32px;
             padding: 0; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: var(--shadow-md);
+            cursor: pointer; box-shadow: none;
         }
+        .sidebar-close-btn:hover { background: var(--border-light); }
 
         /* ── Accordion ── */
         .premium-accordion {
-            margin-bottom: 10px; border-radius: var(--radius-md);
-            border: 1px solid var(--border); overflow: hidden;
-            transition: var(--transition-fast); background: var(--bg-color);
+            margin-bottom: 4px; border-radius: var(--radius-sm);
+            border: none; overflow: hidden;
+            transition: var(--transition-fast); background: transparent;
         }
-        .premium-accordion:hover { border-color: var(--primary); }
         .premium-accordion summary {
-            padding: 14px 16px; font-weight: 800; cursor: pointer;
+            padding: 10px 12px; font-weight: 600; cursor: pointer;
             color: var(--text-main); display: flex; align-items: center;
             justify-content: space-between; list-style: none;
-            user-select: none; font-size: 15px; background: var(--card-bg);
+            user-select: none; font-size: 14px; background: transparent;
+            border-radius: var(--radius-sm);
             -webkit-tap-highlight-color: transparent;
         }
-        .premium-accordion summary:hover { background: var(--bg-color); }
+        .premium-accordion summary:hover { background: var(--border-light); }
         .premium-accordion summary::-webkit-details-marker { display: none; }
-        .summary-content { display: flex; align-items: center; gap: 10px; flex: 1; overflow: hidden; }
+        .summary-content { display: flex; align-items: center; gap: 8px; flex: 1; overflow: hidden; }
         .summary-content span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .summary-actions { display: flex; align-items: center; gap: 8px; }
+        .summary-actions { display: flex; align-items: center; gap: 4px; }
+        
         .btn-copy-folder {
-            padding: 5px 8px; font-size: 11px; border-radius: var(--radius-sm);
-            background: var(--bg-color); color: var(--text-muted);
-            border: 1px solid var(--border); box-shadow: none;
-            display: flex; align-items: center; gap: 5px;
-            transition: .2s; font-family: 'Cairo', sans-serif; font-weight: 700;
+            padding: 4px 8px; font-size: 12px; border-radius: var(--radius-sm);
+            background: transparent; color: var(--text-muted);
+            border: 1px solid transparent; box-shadow: none;
+            display: flex; align-items: center; gap: 4px;
+            transition: .2s; font-family: 'Cairo', sans-serif; font-weight: 600;
             min-height: unset; white-space: nowrap;
         }
-        .btn-copy-folder:hover { background: var(--primary); color: white; border-color: var(--primary); }
-        .premium-accordion summary .arrow-icon { transition: transform .3s; color: var(--text-muted); width: 16px; height: 16px; flex-shrink: 0; }
-        .premium-accordion[open] summary .arrow-icon { transform: rotate(180deg); color: var(--primary); }
-        .premium-accordion[open] summary { border-bottom: 2px solid var(--border); color: var(--primary); background: var(--bg-color); }
-        .premium-accordion ul { list-style: none; padding: 5px 0; margin: 0; background: var(--card-bg); }
+        .btn-copy-folder:hover { background: var(--card-bg); border-color: var(--border); color: var(--text-main); }
+        
+        .premium-accordion summary .arrow-icon { transition: transform .2s; color: var(--text-muted); width: 14px; height: 14px; flex-shrink: 0; }
+        .premium-accordion[open] summary .arrow-icon { transform: rotate(180deg); color: var(--text-main); }
+        .premium-accordion[open] summary { font-weight: 700; }
+        .premium-accordion ul { list-style: none; padding: 4px 0 4px 16px; margin: 0; position: relative;}
+        .premium-accordion ul::before { content: ''; position: absolute; right: 8px; top: 0; bottom: 0; width: 1px; background: var(--border); }
 
         .sidebar-item {
-            padding: 13px 28px 13px 16px; cursor: pointer; color: var(--text-muted);
-            font-weight: 700; transition: var(--transition-fast);
-            display: flex; align-items: center; gap: 10px;
-            font-size: 14px; border-right: 3px solid transparent;
+            padding: 8px 16px 8px 12px; cursor: pointer; color: var(--text-muted);
+            font-weight: 500; transition: var(--transition-fast);
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; border-radius: var(--radius-sm);
             -webkit-tap-highlight-color: transparent;
+            position: relative;
         }
-        .sidebar-item:hover { color: var(--primary); background: var(--primary-light); border-right-color: var(--primary); }
-        .sidebar-item.active { background: var(--primary-light); color: var(--primary); font-weight: 800; border-right-color: var(--primary); }
+        .sidebar-item:hover { color: var(--text-main); background: var(--border-light); }
+        .sidebar-item.active { background: var(--card-bg); color: var(--primary); font-weight: 600; border: 1px solid var(--border); box-shadow: var(--shadow-xs); }
+        .sidebar-item.active::before { content: ''; position: absolute; right: -4px; top: 8px; bottom: 8px; width: 3px; background: var(--primary); border-radius: 2px; }
 
         .independent-item {
-            border-radius: var(--radius-md); margin-bottom: 10px;
-            padding: 14px 16px; border: 1px solid var(--border);
-            cursor: pointer; font-weight: 800; color: var(--text-main);
-            display: flex; align-items: center; gap: 10px; font-size: 15px;
-            background: var(--card-bg); box-shadow: var(--shadow-sm);
-            border-right: 4px solid transparent;
+            border-radius: var(--radius-sm); margin-bottom: 4px;
+            padding: 10px 12px; border: 1px solid transparent;
+            cursor: pointer; font-weight: 600; color: var(--text-main);
+            display: flex; align-items: center; gap: 8px; font-size: 14px;
+            background: transparent; box-shadow: none;
             -webkit-tap-highlight-color: transparent;
         }
-        .independent-item:hover  { border-color: var(--primary); background: var(--bg-color); border-right-color: var(--primary); }
-        .independent-item.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); border-right-color: var(--primary); }
+        .independent-item:hover  { background: var(--border-light); }
+        .independent-item.active { background: var(--card-bg); color: var(--primary); border-color: var(--border); box-shadow: var(--shadow-xs); }
 
         /* ── Main Content ── */
         .main-content { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-        .content-grid { display: flex; flex-direction: column; gap: 25px; flex: 1; }
+        .content-grid { display: flex; flex-direction: column; gap: 24px; flex: 1; }
         .content-item {
-            background: var(--card-bg); padding: 28px;
-            border-radius: var(--radius-xl); border: 1px solid var(--border);
+            background: var(--card-bg); padding: 24px;
+            border-radius: var(--radius-lg); border: 1px solid var(--border);
             display: flex; flex-direction: column;
-            box-shadow: var(--shadow-md); flex: 1; position: relative;
+            box-shadow: var(--shadow-sm); flex: 1; position: relative;
         }
         .content-header {
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 2px solid var(--border); padding-bottom: 18px;
-            margin-bottom: 22px; flex-wrap: wrap; gap: 14px;
+            border-bottom: 1px solid var(--border); padding-bottom: 16px;
+            margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
         }
-        .content-title { margin: 0; color: var(--text-main); font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 10px; }
-        .header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .content-title { margin: 0; color: var(--text-main); font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .header-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
         /* ── iFrame Wrapper ── */
         .iframe-responsive-wrapper {
             position: relative; width: 100%; height: 75vh; min-height: 480px;
-            background: var(--bg-color); border-radius: var(--radius-md);
-            border: 2px solid var(--border);
+            background: var(--bg-color); border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
             overflow: hidden;
-            box-shadow: inset var(--shadow-sm);
         }
         .html-sandbox {
             border: none; background: #fff;
             width: 100%; height: 100%; display: block;
-            border-radius: calc(var(--radius-md) - 2px);
         }
 
         /* ════════════════════════════════════════════════════
@@ -487,12 +500,11 @@
             width: 100vw !important; height: 100vh !important; height: 100dvh !important;
             background: #fff !important; border-radius: 0 !important; border: none !important;
             z-index: 9999999 !important; overflow: hidden !important; 
-            padding-top: 56px !important;
-            padding-bottom: 56px !important; 
-            transition: padding 0.3s ease; /* تأثير حركي ناعم */
+            padding-top: 48px !important;
+            padding-bottom: 48px !important; 
+            transition: padding 0.3s ease; 
         }
         
-        /* تأثيرات حركية (Transitions) للأشرطة والمحتوى */
         .fullscreen-top-bar, .fullscreen-bottom-bar {
             transition: transform 0.3s ease;
         }
@@ -500,7 +512,6 @@
             transition: height 0.3s ease;
         }
 
-        /* حالة إخفاء الأشرطة */
         .iframe-responsive-wrapper.css-fullscreen.bars-hidden {
             padding-top: 0 !important;
             padding-bottom: 0 !important;
@@ -516,19 +527,16 @@
             height: 100dvh !important;
         }
 
-        /* الشريط العلوي */
         .fullscreen-top-bar {
-            display: none; position: absolute; top: 0; left: 0; right: 0; height: 56px;
-            background: #1e293b; border-bottom: 2px solid #0f172a; z-index: 99999999;
+            display: none; position: absolute; top: 0; left: 0; right: 0; height: 48px;
+            background: #201F1E; border-bottom: 1px solid #323130; z-index: 99999999;
             align-items: center; justify-content: flex-end; padding: 0 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,.2);
         }
         
-        /* الشريط السفلي */
         .fullscreen-bottom-bar {
-            display: none; position: absolute; bottom: 0; left: 0; right: 0; height: 56px;
-            background: #1e293b; border-top: 2px solid #0f172a; z-index: 99999999;
-            box-shadow: 0 -4px 12px rgba(0,0,0,.3);
+            display: none; position: absolute; bottom: 0; left: 0; right: 0; height: 48px;
+            background: #201F1E; border-top: 1px solid #323130; z-index: 99999999;
         }
 
         .iframe-responsive-wrapper.css-fullscreen .fullscreen-top-bar,
@@ -536,50 +544,47 @@
             display: flex; position: fixed; 
         }
 
-        /* زر إغلاق ملء الشاشة */
         .fullscreen-close-btn {
-            background: #ef4444; color: #fff; border: 2px solid #fff; cursor: pointer;
-            padding: 8px 20px; border-radius: 50px;
+            background: transparent; color: #fff; border: 1px solid #605E5C; cursor: pointer;
+            padding: 6px 16px; border-radius: var(--radius-sm);
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,.2); white-space: nowrap; min-height: unset;
+            font-family: 'Cairo', sans-serif; font-weight: 600; font-size: 13px;
+            white-space: nowrap; min-height: 32px;
         }
-        .fullscreen-close-btn:hover { background: #dc2626; }
-        .fullscreen-close-btn svg  { width: 20px; height: 20px; stroke-width: 2.5; flex-shrink: 0; }
+        .fullscreen-close-btn:hover { background: #323130; border-color: #fff;}
+        .fullscreen-close-btn svg  { width: 16px; height: 16px; stroke-width: 1.5; flex-shrink: 0; }
         
-        /* الزر العائم المركزي لإظهار/إخفاء الأشرطة */
         .fullscreen-toggle-bars-btn {
-            display: none; /* يظهر فقط في وضع الشاشة الكاملة */
+            display: none; 
             position: fixed;
-            top: 65px; /* مسافة قريبة من الأعلى */
+            top: 56px; 
             left: 50%;
             transform: translateX(-50%);
-            z-index: 999999999; /* أعلى شيء في الشاشة */
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: rgba(15, 23, 42, 0.75);
+            z-index: 999999999; 
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            background: rgba(32, 31, 30, 0.85);
             backdrop-filter: blur(4px);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: white;
             cursor: pointer;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+            transition: all 0.2s ease;
             padding: 0;
             min-height: unset;
         }
         .fullscreen-toggle-bars-btn:hover {
-            background: rgba(15, 23, 42, 0.95);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: translateX(-50%) scale(1.05);
+            background: rgba(32, 31, 30, 1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(-50%) scale(1.02);
         }
-        /* تعديل موقعه إذا كانت الأشرطة مخفية ليكون في أعلى الشاشة تماماً */
         .iframe-responsive-wrapper.css-fullscreen.bars-hidden .fullscreen-toggle-bars-btn {
-            top: 15px;
-            background: rgba(37, 99, 235, 0.85); /* لون مميز عند الإخفاء */
-            border-color: rgba(255, 255, 255, 0.6);
+            top: 12px;
+            background: rgba(0, 120, 212, 0.9); /* Fluent Primary */
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         .iframe-responsive-wrapper.css-fullscreen .fullscreen-toggle-bars-btn {
@@ -587,9 +592,8 @@
         }
 
         .iframe-responsive-wrapper.css-fullscreen .html-sandbox {
-            /* خصم ارتفاع الشريط العلوي والسفلي (56 + 56 = 112) */
-            height: calc(100vh - 112px) !important; 
-            height: calc(100dvh - 112px) !important; 
+            height: calc(100vh - 96px) !important; 
+            height: calc(100dvh - 96px) !important; 
             border-radius: 0;
         }
 
@@ -597,10 +601,10 @@
            Footer
            ════════════════════════════════════════════════════ */
         .version-footer {
-            text-align: center; padding: 20px;
-            color: var(--text-muted); font-size: 13px; font-weight: 700;
+            text-align: center; padding: 16px;
+            color: var(--text-muted); font-size: 12px; font-weight: 500;
             width: 100%; margin-top: auto;
-            border-top: 1px solid var(--border); background: var(--card-bg);
+            border-top: 1px solid var(--border); background: var(--bg-color);
         }
 
         /* ════════════════════════════════════════════════════
@@ -608,20 +612,18 @@
            ════════════════════════════════════════════════════ */
         @media (max-width: 1023px) {
             .container, #user-layout { padding: 16px; }
-            #user-layout { gap: 18px; }
+            #user-layout { gap: 16px; }
 
             .sidebar {
-                width: 270px;
-                max-height: calc(100vh - var(--header-h) - 30px);
-                top: calc(var(--header-h) + 8px);
+                width: 250px;
+                max-height: calc(100vh - var(--header-h) - 32px);
+                top: calc(var(--header-h) + 16px);
             }
 
-            .admin-card { padding: 20px; }
-            .content-item { padding: 22px; }
+            .admin-card { padding: 16px; }
+            .content-item { padding: 16px; }
 
-            .tabs-header { flex-wrap: nowrap; }
-
-            header h3 { font-size: 18px; }
+            header h3 { font-size: 15px; }
         }
 
         /* ════════════════════════════════════════════════════
@@ -629,19 +631,16 @@
            ════════════════════════════════════════════════════ */
         @media (max-width: 767px) {
 
-            /* ── Variables ── */
-            :root { --header-h: 62px; }
+            :root { --header-h: 56px; }
 
-            /* ── Header ── */
-            header { padding: 0 14px; gap: 8px; }
-            header h3 { font-size: 16px; gap: 8px; }
-            .logo-box { padding: 6px; border-radius: 8px; }
-            .logo-box svg { width: 18px; height: 18px; }
-            .header-title-text { display: none; } /* نخبي النص ونبقي اللوجو بس */
-            .user-badge { display: none !important; } /* نخبي اسم المستخدم */
+            header { padding: 0 12px; gap: 8px; }
+            header h3 { font-size: 14px; gap: 6px; }
+            .logo-box { padding: 4px; border-radius: 4px; }
+            .logo-box svg { width: 14px; height: 14px; }
+            .header-title-text { display: none; } 
+            .user-badge { display: none !important; } 
             .header-left { gap: 4px; }
 
-            /* أزرار header صغيرة */
             #install-pwa-btn span,
             #preview-btn span,
             #back-admin-btn span,
@@ -651,39 +650,28 @@
             #preview-btn,
             #back-admin-btn,
             #install-pwa-btn {
-                padding: 8px !important;
-                font-size: 13px !important;
+                padding: 6px !important;
                 border-radius: var(--radius-sm) !important;
-                min-height: 40px;
-                min-width: 40px;
+                min-height: 36px;
+                min-width: 36px;
             }
 
-            /* ── Container ── */
             .container { padding: 12px; }
 
-            /* ── Tabs ── */
-            .tabs-header {
-                gap: 6px; margin-bottom: 16px; padding-bottom: 10px;
-            }
-            .tab-btn {
-                padding: 8px 12px; font-size: 13px; gap: 6px; min-height: 42px;
-            }
+            .tabs-header { gap: 4px; margin-bottom: 16px; padding-bottom: 0; border-bottom: 1px solid var(--border); }
+            .tab-btn { padding: 8px 12px; font-size: 13px; gap: 6px; min-height: 36px; }
             .tab-btn svg { width: 16px; height: 16px; }
-            /* نخبي النص في الـ tabs — نبقي الأيقونة فقط */
             .tab-btn .tab-label { display: none; }
 
-            /* ── Admin Cards ── */
-            .admin-card { padding: 16px; border-radius: var(--radius-lg); }
-            .admin-title { font-size: 17px; margin-bottom: 16px; }
-            .admin-list-item { padding: 14px 16px; flex-wrap: wrap; }
+            .admin-card { padding: 16px; border-radius: var(--radius-md); }
+            .admin-title { font-size: 16px; margin-bottom: 12px; }
+            .admin-list-item { padding: 10px 12px; flex-wrap: wrap; }
             .admin-item-actions { flex-shrink: 0; }
 
-            /* ── Grid Columns ── */
             #tab-settings .admin-card-grid { grid-template-columns: 1fr !important; }
 
-            /* ── Auth ── */
-            .login-box { padding: 28px 20px; border-radius: var(--radius-lg); }
-            .login-box h2 { font-size: 20px; margin-bottom: 22px; }
+            .login-box { padding: 24px 20px; border-radius: var(--radius-md); }
+            .login-box h2 { font-size: 18px; margin-bottom: 20px; }
 
             /* ── Sidebar — Drawer Mode ── */
             #user-layout { padding: 12px; gap: 0; }
@@ -692,16 +680,16 @@
                 position: fixed !important;
                 top: 0 !important;
                 right: -110% !important;
-                width: 82vw !important;
-                max-width: 330px !important;
+                width: 80vw !important;
+                max-width: 320px !important;
                 height: 100dvh !important;
                 height: 100vh !important;
                 max-height: 100vh !important;
                 border-radius: 0 !important;
                 z-index: 500 !important;
-                padding: 60px 16px 20px !important;
+                padding: 56px 16px 16px !important;
                 overflow-y: auto !important;
-                box-shadow: -4px 0 30px rgba(0,0,0,.2) !important;
+                box-shadow: -4px 0 16px rgba(0,0,0,.1) !important;
                 transition: right var(--transition-smooth) !important;
             }
             .sidebar.mobile-open {
@@ -709,66 +697,55 @@
             }
             .sidebar.collapsed {
                 right: -110% !important;
-                width: 82vw !important;
+                width: 80vw !important;
                 opacity: 1 !important;
-                padding: 60px 16px 20px !important;
+                padding: 56px 16px 16px !important;
             }
             .sidebar-close-btn { display: flex !important; }
 
-            /* ── iFrame ── */
             .iframe-responsive-wrapper {
                 height: 65vh; min-height: 380px;
             }
 
-            /* ── Content item ── */
-            .content-item { padding: 16px; border-radius: var(--radius-lg); }
-            .content-header { margin-bottom: 16px; padding-bottom: 14px; gap: 10px; }
-            .content-title { font-size: 17px; gap: 8px; }
-            .header-actions button { padding: 8px 12px !important; font-size: 13px !important; }
+            .content-item { padding: 16px; border-radius: var(--radius-md); }
+            .content-header { margin-bottom: 12px; padding-bottom: 12px; gap: 8px; }
+            .content-title { font-size: 16px; gap: 6px; }
+            .header-actions button { padding: 6px 10px !important; font-size: 12px !important; }
 
-            /* ── User layout main ── */
             .main-content { width: 100%; }
 
-            /* ── Accordion ── */
-            .premium-accordion summary { padding: 12px 14px; font-size: 14px; }
-            .sidebar-item { padding: 12px 24px 12px 14px; font-size: 14px; }
-            .independent-item { padding: 13px 14px; font-size: 14px; }
+            .premium-accordion summary { padding: 8px 10px; font-size: 13px; }
+            .sidebar-item { padding: 8px 16px 8px 10px; font-size: 13px; }
+            .independent-item { padding: 10px 10px; font-size: 13px; }
 
-            /* ── Bulk bar ── */
-            .bulk-action-bar { flex-direction: row; gap: 8px; padding: 10px 14px; }
-            .bulk-action-bar label { font-size: 13px; }
-            .bulk-action-bar button { padding: 8px 12px; font-size: 13px; }
+            .bulk-action-bar { flex-direction: row; gap: 8px; padding: 8px 12px; }
+            .bulk-action-bar label { font-size: 12px; }
+            .bulk-action-bar button { padding: 6px 10px; font-size: 12px; }
 
-            /* ── search ── */
             .search-container { max-width: 100%; }
 
-            /* ── Footer ── */
-            .version-footer { font-size: 11px; padding: 14px 10px; }
+            .version-footer { font-size: 11px; padding: 12px 10px; }
 
-            /* ── Textarea ── */
-            textarea { font-size: 14px !important; }
+            textarea { font-size: 13px !important; }
 
-            /* ── empty state ── */
-            .empty-state { padding: 35px 15px; font-size: 14px; }
-            .empty-state svg { width: 40px; height: 40px; }
+            .empty-state { padding: 24px 12px; font-size: 13px; }
+            .empty-state svg { width: 24px; height: 24px; }
 
-            /* ── Add content grid ── */
             #tab-content-add .content-grid-2col { grid-template-columns: 1fr !important; }
 
-            /* ── sidebar search ── */
-            .sidebar h3 { font-size: 16px; margin-bottom: 14px; padding-bottom: 12px; }
-            .sidebar-search-box input { font-size: 14px; }
+            .sidebar h3 { font-size: 15px; margin-bottom: 12px; padding-bottom: 0; }
+            .sidebar-search-box input { font-size: 13px; }
         }
 
         /* ════════════════════════════════════════════════════
            ★ RESPONSIVE — SMALL MOBILE (< 380px)
            ════════════════════════════════════════════════════ */
         @media (max-width: 380px) {
-            header h3 { font-size: 14px; }
-            .tab-btn { padding: 7px 10px; }
-            .content-item { padding: 13px; }
-            .admin-card { padding: 13px; }
-            .login-box { padding: 22px 16px; }
+            header h3 { font-size: 13px; }
+            .tab-btn { padding: 6px 8px; }
+            .content-item { padding: 12px; }
+            .admin-card { padding: 12px; }
+            .login-box { padding: 20px 16px; }
         }
     </style>
 </head>
@@ -786,28 +763,28 @@
     <!-- ════════ تسجيل الدخول ════════ -->
     <div id="login-section" class="hidden auth-section">
         <div class="login-box">
-            <div style="background:var(--primary-light);color:var(--primary);width:75px;height:75px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:var(--shadow-sm);transform:rotate(-5deg);">
-                <svg class="icon" style="width:38px;height:38px;" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+            <div style="color:var(--primary);margin:0 auto 16px;display:flex;justify-content:center;">
+                <svg class="icon" style="width:48px;height:48px;stroke-width:1;" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
             </div>
             <h2>بوابة الدخول</h2>
             <div class="input-group">
-                <label class="input-label">اسم المستخدم</label>
+                <label class="input-label"><svg viewBox="0 0 24 24" class="icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> اسم المستخدم</label>
                 <div style="position:relative;">
-                    <input type="text" id="login-username" placeholder="معرّف الحساب" style="padding-right:42px;" autocomplete="username">
-                    <svg class="icon" style="position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--text-muted);" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <input type="text" id="login-username" placeholder="معرّف الحساب" style="padding-right:36px;" autocomplete="username">
+                    <svg class="icon" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 </div>
             </div>
             <div class="input-group">
-                <label class="input-label">الرقم السري</label>
+                <label class="input-label"><svg viewBox="0 0 24 24" class="icon"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> الرقم السري</label>
                 <div style="position:relative;">
-                    <input type="password" id="login-password" placeholder="كلمة المرور" style="padding-right:42px;" onkeypress="if(event.key==='Enter') login()" autocomplete="current-password">
-                    <svg class="icon" style="position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--text-muted);" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <input type="password" id="login-password" placeholder="كلمة المرور" style="padding-right:36px;" onkeypress="if(event.key==='Enter') login()" autocomplete="current-password">
+                    <svg class="icon" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                 </div>
             </div>
             <label class="remember-container"><input type="checkbox" id="remember-me"> الاحتفاظ بتسجيل الدخول</label>
-            <button type="button" onclick="login()" style="width:100%;padding:15px;font-size:16px;">تسجيل الدخول <svg class="icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
-            <div style="margin-top:22px;padding-top:18px;border-top:1px solid var(--border);">
-                <button type="button" onclick="showRegisterForm()" class="btn-outline" style="width:100%;padding:12px;">تقديم طلب حساب جديد</button>
+            <button type="button" onclick="login()" style="width:100%;"><svg class="icon" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg> تسجيل الدخول</button>
+            <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+                <button type="button" onclick="showRegisterForm()" class="btn-outline" style="width:100%;"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg> تقديم طلب حساب جديد</button>
             </div>
         </div>
     </div>
@@ -815,15 +792,24 @@
     <!-- ════════ التسجيل ════════ -->
     <div id="register-section" class="hidden auth-section">
         <div class="login-box">
-            <div style="background:var(--success);color:white;width:75px;height:75px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:var(--shadow-sm);transform:rotate(5deg);">
-                <svg class="icon" style="width:38px;height:38px;" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+            <div style="color:var(--success);margin:0 auto 16px;display:flex;justify-content:center;">
+                <svg class="icon" style="width:48px;height:48px;stroke-width:1;" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
             </div>
             <h2>إنشاء حساب</h2>
-            <div class="input-group"><label class="input-label">الاسم المطلوب</label><input type="text" id="reg-username" placeholder="اسم المستخدم" autocomplete="username"></div>
-            <div class="input-group"><label class="input-label">الرقم السري المقترح</label><input type="password" id="reg-password" placeholder="كلمة المرور" autocomplete="new-password"></div>
-            <div class="input-group"><label class="input-label">المجموعة الدراسية</label><input type="text" id="reg-class" placeholder="مثال: الصف الثاني" onkeypress="if(event.key==='Enter') submitRegistration()"></div>
-            <button type="button" onclick="submitRegistration()" class="btn-success" style="width:100%;margin-bottom:14px;padding:15px;font-size:16px;">إرسال الطلب للإدارة</button>
-            <button type="button" onclick="showLoginForm()" class="btn-secondary" style="width:100%;padding:12px;">العودة للخلف</button>
+            <div class="input-group">
+                <label class="input-label"><svg viewBox="0 0 24 24" class="icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> الاسم المطلوب</label>
+                <input type="text" id="reg-username" placeholder="اسم المستخدم" autocomplete="username">
+            </div>
+            <div class="input-group">
+                <label class="input-label"><svg viewBox="0 0 24 24" class="icon"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> الرقم السري المقترح</label>
+                <input type="password" id="reg-password" placeholder="كلمة المرور" autocomplete="new-password">
+            </div>
+            <div class="input-group">
+                <label class="input-label"><svg viewBox="0 0 24 24" class="icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> المجموعة الدراسية</label>
+                <input type="text" id="reg-class" placeholder="مثال: الصف الثاني" onkeypress="if(event.key==='Enter') submitRegistration()">
+            </div>
+            <button type="button" onclick="submitRegistration()" class="btn-success" style="width:100%;margin-bottom:8px;"><svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> إرسال الطلب للإدارة</button>
+            <button type="button" onclick="showLoginForm()" class="btn-secondary" style="width:100%;"><svg class="icon" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> العودة للخلف</button>
         </div>
     </div>
 
@@ -839,12 +825,12 @@
             </h3>
         </div>
         <div class="header-left">
-            <button type="button" id="install-pwa-btn" class="btn-outline hidden" onclick="installPWA()" style="padding:8px 14px;font-size:14px;"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> <span>تثبيت</span></button>
+            <button type="button" id="install-pwa-btn" class="btn-outline hidden" onclick="installPWA()"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg> <span>تثبيت</span></button>
             <span id="welcome-msg" class="user-badge" style="display:none;"></span>
             <button type="button" onclick="toggleDarkMode()" class="btn-icon-only" title="الوضع الليلي"><svg class="icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button>
-            <button type="button" id="preview-btn" class="btn-warning hidden" onclick="showPreview()" style="padding:8px 14px;font-size:14px;"><svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> <span>معاينة</span></button>
-            <button type="button" id="back-admin-btn" class="btn-success hidden" onclick="backToAdmin()" style="padding:8px 14px;font-size:14px;"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> <span>الإدارة</span></button>
-            <button type="button" id="logout-btn" class="btn-outline" onclick="logout(true)" style="padding:8px 14px;font-size:14px;color:var(--danger);border-color:var(--danger);"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> <span>إنهاء</span></button>
+            <button type="button" id="preview-btn" class="btn-warning hidden" onclick="showPreview()"><svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> <span>معاينة</span></button>
+            <button type="button" id="back-admin-btn" class="btn-success hidden" onclick="backToAdmin()"><svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> <span>الإدارة</span></button>
+            <button type="button" id="logout-btn" class="btn-outline" onclick="logout(true)" style="color:var(--danger);border-color:var(--danger);"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> <span>إنهاء</span></button>
         </div>
     </header>
 
@@ -852,47 +838,47 @@
     <div id="admin-section" class="container hidden">
         <div class="tabs-container">
             <div class="tabs-header">
-                <button type="button" class="tab-btn active" id="tab-btn-add" onclick="openTab(event,'tab-content-add')"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> <span class="tab-label">محتوى جديد</span></button>
-                <button type="button" class="tab-btn" onclick="openTab(event,'tab-content-manage')"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg> <span class="tab-label">مكتبة الدروس</span></button>
+                <button type="button" class="tab-btn active" id="tab-btn-add" onclick="openTab(event,'tab-content-add')"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg> <span class="tab-label">محتوى جديد</span></button>
+                <button type="button" class="tab-btn" onclick="openTab(event,'tab-content-manage')"><svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> <span class="tab-label">مكتبة الدروس</span></button>
                 <button type="button" class="tab-btn" onclick="openTab(event,'tab-menus')"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> <span class="tab-label">المجلدات</span></button>
                 <button type="button" class="tab-btn" id="tab-btn-user-add" onclick="openTab(event,'tab-users-add')"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg> <span class="tab-label">تسجيل طالب</span></button>
-                <button type="button" class="tab-btn" onclick="openTab(event,'tab-users-manage')"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path></svg> <span class="tab-label">إدارة الطلاب</span></button>
-                <button type="button" class="tab-btn" onclick="openTab(event,'tab-pending-users'); renderPendingUsers();"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> <span class="tab-label">الطلبات</span></button>
+                <button type="button" class="tab-btn" onclick="openTab(event,'tab-users-manage')"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> <span class="tab-label">إدارة الطلاب</span></button>
+                <button type="button" class="tab-btn" onclick="openTab(event,'tab-pending-users'); renderPendingUsers();"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path><path d="M14 3v5h5M16 13H8M16 17H8M10 9H8"></path></svg> <span class="tab-label">الطلبات</span></button>
                 <button type="button" class="tab-btn" onclick="openTab(event,'tab-settings')"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
             </div>
 
             <!-- إضافة محتوى -->
             <div id="tab-content-add" class="tab-content active">
                 <div class="admin-card">
-                    <h2 class="admin-title" id="add-edit-title"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> إضافة ورفع مادة علمية</h2>
+                    <h2 class="admin-title" id="add-edit-title"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> إضافة ورفع مادة علمية</h2>
                     <div class="input-group">
-                        <label class="input-label" style="display:flex;align-items:center;gap:6px;">
-                            <svg class="icon" style="width:16px;height:16px;color:var(--primary);" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        <label class="input-label">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                             العنوان الوصفي للدرس
                         </label>
                         <input type="text" id="content-title" placeholder="أدخل العنوان...">
                     </div>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:18px;">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:16px;">
                         <div>
-                            <label class="input-label" style="display:flex;align-items:center;gap:6px;">
-                                <svg class="icon" style="width:16px;height:16px;color:var(--primary);" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                            <label class="input-label">
+                                <svg class="icon" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
                                 نوع التنسيق
                             </label>
                             <select id="content-type"><option value="html">كود HTML (تفاعلي)</option><option value="link">رابط (URL خارجي)</option></select>
                         </div>
                         <div>
-                            <label class="input-label" style="color:var(--primary);display:flex;align-items:center;gap:6px;">
-                                <svg class="icon" style="width:16px;height:16px;color:var(--primary);" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            <label class="input-label">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                                 ارتباط المجلد
                             </label>
                             <select id="content-folder"><option value="none">بدون (مستقل)</option></select>
                         </div>
                         <div>
-                            <label class="input-label" style="display:flex;align-items:center;gap:6px;">
-                                <svg class="icon" style="width:16px;height:16px;color:var(--primary);" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            <label class="input-label">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                 تخصيص العرض
                             </label>
-                            <select id="content-classes" style="border-color:var(--primary);border-width:2px;">
+                            <select id="content-classes" style="border-color:var(--primary);border-width:1px;">
                                 <option value="all" selected>متاح للكل (الافتراضي)</option>
                                 <option value="admin">مسودة للإدارة فقط</option>
                             </select>
@@ -900,13 +886,13 @@
                         <div class="hidden"><select id="content-ratio"><option value="16:9"></option></select></div>
                     </div>
                     <div class="input-group">
-                        <label class="input-label" style="display:flex;align-items:center;gap:6px;">
-                            <svg class="icon" style="width:16px;height:16px;color:var(--primary);" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                        <label class="input-label">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
                             المحتوى البرمجي / الرابط
                         </label>
-                        <textarea id="content-data" rows="10" style="direction:ltr;background:#0f172a;color:#38bdf8;font-family:monospace;font-size:14px;border-radius:var(--radius-md);padding:14px;"></textarea>
+                        <textarea id="content-data" rows="10" style="direction:ltr;background:#1e1e1e;color:#d4d4d4;font-family:Consolas, monospace;font-size:13px;padding:12px;"></textarea>
                     </div>
-                    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
                         <button type="button" id="save-content-btn" onclick="saveContent()"><svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> حفظ المادة</button>
                         <button type="button" id="cancel-edit-btn" onclick="cancelEditContent()" class="btn-secondary hidden"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> إلغاء التعديل</button>
                     </div>
@@ -916,16 +902,16 @@
             <!-- مكتبة الدروس -->
             <div id="tab-content-manage" class="tab-content">
                 <div class="admin-card" style="background:transparent;border:none;padding:0;box-shadow:none;">
-                    <div style="display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;">
+                    <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
                         <div class="search-container" style="margin:0;flex:1;min-width:200px;">
                             <div style="position:relative;">
-                                <input type="text" id="admin-search-content" placeholder="بحث متقدم في الأرشيف..." onkeyup="processAdminContentSearch()" style="padding-right:42px;">
-                                <svg class="icon" style="position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--text-muted);" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="admin-search-content" placeholder="بحث متقدم في الأرشيف..." onkeyup="processAdminContentSearch()" style="padding-right:36px; border-bottom:1px solid var(--border); background:var(--card-bg);">
+                                <svg class="icon search-icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                             </div>
                         </div>
                         <div class="bulk-action-bar" style="margin:0;flex-shrink:0;">
                             <label><input type="checkbox" id="select-all-content" onclick="toggleAllContent(this)"> اختيار السجلات</label>
-                            <button type="button" class="btn-danger" onclick="deleteSelectedContent()"><svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> حذف</button>
+                            <button type="button" class="btn-danger" onclick="deleteSelectedContent()"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg> حذف</button>
                         </div>
                     </div>
                     <div id="admin-content-list"></div>
@@ -934,31 +920,43 @@
 
             <!-- المجلدات -->
             <div id="tab-menus" class="tab-content">
-                <div class="admin-card" style="max-width:680px;">
+                <div class="admin-card" style="max-width:600px;">
                     <h2 class="admin-title"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> تكوين المجلدات</h2>
-                    <div style="display:flex;gap:12px;margin-bottom:22px;">
-                        <input type="text" id="new-folder-name" placeholder="اسم التصنيف أو المجلد..." style="margin:0;flex:1;">
+                    <div style="display:flex;gap:8px;margin-bottom:20px;">
+                        <div style="flex:1; position:relative;">
+                             <svg class="icon" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--primary);" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                             <input type="text" id="new-folder-name" placeholder="اسم التصنيف أو المجلد..." style="margin:0; width:100%; padding-right:36px;">
+                        </div>
                         <button type="button" onclick="addFolder()" style="white-space:nowrap;flex-shrink:0;"><svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> إنشاء</button>
                     </div>
-                    <ul id="admin-folders-list" style="list-style:none;padding:0;display:grid;gap:12px;"></ul>
+                    <ul id="admin-folders-list" style="list-style:none;padding:0;display:grid;gap:8px;"></ul>
                 </div>
             </div>
 
             <!-- تسجيل طالب -->
             <div id="tab-users-add" class="tab-content">
-                <div class="admin-card" style="max-width:580px;">
-                    <h2 class="admin-title" id="add-edit-user-title"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle></svg> إصدار هوية طالب</h2>
-                    <div class="input-group"><label class="input-label">معرف الطالب</label><input type="text" id="new-user-name" placeholder="اسم الدخول"></div>
+                <div class="admin-card" style="max-width:500px;">
+                    <h2 class="admin-title" id="add-edit-user-title"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg> إصدار هوية طالب</h2>
                     <div class="input-group">
-                        <label class="input-label">شفرة المرور</label>
-                        <div style="display:flex;gap:10px;">
+                        <label class="input-label"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> معرف الطالب</label>
+                        <input type="text" id="new-user-name" placeholder="اسم الدخول">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> شفرة المرور</label>
+                        <div style="display:flex;gap:8px;">
                             <input type="text" id="new-user-pass" placeholder="تشفير..." style="flex:1;">
-                            <button type="button" onclick="generatePassword()" class="btn-secondary" style="flex-shrink:0;"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><circle cx="15.5" cy="15.5" r="1.5"></circle><circle cx="15.5" cy="8.5" r="1.5"></circle><circle cx="8.5" cy="15.5" r="1.5"></circle></svg> توليد</button>
+                            <button type="button" onclick="generatePassword()" class="btn-secondary" style="flex-shrink:0;"><svg class="icon" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg> توليد</button>
                         </div>
                     </div>
-                    <div class="input-group"><label class="input-label">الفئة أو الصف</label><input type="text" id="new-user-class" placeholder="تصنيف المجموعات"></div>
-                    <label style="display:flex;align-items:center;gap:14px;margin-bottom:22px;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;"><input type="checkbox" id="new-user-star" style="width:22px;height:22px;border-radius:6px;"> <strong style="font-size:15px;color:var(--primary);">حساب إشرافي (VIP Access) ⭐</strong></label>
-                    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                    <div class="input-group">
+                        <label class="input-label"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> الفئة أو الصف</label>
+                        <input type="text" id="new-user-class" placeholder="تصنيف المجموعات">
+                    </div>
+                    <label style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:12px;background:var(--bg-color);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;">
+                        <input type="checkbox" id="new-user-star" style="width:18px;height:18px;"> 
+                        <strong style="font-size:14px;color:var(--primary);display:flex;align-items:center;gap:6px;"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> حساب إشرافي (VIP Access)</strong>
+                    </label>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
                         <button type="button" id="save-user-btn" onclick="saveUser()"><svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> تثبيت الحساب</button>
                         <button type="button" id="cancel-edit-user-btn" onclick="cancelEditUser()" class="btn-secondary hidden"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> إلغاء</button>
                     </div>
@@ -968,11 +966,11 @@
             <!-- إدارة الطلاب -->
             <div id="tab-users-manage" class="tab-content">
                 <div class="admin-card" style="background:transparent;border:none;padding:0;box-shadow:none;">
-                    <div style="display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;">
+                    <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
                         <div class="search-container" style="margin:0;flex:1;min-width:200px;">
                             <div style="position:relative;">
-                                <input type="text" id="admin-search-users" placeholder="فلترة المستخدمين..." onkeyup="processAdminUserSearch()" style="padding-right:42px;">
-                                <svg class="icon" style="position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--text-muted);" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <input type="text" id="admin-search-users" placeholder="فلترة المستخدمين..." onkeyup="processAdminUserSearch()" style="padding-right:36px; border-bottom:1px solid var(--border); background:var(--card-bg);">
+                                <svg class="icon search-icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                             </div>
                         </div>
                         <div class="bulk-action-bar" style="margin:0;flex-shrink:0;">
@@ -987,26 +985,35 @@
             <!-- الطلبات المعلقة -->
             <div id="tab-pending-users" class="tab-content">
                 <div class="admin-card">
-                    <h2 class="admin-title"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> التدقيق والاعتماد</h2>
-                    <div id="admin-pending-list" style="display:grid;gap:12px;"></div>
+                    <h2 class="admin-title"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path><path d="M14 3v5h5M16 13H8M16 17H8M10 9H8"></path></svg> التدقيق والاعتماد</h2>
+                    <div id="admin-pending-list" style="display:grid;gap:8px;"></div>
                 </div>
             </div>
 
             <!-- الإعدادات -->
             <div id="tab-settings" class="tab-content">
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;">
                     <div class="admin-card">
-                        <h2 class="admin-title"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> أمان الإدارة</h2>
-                        <div class="input-group"><label class="input-label">المعرف الجديد</label><input type="text" id="admin-new-user"></div>
-                        <div class="input-group"><label class="input-label">المرور الجديد</label><input type="password" id="admin-new-pass"></div>
+                        <h2 class="admin-title"><svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> أمان الإدارة</h2>
+                        <div class="input-group">
+                            <label class="input-label"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> المعرف الجديد</label>
+                            <input type="text" id="admin-new-user">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> المرور الجديد</label>
+                            <input type="password" id="admin-new-pass">
+                        </div>
                         <button type="button" onclick="updateAdminCredentials()" class="btn-danger" style="width:100%;"><svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> إنفاذ وإغلاق الجلسة</button>
                     </div>
                     <div class="admin-card">
                         <h2 class="admin-title"><svg class="icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg> مزامنة البيانات</h2>
-                        <button type="button" onclick="exportDB()" class="btn-success" style="width:100%;margin-bottom:18px;"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> تصدير السجلات (JSON)</button>
-                        <hr style="border:0;border-top:2px dashed var(--border);margin:18px 0;">
-                        <input type="file" id="import-file" accept=".json" style="margin-bottom:14px;padding:12px;border:2px dashed var(--border);width:100%;border-radius:var(--radius-sm);font-size:14px;background:var(--bg-color);">
-                        <button type="button" onclick="importDB()" class="btn-warning" style="width:100%;color:#000;"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> إحلال واستعادة البيانات</button>
+                        <button type="button" onclick="exportDB()" class="btn-success" style="width:100%;margin-bottom:16px;"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> تصدير السجلات (JSON)</button>
+                        <hr style="border:0;border-top:1px solid var(--border);margin:16px 0;">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; color:var(--text-main); font-weight:600; font-size:13px;">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><polyline points="9 15 12 12 15 15"></polyline></svg> تحديد ملف الاستعادة:
+                        </div>
+                        <input type="file" id="import-file" accept=".json" style="margin-bottom:12px;padding:8px;border:1px dashed var(--text-muted);width:100%;border-radius:var(--radius-sm);font-size:13px;background:var(--bg-color);">
+                        <button type="button" onclick="importDB()" class="btn-warning" style="width:100%;color:#fff;"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg> إحلال واستعادة البيانات</button>
                     </div>
                 </div>
             </div>
@@ -1017,19 +1024,19 @@
     <div id="user-section" class="hidden" style="flex:1;display:flex;">
         <div id="user-layout">
             <aside id="student-sidebar" class="sidebar">
-                <!-- زر إغلاق الـ Drawer على الموبايل -->
                 <button type="button" class="sidebar-close-btn" onclick="closeSidebarMobile()" title="إغلاق">
-                    <svg class="icon" style="width:18px;height:18px;" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
                 <h3>
-                    <svg class="icon" viewBox="0 0 24 24" style="color:var(--primary);width:22px;height:22px;"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+                    <svg class="icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
                     الفهرس الدراسي
                 </h3>
                 <div class="sidebar-search-box">
                     <div style="position:relative;width:100%;">
-                        <input type="text" id="student-search-input" placeholder="بحث دقيق..." onkeyup="processStudentSearch()" onkeypress="if(event.key==='Enter') searchAllContent()" style="padding-right:42px;margin-bottom:0;">
+                        <svg class="icon" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);width:14px;height:14px;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="student-search-input" placeholder="بحث دقيق..." onkeyup="processStudentSearch()" onkeypress="if(event.key==='Enter') searchAllContent()" style="padding-left:32px;padding-right:32px;margin-bottom:0;">
                         <button type="button" onclick="searchAllContent()" style="position:absolute;right:4px;top:4px;bottom:4px;padding:0 8px;background:transparent;color:var(--primary);box-shadow:none;border-radius:var(--radius-sm);min-height:unset;">
-                            <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <svg class="icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </button>
                     </div>
                 </div>
@@ -1042,7 +1049,7 @@
     </div>
 
     <div class="version-footer">
-        <div>واجهة المستخدم متوافقة مع معايير Enterprise UI/UX — Responsive v3.0</div>
+        <div>واجهة المستخدم متوافقة مع معايير Enterprise UI/UX — Fluent Design v4.0</div>
     </div>
 
     <script>
@@ -1106,9 +1113,9 @@
         const t = document.createElement('div');
         t.className = `toast ${type}`;
         const icons = {
-            success: '<polyline points="20 6 9 17 4 12"></polyline>',
-            error:   '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>',
-            warning: '<line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>'
+            success: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>',
+            error:   '<circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line>',
+            warning: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line>'
         };
         t.innerHTML = `<svg class="icon" viewBox="0 0 24 24">${icons[type] || icons.success}</svg><span>${msg}</span>`;
         c.appendChild(t);
@@ -1260,9 +1267,9 @@
     function renderPendingUsers() {
         const list = document.getElementById('admin-pending-list'); list.innerHTML = '';
         if (!db.pendingUsers.length)
-            return list.innerHTML = '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> سجل الطلبات فارغ</div>';
+            return list.innerHTML = '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path><path d="M14 3v5h5M16 13H8M16 17H8M10 9H8"></path></svg> سجل الطلبات فارغ</div>';
         [...db.pendingUsers].reverse().forEach(u => {
-            list.innerHTML += `<div class="admin-list-item"><div><h4 style="font-size:15px;margin-bottom:5px;display:flex;align-items:center;gap:8px;"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${escapeHTML(u?.username)}</h4><div class="admin-item-meta"><span>${escapeHTML(u?.class)}</span></div></div><div class="admin-item-actions"><button onclick="approveUser('${u?.username}')" class="btn-success"><svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> تأكيد</button><button onclick="rejectUser('${u?.username}')" class="btn-danger"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> رفض</button></div></div>`;
+            list.innerHTML += `<div class="admin-list-item"><div><h4 style="font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px;"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${escapeHTML(u?.username)}</h4><div class="admin-item-meta"><span><svg class="icon" viewBox="0 0 24 24" style="width:12px;height:12px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path></svg> ${escapeHTML(u?.class)}</span></div></div><div class="admin-item-actions"><button onclick="approveUser('${u?.username}')" class="btn-success"><svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg> تأكيد</button><button onclick="rejectUser('${u?.username}')" class="btn-danger"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> رفض</button></div></div>`;
         });
     }
     function approveUser(u) { const i = db.pendingUsers.findIndex(x => x?.username === u); if (i > -1) { db.users.push(db.pendingUsers[i]); db.pendingUsers.splice(i, 1); saveDB(); showToast('تم تفعيل المستخدم'); renderPendingUsers(); updateClassesDropdown(); } }
@@ -1277,11 +1284,10 @@
             const p = new URLSearchParams(location.search);
             const vC = p.get('view_content');
 
-            document.getElementById('welcome-msg').innerText = 'زائر';
+            document.getElementById('welcome-msg').innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> زائر';
             document.getElementById('welcome-msg').style.display = 'flex';
             document.getElementById('logout-btn').innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg> <span>دخول</span>';
             
-            // تعديل: إذا كان الرابط مخصصاً لدرس واحد، نخفي الفهرس الجانبي تماماً
             if (vC) {
                 document.getElementById('sidebar-toggle').classList.add('hidden');
                 document.getElementById('student-sidebar').style.display = 'none';
@@ -1294,7 +1300,7 @@
             showUserDashboard(); return;
         }
 
-        document.getElementById('welcome-msg').innerText = escapeHTML(currentUser?.username);
+        document.getElementById('welcome-msg').innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${escapeHTML(currentUser?.username)}`;
         document.getElementById('welcome-msg').style.display = 'flex';
         document.getElementById('logout-btn').innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> <span>خروج</span>';
 
@@ -1377,12 +1383,11 @@
         const w = document.getElementById(id); 
         if (w) { 
             w.classList.remove('css-fullscreen'); 
-            w.classList.remove('bars-hidden'); // إعادة الأشرطة للوضع الافتراضي عند الخروج
+            w.classList.remove('bars-hidden'); 
             document.body.style.overflow = ''; 
         } 
     };
 
-    // الدالة المسؤولة عن إخفاء/إظهار المستطيلات عند ضغط الزر العائم
     window.toggleFullscreenBars = id => {
         const w = document.getElementById(id);
         if (w) {
@@ -1394,7 +1399,6 @@
     function updateClassesDropdown() {
         const s = document.getElementById('content-classes'); if (!s) return;
         const v = s.value;
-        // التعديل: هنا نجعل "متاح للكل" هو العنصر الأول والافتراضي في القائمة المُنشأة
         s.innerHTML = `<option value="all">متاح للكل (الافتراضي)</option><option value="admin">مسودة للإدارة</option>`;
         const set = new Set();
         db.users.forEach(u => { if (u?.role === 'student' && u?.class) set.add(escapeHTML(u.class)); });
@@ -1437,7 +1441,7 @@
         if (!db.folders.length)
             return l.innerHTML = '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>لا توجد تصنيفات حالياً.</div>';
         db.folders.forEach(f => {
-            l.innerHTML += `<li class="admin-list-item"><strong style="font-size:15px;display:flex;align-items:center;gap:8px;"><svg class="icon" style="color:var(--secondary);" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> ${f}</strong><div style="display:flex;gap:6px;"><button class="btn-icon-only" onclick="copyShareLink('folder','${f}',this)" title="نسخ رابط القائمة"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></button><button class="btn-icon-only" onclick="editFolder('${f}')" style="color:var(--warning);"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button class="btn-icon-only" onclick="deleteFolder('${f}')" style="color:var(--danger);"><svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></li>`;
+            l.innerHTML += `<li class="admin-list-item"><strong style="font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;"><svg class="icon" style="color:var(--primary);" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> ${f}</strong><div style="display:flex;gap:4px;"><button class="btn-icon-only" onclick="copyShareLink('folder','${f}',this)" title="نسخ رابط القائمة"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></button><button class="btn-icon-only" onclick="editFolder('${f}')" style="color:var(--warning);" title="تعديل"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button class="btn-icon-only" onclick="deleteFolder('${f}')" style="color:var(--danger);" title="حذف"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg></button></div></li>`;
         });
     }
 
@@ -1458,7 +1462,7 @@
             db.contents.push({ id: Date.now(), title: t, type: ty, data: d, classes: arr, folder: f, ratio: r });
             document.getElementById('content-title').value = '';
             document.getElementById('content-data').value = '';
-            document.getElementById('content-classes').value = 'all'; // إرجاعها للافتراضي بعد الحفظ
+            document.getElementById('content-classes').value = 'all'; 
             showToast('رائع! تم النشر');
         }
         saveDB(); filterAdminContent();
@@ -1471,7 +1475,8 @@
         if (!res.length)
             return list.innerHTML = '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg>لا توجد دروس متطابقة</div>';
         [...res].reverse().forEach(i => {
-            list.innerHTML += `<div class="admin-list-item"><div style="flex:1;min-width:0;"><h4 style="font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><input type="checkbox" class="content-checkbox" value="${i?.id}"><svg class="icon" viewBox="0 0 24 24" style="color:var(--primary);width:16px;height:16px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> ${i?.title}</h4><div class="admin-item-meta" style="margin-top:5px;"><span>${i?.folder==='none'?'مستقل':i?.folder}</span></div></div><div class="admin-item-actions"><button onclick="copyShareLink('content','${i?.id}',this)" class="btn-icon-only" title="رابط المادة"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></button><button onclick="editContent(${i?.id})" class="btn-icon-only" style="color:var(--warning);" title="تعديل"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button onclick="deleteContent(${i?.id})" class="btn-icon-only" style="color:var(--danger);" title="إزالة"><svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div></div>`;
+            const isFolder = i?.folder && i?.folder !== 'none';
+            list.innerHTML += `<div class="admin-list-item"><div style="flex:1;min-width:0;"><h4 style="font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><input type="checkbox" class="content-checkbox" value="${i?.id}"><svg class="icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> ${i?.title}</h4><div class="admin-item-meta" style="margin-top:4px;"><span><svg class="icon" viewBox="0 0 24 24" style="width:12px;height:12px;"><path d="${isFolder ? 'M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z' : 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'}"></path></svg> ${i?.folder==='none'?'مستقل':i?.folder}</span></div></div><div class="admin-item-actions"><button onclick="copyShareLink('content','${i?.id}',this)" class="btn-icon-only" title="رابط المادة"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></button><button onclick="editContent(${i?.id})" class="btn-icon-only" style="color:var(--warning);" title="تعديل"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button onclick="deleteContent(${i?.id})" class="btn-icon-only" style="color:var(--danger);" title="إزالة"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg></button></div></div>`;
         });
     }
 
@@ -1498,7 +1503,7 @@
         currentEditContentId = null;
         document.getElementById('content-title').value = '';
         document.getElementById('content-data').value  = '';
-        document.getElementById('content-classes').value = 'all'; // إرجاعها للافتراضي عند الإلغاء
+        document.getElementById('content-classes').value = 'all'; 
         document.getElementById('save-content-btn').innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> حفظ المادة';
         document.getElementById('cancel-edit-btn').classList.add('hidden');
     }
@@ -1530,7 +1535,7 @@
         if (!res.length)
             return list.innerHTML = '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>العضوية غير موجودة</div>';
         [...res].reverse().forEach(u => {
-            list.innerHTML += `<div class="admin-list-item"><div style="flex:1;min-width:0;"><h4 style="font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><input type="checkbox" class="user-checkbox" value="${u?.username}"><svg class="icon" viewBox="0 0 24 24" style="color:var(--secondary);width:16px;height:16px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${u?.username}</h4><div class="admin-item-meta" style="margin-top:5px;"><span>${u?.class||'-'}</span> <span>${u?.isStar?'⭐ VIP':''}</span></div></div><div class="admin-item-actions"><button onclick="copyCredentials('${u?.username}','${u?.password}',this)" class="btn-icon-only" title="نسخ مفاتيح الدخول"><svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><button onclick="editUser('${u?.username}')" class="btn-icon-only" style="color:var(--warning);" title="تحديث"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button onclick="deleteUser('${u?.username}')" class="btn-icon-only" style="color:var(--danger);" title="طرد"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg></button></div></div>`;
+            list.innerHTML += `<div class="admin-list-item"><div style="flex:1;min-width:0;"><h4 style="font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><input type="checkbox" class="user-checkbox" value="${u?.username}"><svg class="icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${u?.username}</h4><div class="admin-item-meta" style="margin-top:4px;"><span><svg class="icon" viewBox="0 0 24 24" style="width:12px;height:12px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path></svg> ${u?.class||'-'}</span> <span>${u?.isStar?'<svg class="icon" viewBox="0 0 24 24" style="width:12px;height:12px;color:var(--warning);fill:currentColor;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> VIP':''}</span></div></div><div class="admin-item-actions"><button onclick="copyCredentials('${u?.username}','${u?.password}',this)" class="btn-icon-only" title="نسخ مفاتيح الدخول"><svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button><button onclick="editUser('${u?.username}')" class="btn-icon-only" style="color:var(--warning);" title="تحديث"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button><button onclick="deleteUser('${u?.username}')" class="btn-icon-only" style="color:var(--danger);" title="طرد"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg></button></div></div>`;
         });
     }
     function deleteUser(u) { if (confirm('هل تعي أن طرد العضو يغلق عليه كافة السبل؟')) { db.users = db.users.filter(x => x?.username !== u); saveDB(); filterAdminUsers(); showToast('فُصلت قيود المستخدم'); } }
@@ -1649,12 +1654,11 @@
 
             let res = db.contents.filter(canViewContent);
             
-            // تعديل: جلب الدرس المعني فقط عند وجود رابط مباشر لدرس واحد وتجاهل باقي دروس مجلده
             if (isGuestMode) {
                 if (vF) res = res.filter(c => c?.folder === vF);
                 else if (vC) {
                     const s = res.find(c => c?.id == vC);
-                    res = s ? [s] : []; // جلب الدرس المحدد فقط لا غير
+                    res = s ? [s] : []; 
                 }
             }
 
@@ -1671,17 +1675,17 @@
                             <span>${f}</span>
                         </div>
                         <div class="summary-actions">
-                            <button onclick="event.stopPropagation();event.preventDefault();copyShareLink('folder','${f}',this);" class="btn-outline btn-copy-folder" title="نسخ رابط القائمة">
-                                <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> نسخ
+                            <button onclick="event.stopPropagation();event.preventDefault();copyShareLink('folder','${f}',this);" class="btn-icon-only" title="نسخ رابط القائمة" style="padding:4px;min-height:24px;min-width:24px;">
+                                <svg class="icon" style="width:14px;height:14px;" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
                             </button>
                             <svg class="icon arrow-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </div>
                     </summary>
                     <ul>`;
-                grp[f].forEach(i => { h += `<li class="sidebar-item" onclick="handleSidebarItemClick(${i?.id},this)"><svg class="icon" viewBox="0 0 24 24" style="width:15px;height:15px;opacity:.7;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> ${i?.title}</li>`; });
+                grp[f].forEach(i => { h += `<li class="sidebar-item" onclick="handleSidebarItemClick(${i?.id},this)"><svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px;opacity:.7;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> ${i?.title}</li>`; });
                 h += `</ul></details>`;
             }
-            ind.forEach(i => { h += `<div class="independent-item" onclick="handleSidebarItemClick(${i?.id},this)"><svg class="icon" viewBox="0 0 24 24" style="color:var(--primary);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> ${i?.title}</div>`; });
+            ind.forEach(i => { h += `<div class="independent-item" onclick="handleSidebarItemClick(${i?.id},this)"><svg class="icon" viewBox="0 0 24 24" style="color:var(--text-muted);width:14px;height:14px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> ${i?.title}</div>`; });
             sb.innerHTML = h || '<div class="empty-state"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> الفهرس فارغ حالياً</div>';
 
             const allDetails = sb.querySelectorAll('details.premium-accordion');
@@ -1729,7 +1733,7 @@
 
             arr.forEach(i => {
                 const div = document.createElement('div'); div.className = 'content-item academic-text';
-                const copyBtn = `<button type="button" onclick="copyShareLink('content',${i?.id},this)" class="btn-outline" style="padding:7px 14px;font-size:13px;border-radius:20px;display:flex;align-items:center;gap:7px;" title="حفظ المسار"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> رابط الدرس</button>`;
+                const copyBtn = `<button type="button" onclick="copyShareLink('content',${i?.id},this)" class="btn-secondary" style="padding:4px 10px;font-size:12px;border-radius:var(--radius-sm);display:flex;align-items:center;gap:6px;" title="حفظ المسار"><svg class="icon" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> رابط الدرس</button>`;
 
                 let html = '';
                 if (i?.type === 'html') {
@@ -1750,7 +1754,7 @@
                         </h3>
                         <div class="header-actions">
                             ${copyBtn}
-                            <button onclick="toggleCSSFullScreen('${wid}')" class="btn-secondary" style="padding:7px 14px;font-size:13px;border-radius:20px;">
+                            <button onclick="toggleCSSFullScreen('${wid}')" class="btn-outline" style="padding:4px 10px;font-size:12px;border-radius:var(--radius-sm);">
                                 ملء الشاشة
                                 <svg class="icon" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
                             </button>
@@ -1784,8 +1788,8 @@
                         </h3>
                         <div class="header-actions">${copyBtn}</div>
                     </div>
-                    <a href="${i?.data}" target="_blank" rel="noopener noreferrer" style="display:flex;justify-content:center;align-items:center;gap:14px;background:var(--primary-gradient);color:white;padding:22px;text-decoration:none;border-radius:var(--radius-lg);margin-top:18px;font-weight:800;font-size:18px;box-shadow:var(--shadow-md);transition:.3s;">
-                        <svg class="icon" style="width:26px;height:26px;" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    <a href="${i?.data}" target="_blank" rel="noopener noreferrer" style="display:flex;justify-content:center;align-items:center;gap:12px;background:var(--primary);color:white;padding:16px;text-decoration:none;border-radius:var(--radius-sm);margin-top:16px;font-weight:600;font-size:16px;box-shadow:var(--shadow-sm);transition:var(--transition-fast);">
+                        <svg class="icon" style="width:20px;height:20px;" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                         الانتقال للمقرر الخارجي
                     </a>`;
                 }
